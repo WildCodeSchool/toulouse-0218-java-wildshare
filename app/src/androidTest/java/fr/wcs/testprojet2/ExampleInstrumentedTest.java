@@ -1,4 +1,4 @@
-package fr.wildcodeschool.wildshare;
+package fr.wcs.testprojet2;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("fr.wildcodeschool.wildshare", appContext.getPackageName());
+        assertEquals("fr.wcs.testprojet2", appContext.getPackageName());
     }
 }

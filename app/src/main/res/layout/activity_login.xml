@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0FFFF"
+    tools:context="fr.wcs.testprojet2.LoginActivity"
+    android:id="@+id/relativeLayout">
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="100dp"
+        android:layout_height="129dp"
+        android:layout_alignBottom="@+id/image_log"
+        android:layout_alignEnd="@+id/image_logo_fond"
+        android:layout_alignRight="@+id/image_logo_fond"
+        android:layout_marginEnd="21dp"
+        android:layout_marginRight="21dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_log"
+        app:layout_constraintTop_toBottomOf="@+id/edit_password"
+        app:srcCompat="@drawable/signup" />
+
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/image_log"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColor="#000000"
+        android:textColorHint="@android:color/holo_orange_dark"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_pseudo" />
+
+    <EditText
+        android:id="@+id/edit_pseudo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/edit_password"
+        android:layout_alignLeft="@+id/edit_password"
+        android:layout_alignStart="@+id/edit_password"
+        android:ems="10"
+        android:hint="Pseudo"
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textColorHint="@android:color/holo_orange_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox_remember" />
+
+    <ImageView
+        android:id="@+id/image_logo_fond"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/edit_pseudo"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logosite" />
+
+    <CheckBox
+        android:id="@+id/checkBox_remember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/edit_pseudo"
+        android:layout_centerHorizontal="true"
+        android:text="Retenir les informations"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_logo_fond" />
+
+    <ImageView
+        android:id="@+id/image_log"
+        android:layout_width="175dp"
+        android:layout_height="185dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="38dp"
+        android:layout_toLeftOf="@+id/imageView5"
+        android:layout_toStartOf="@+id/imageView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_password"
+        app:srcCompat="@drawable/singin" />
+
+</RelativeLayout>

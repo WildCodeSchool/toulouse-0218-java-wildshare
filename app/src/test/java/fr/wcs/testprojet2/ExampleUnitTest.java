@@ -1,4 +1,4 @@
-package fr.wildcodeschool.wildshare;
+package fr.wcs.testprojet2;
 
 import org.junit.Test;
 
