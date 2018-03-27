@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -51,6 +52,32 @@ public class LoginActivity extends AppCompatActivity {
                     LoginActivity.this.startActivity(intent);
                 }
 
+            }
+        });
+        ImageView imageSignUp = findViewById(R.id.image_signup);
+        imageSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText editconfirm = findViewById(R.id.edit_confirm);
+                final EditText editemail = findViewById(R.id.edit_mail);
+                final ImageView buttonSignIn = findViewById(R.id.image_log);
+                final CheckBox checkRemember = findViewById(R.id.checkBox_remember);
+                ImageView logo = findViewById(R.id.image_logo_fond);
+                editconfirm.setVisibility(View.VISIBLE);
+                editemail.setVisibility(View.VISIBLE);
+                checkRemember.setVisibility(View.GONE);
+                buttonSignIn.setVisibility(View.GONE);
+
+                ImageView imageSignUp = findViewById(R.id.image_signup);
+                imageSignUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        editconfirm.setVisibility(View.GONE);
+                        editemail.setVisibility(View.GONE);
+                        checkRemember.setVisibility(View.VISIBLE);
+                        buttonSignIn.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
     }
