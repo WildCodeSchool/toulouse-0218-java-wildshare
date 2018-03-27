@@ -35,7 +35,7 @@ public class ListAdapter extends ArrayAdapter<ItemModel> {
         ImageButton ownerImage = convertView.findViewById(R.id.button_owner);
 
         itemName.setText(item.getName());
-        itemImage.setImageResource(item.getImage());
+        itemImage.setImageDrawable(item.getImage());
         ownerImage.setImageResource(item.getOwnerImage());
 
         return convertView;

@@ -20,12 +20,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 final Intent intent = new Intent(MainActivity.this, OwnItemList.class);
-                startActivity(intent);
+                MainActivity.this.startActivity(intent);
             }
         });
-
-
-
-
     }
 }
