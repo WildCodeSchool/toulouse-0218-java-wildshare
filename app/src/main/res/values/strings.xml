@@ -11,4 +11,7 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="new_item_s_name">New item\'s name</string>
+    <string name="description">Description</string>
+    <string name="button">Add item</string>
 </resources>
