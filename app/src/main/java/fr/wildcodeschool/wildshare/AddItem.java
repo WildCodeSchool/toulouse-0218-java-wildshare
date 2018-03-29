@@ -33,8 +33,8 @@ public class AddItem extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takepicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(takepicture, 0);
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, 0);
             }
         });
 
@@ -55,14 +55,10 @@ public class AddItem extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch(requestCode) {
             case 0:
-                if(resultCode == RESULT_OK){
-                    Bitmap bitmap = (Bitmap)imageReturnedIntent.getExtras().get("data");
+                if(resultCode == RESULT_OK) {
+                    Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     imgChoose.setImageBitmap(bitmap);
-
-//Uri selectedImage = imageReturnedIntent.getData();
-//imgChoose.setImageURI(selectedImage);
                 }
-
                 break;
             case 1:
                 if(resultCode == RESULT_OK){

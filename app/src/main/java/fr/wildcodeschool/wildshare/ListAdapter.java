@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import fr.wildcodeschool.wildshare.R;
-
 /**
  * Created by wilder on 26/03/18.
  */
@@ -30,8 +28,8 @@ public class ListAdapter extends ArrayAdapter<ItemModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_list, parent, false);
         }
 
-        TextView itemName = convertView.findViewById(R.id.tv_itemName);
-        ImageView itemImage = convertView.findViewById(R.id.iv_itemImage);
+        TextView itemName = convertView.findViewById(R.id.tv_item_name);
+        ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
         ImageButton ownerImage = convertView.findViewById(R.id.button_owner);
 
         itemName.setText(item.getName());

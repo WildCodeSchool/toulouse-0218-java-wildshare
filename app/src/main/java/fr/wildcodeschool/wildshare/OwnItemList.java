@@ -1,10 +1,7 @@
 package fr.wildcodeschool.wildshare;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -24,7 +21,7 @@ public class OwnItemList extends AppCompatActivity {
             itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
             final ListAdapter adapter = new ListAdapter(this, itemData);
-            ListView ownItemList = findViewById(R.id.lv_ownItemList);
+            ListView ownItemList = findViewById(R.id.lv_own_item_list);
             ownItemList.setAdapter(adapter);
 
         } else {
@@ -41,7 +38,7 @@ public class OwnItemList extends AppCompatActivity {
             itemData.add(newItem);
 
             final ListAdapter adapter = new ListAdapter(this, itemData);
-            ListView ownItemList = findViewById(R.id.lv_ownItemList);
+            ListView ownItemList = findViewById(R.id.lv_own_item_list);
             ownItemList.setAdapter(adapter);
 
         }

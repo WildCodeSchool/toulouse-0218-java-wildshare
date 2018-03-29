@@ -3,26 +3,23 @@ package fr.wildcodeschool.wildshare;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -30,6 +27,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +39,7 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this,AddItem.class);
+                Intent intent = new Intent(HomeActivity.this, AddItem.class);
                 startActivity(intent);
             }
         });
@@ -66,8 +64,8 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-       final ListView lv1 = findViewById(R.id.lv_ownItemList);
-        }
+        final ListView lvOwnItemList = findViewById(R.id.lv_own_item_list);
+    }
 
     @Override
     public void onBackPressed() {
@@ -125,25 +123,6 @@ public class HomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 4 total pages.
-            return 4;
-        }
-    }
 
     public static class PlaceholderFragment extends Fragment {
         /**
@@ -170,9 +149,9 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if (getArguments().getInt(ARG_SECTION_NUMBER) ==1) {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
-                ListView lv1 = rootView.findViewById(R.id.lv_ownItemList);
+                ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
                 itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
@@ -180,17 +159,14 @@ public class HomeActivity extends AppCompatActivity
 
                 final ListAdapter adapter = new ListAdapter(this.getActivity(), itemData);
                 lv1.setAdapter(adapter);
-                return rootView;}
-
-            else if (getArguments().getInt(ARG_SECTION_NUMBER) ==2){
-                View rootView = inflater.inflate(R.layout.fragment_two,container,false);
                 return rootView;
-            }
-            else if (getArguments().getInt(ARG_SECTION_NUMBER)== 3){
-                View rootView = inflater.inflate(R.layout.fragment_three,container,false);
+            } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+                View rootView = inflater.inflate(R.layout.fragment_two, container, false);
                 return rootView;
-            }
-            else if (getArguments().getInt(ARG_SECTION_NUMBER)== 4) {
+            } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+                View rootView = inflater.inflate(R.layout.fragment_three, container, false);
+                return rootView;
+            } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 View rootView = inflater.inflate(R.layout.fragment_four, container, false);
                 return rootView;
             }
@@ -198,6 +174,26 @@ public class HomeActivity extends AppCompatActivity
             return null;
         }
 
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            // Show 4 total pages.
+            return 4;
+        }
     }
 }
 
