@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/new_item_s_name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_link" />
 
     <EditText
         android:id="@+id/et_description"
@@ -91,4 +91,30 @@
         android:text="Link"
         app:layout_constraintStart_toEndOf="@+id/button_gallery"
         app:layout_constraintTop_toBottomOf="@+id/imageView_choose" />
+
+    <EditText
+        android:id="@+id/editText_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="Image Link"
+        android:inputType="textUri"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/et_newItemName"
+        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+
+    <Button
+        android:id="@+id/button_ok"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="OK"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editText_link"
+        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+
 </android.support.constraint.ConstraintLayout>
