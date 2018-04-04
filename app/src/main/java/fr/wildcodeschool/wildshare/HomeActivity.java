@@ -151,14 +151,16 @@ public class HomeActivity extends AppCompatActivity
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
+
+
                 ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
                 itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
-
                 final ListAdapter adapter = new ListAdapter(this.getActivity(), itemData);
                 lv1.setAdapter(adapter);
+
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 View rootView = inflater.inflate(R.layout.fragment_two, container, false);
@@ -168,6 +170,16 @@ public class HomeActivity extends AppCompatActivity
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 View rootView = inflater.inflate(R.layout.fragment_four, container, false);
+
+                ListView lvFriends = rootView.findViewById(R.id.lv_friends);
+                final ArrayList<FriendModel> friendData = new ArrayList<>();
+                friendData.add(new FriendModel("FirstnameTest1", "LastnameTest1", null));
+                friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
+                friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
+                friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
+                final FriendListAdapter adapter = new FriendListAdapter(this.getActivity(), friendData);
+                lvFriends.setAdapter(adapter);
+
                 return rootView;
             }
 
