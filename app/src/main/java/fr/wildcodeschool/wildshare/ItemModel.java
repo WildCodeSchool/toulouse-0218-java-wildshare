@@ -17,6 +17,11 @@ class ItemModel implements Parcelable {
     private String ownerLastame;
     private int ownerImage;
 
+    public ItemModel(String name, Drawable image) {
+        this.name = name;
+        this.image = image;
+    }
+
     public ItemModel(String name, Drawable image, String description, String ownerFirstame, String ownerLastame, int ownerImage) {
         this.name = name;
         this.image = image;

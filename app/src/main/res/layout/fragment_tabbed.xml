@@ -7,7 +7,7 @@
     tools:context="fr.wildcodeschool.wildshare.TabbedActivity$HomeFragment">
 
     <ListView
-        android:id="@+id/lv_ownItemList"
+        android:id="@+id/lv_own_item_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

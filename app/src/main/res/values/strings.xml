@@ -14,4 +14,5 @@
     <string name="new_item_s_name">New item\'s name</string>
     <string name="description">Description</string>
     <string name="button">Add item</string>
+    <string name="enter_pseudo_password">Please enter your Pseudo and Password</string>
 </resources>

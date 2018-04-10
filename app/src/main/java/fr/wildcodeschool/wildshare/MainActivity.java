@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static String CACHE_USERNAME = "username";
     public static String EXTRA_LOGIN = "EXTRA_LOGIN";
 
     @Override
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
         // récupérer le username du cache s'il existe
-       String usernameCache = sharedPref.getString("username", "");
+       String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
         editLogin.setText(usernameCache);
 
         ImageView imageLogin = findViewById(R.id.image_log);
@@ -35,11 +36,11 @@ public class MainActivity extends AppCompatActivity {
                 String passwordValue = editPassword.getText().toString();
                 String loginValue = editLogin.getText().toString();
                 if (loginValue.isEmpty() || passwordValue.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter your Pseudo and Password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.enter_pseudo_password, Toast.LENGTH_SHORT).show();
                 } else {
                     // enregistrer dans le cache de l'application
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("username", loginValue);
+                    editor.putString(CACHE_USERNAME, loginValue);
                     editor.commit();
 
                     // TODO : initialiser l'utilisateur
