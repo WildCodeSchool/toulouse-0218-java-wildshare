@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,17 +14,45 @@ import java.util.ArrayList;
 /**
  * Created by wilder on 03/04/18.
  */
-public class FriendListAdapter extends ArrayAdapter<FriendModel> {
+public class FriendListAdapter extends BaseAdapter {
 
-    FriendListAdapter(Context context, ArrayList<FriendModel> friend) {
-    super(context, 0, friend);
-}
+    private final Context mContext;
+    public ArrayList<FriendModel> friend;
+    private FriendListAdapter.FriendClickListerner listener;
+
+
+    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend) {
+        this.mContext = mContext;
+        this.friend = friend;
+    }
+
+    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, FriendClickListerner listener) {
+        this.mContext = mContext;
+        this.friend = friend;
+        this.listener = listener;
+    }
+
+    @Override
+    public int getCount() {
+        return friend.size();
+    }
+    @Override
+    public Object getItem(int position) {return friend.get(position);}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+
+    public interface FriendClickListerner {
+        void onClick (FriendModel friend);
+    }
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        FriendModel friend = getItem(position);
+        final FriendModel friend = (FriendModel) getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend_item_list, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.friend_item_list, parent, false);
         }
 
             TextView friendFirstname = convertView.findViewById(R.id.tv_firstname);
@@ -33,6 +62,15 @@ public class FriendListAdapter extends ArrayAdapter<FriendModel> {
         friendFirstname.setText(friend.getFirstname());
         friendLastname.setText(friend.getLastname());
         avatar.setImageDrawable(friend.getAvatar());
+
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(friend);
+            }
+        });
         return convertView;
+
     }
 }

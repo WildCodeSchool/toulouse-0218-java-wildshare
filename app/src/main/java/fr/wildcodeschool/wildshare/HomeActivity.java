@@ -158,8 +158,8 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
-                final ListAdapter adapter = new ListAdapter(this.getActivity(), itemData);
-                lv1.setAdapter(adapter);
+                final ListAdapter itemAdapter = new ListAdapter(this.getActivity(), itemData);
+                lv1.setAdapter(itemAdapter);
 
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -169,7 +169,7 @@ public class HomeActivity extends AppCompatActivity
                 View rootView = inflater.inflate(R.layout.fragment_three, container, false);
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
-                View rootView = inflater.inflate(R.layout.fragment_four, container, false);
+                final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
@@ -177,15 +177,22 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                final FriendListAdapter adapter = new FriendListAdapter(this.getActivity(), friendData);
-                lvFriends.setAdapter(adapter);
+                final FriendListAdapter friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+                    @Override
+                    public void onClick(FriendModel friend) {
+
+                        Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
+                        intent.putExtra("friend", friend);
+                        startActivity(intent);
+                    }
+                });
+                        lvFriends.setAdapter(friendAdapter);
 
                 return rootView;
             }
 
             return null;
         }
-
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
