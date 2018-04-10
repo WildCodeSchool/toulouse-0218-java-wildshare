@@ -15,4 +15,9 @@
     <string name="description">Description</string>
     <string name="button">Add item</string>
     <string name="enter_pseudo_password">Please enter your Pseudo and Password</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="link">Link</string>
+    <string name="image_link">Image Link</string>
+    <string name="ok">OK</string>
 </resources>
