@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +17,7 @@ public class FriendListAdapter extends BaseAdapter {
 
     private final Context mContext;
     public ArrayList<FriendModel> friend;
-    private FriendListAdapter.FriendClickListerner listener;
+    private ItemClickListerner listener;
 
 
     public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend) {
@@ -26,7 +25,7 @@ public class FriendListAdapter extends BaseAdapter {
         this.friend = friend;
     }
 
-    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, FriendClickListerner listener) {
+    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, ItemClickListerner listener) {
         this.mContext = mContext;
         this.friend = friend;
         this.listener = listener;
@@ -44,7 +43,7 @@ public class FriendListAdapter extends BaseAdapter {
     }
 
 
-    public interface FriendClickListerner {
+    public interface ItemClickListerner {
         void onClick (FriendModel friend);
     }
 

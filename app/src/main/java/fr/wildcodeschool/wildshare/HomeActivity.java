@@ -177,7 +177,7 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                final FriendListAdapter friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+                final FriendListAdapter friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
 

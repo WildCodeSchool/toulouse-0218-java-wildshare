@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,17 +15,47 @@ import java.util.ArrayList;
  * Created by wilder on 26/03/18.
  */
 
-public class ListAdapter extends ArrayAdapter<ItemModel> {
+public class ListAdapter extends BaseAdapter {
 
-    ListAdapter(Context context, ArrayList<ItemModel> items) {
-        super(context, 0, items);
+    private final Context mContext;
+    public ArrayList<ItemModel> userItem;
+    private ItemClickListerner listener;
+
+    public ListAdapter(Context mContext, ArrayList<ItemModel> userItem, ItemClickListerner listener) {
+        this.mContext = mContext;
+        this.userItem = userItem;
+        this.listener = listener;
+    }
+
+    public ListAdapter(Context mContext, ArrayList<ItemModel> userItem) {
+        this.mContext = mContext;
+        this.userItem = userItem;
+    }
+
+    public interface ItemClickListerner {
+        void onClick (ItemModel itemModel);
+    }
+
+    @Override
+    public int getCount() {
+        return userItem.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return userItem.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ItemModel item = getItem(position);
+        final ItemModel item = (ItemModel) getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_list, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_list, parent, false);
         }
 
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
