@@ -51,7 +51,7 @@ public class FriendListAdapter extends BaseAdapter {
 
         final FriendModel friend = (FriendModel) getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.friend_item_list, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.friend_list, parent, false);
         }
 
             TextView friendFirstname = convertView.findViewById(R.id.tv_firstname);

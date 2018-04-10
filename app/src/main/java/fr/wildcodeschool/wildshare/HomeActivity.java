@@ -1,5 +1,7 @@
 package fr.wildcodeschool.wildshare;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,17 +11,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,7 +34,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-
+    private static ListAdapter itemAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +84,22 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.home, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager) HomeActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(HomeActivity.this.getComponentName()));
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -89,10 +107,28 @@ public class HomeActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
+           SearchView searchView = (SearchView) item.getActionView();
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+
+                    itemAdapter.getFilter().filter(newText);
+                    return false;
+                }
+
+
+            });
             return true;
         }
 
@@ -158,7 +194,7 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
-                final ListAdapter itemAdapter = new ListAdapter(this.getActivity(), itemData);
+                itemAdapter = new ListAdapter(this.getActivity(), itemData);
                 lv1.setAdapter(itemAdapter);
 
                 return rootView;
