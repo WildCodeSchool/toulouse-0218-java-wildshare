@@ -59,9 +59,9 @@ public class FriendListAdapter extends BaseAdapter {
             TextView friendLastname = convertView.findViewById(R.id.tv_lastname);
             ImageView avatar = convertView.findViewById(R.id.iv_avatar);
 
-        friendFirstname.setText(friend.getFirstname());
-        friendLastname.setText(friend.getLastname());
-        avatar.setImageDrawable(friend.getAvatar());
+            friendFirstname.setText(friend.getFirstname());
+            friendLastname.setText(friend.getLastname());
+            avatar.setImageDrawable(friend.getAvatar());
 
 
         convertView.setOnClickListener(new View.OnClickListener() {
