@@ -16,7 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
+import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,11 +34,16 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private static ListAdapter itemAdapter;
+    //private static ListAdapter itemAdapter;
+    private static ListAdapter itemAdapter1;
+    private static ListAdapter itemAdapter2;
+    private static ListAdapter itemAdapter3;
+    private static FriendListAdapter friendAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,7 +76,7 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-        final ListView lvOwnItemList = findViewById(R.id.lv_own_item_list);
+
     }
 
     @Override
@@ -86,19 +91,7 @@ public class HomeActivity extends AppCompatActivity
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.home, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-
-        SearchManager searchManager = (SearchManager) HomeActivity.this.getSystemService(Context.SEARCH_SERVICE);
-
-        SearchView searchView = null;
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(HomeActivity.this.getComponentName()));
-        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -107,30 +100,6 @@ public class HomeActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-           SearchView searchView = (SearchView) item.getActionView();
-
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-
-                    itemAdapter.getFilter().filter(newText);
-                    return false;
-                }
-
-
-            });
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -141,17 +110,12 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_profil) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_deconnexion) {
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 
@@ -188,21 +152,91 @@ public class HomeActivity extends AppCompatActivity
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
-
                 ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
                 itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
-                itemAdapter = new ListAdapter(this.getActivity(), itemData);
-                lv1.setAdapter(itemAdapter);
 
+                itemAdapter1 = new ListAdapter(this.getActivity(), itemData);
+                lv1.setAdapter(itemAdapter1);
+                SearchView searchView = rootView.findViewById(R.id.searchView);
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+
+                        itemAdapter1.getFilter().filter(newText);
+
+
+                        return false;
+                    }
+                });
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 View rootView = inflater.inflate(R.layout.fragment_two, container, false);
+
+                ListView lv2 = rootView.findViewById(R.id.take_list);
+                final ArrayList<ItemModel> itemData = new ArrayList<>();
+                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
+                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
+                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+
+                itemAdapter2 = new ListAdapter(this.getActivity(), itemData);
+                lv2.setAdapter(itemAdapter2);
+                SearchView searchView2 = rootView.findViewById(R.id.searchView2);
+                searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+
+                        itemAdapter2.getFilter().filter(newText);
+
+
+                        return false;
+                    }
+                });
+
                 return rootView;
+
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
                 View rootView = inflater.inflate(R.layout.fragment_three, container, false);
+
+
+                ListView lv3 = rootView.findViewById(R.id.listView_wall);
+                final ArrayList<ItemModel> itemData = new ArrayList<>();
+                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
+                itemData.add(new ItemModel("ObjetTest9", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
+                itemData.add(new ItemModel("ObjetTest10", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+
+                itemAdapter3 = new ListAdapter(this.getActivity(), itemData);
+                lv3.setAdapter(itemAdapter3);
+                SearchView searchView3 = rootView.findViewById(R.id.searchView3);
+                searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+
+                        itemAdapter3.getFilter().filter(newText);
+
+
+                        return false;
+                    }
+                });
+
+
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
@@ -213,7 +247,8 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                final FriendListAdapter friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+
+                friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
 
@@ -223,7 +258,22 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
                         lvFriends.setAdapter(friendAdapter);
+                SearchView searchView4 = rootView.findViewById(R.id.searchView4);
+                searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
 
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+
+                        friendAdapter.getFilter().filter(newText);
+
+
+                        return false;
+                    }
+                });
                 return rootView;
             }
 
@@ -239,6 +289,7 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
+
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);

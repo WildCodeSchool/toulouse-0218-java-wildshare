@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -22,10 +21,10 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
     private final Context mContext;
     public ArrayList<ItemModel> itemModels;
-    private  CustomFilter filter;
+    private CustomFilterFriend filter;
     private ArrayList<ItemModel> filterList;
 
-    public ListAdapter(Context context, ArrayList<ItemModel> itemModels, CustomFilter filter, ArrayList<ItemModel> filterList) {
+    public ListAdapter(Context context, ArrayList<ItemModel> itemModels, CustomFilterFriend filter, ArrayList<ItemModel> filterList) {
         this.mContext = context;
         this.itemModels = itemModels;
         this.filter = filter;
@@ -74,7 +73,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
     @Override
     public Filter getFilter() {
         if (filter == null) {
-            filter = new CustomFilter(filterList, this);
+            filter = new CustomFilterFriend(filterList, this);
         }
         return filter;
     }

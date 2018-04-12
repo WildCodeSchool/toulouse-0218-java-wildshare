@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
                 final EditText editconfirm = findViewById(R.id.edit_confirm);
                 final EditText editemail = findViewById(R.id.edit_mail);
                 final ImageView buttonSignIn = findViewById(R.id.image_log);
-                final CheckBox checkRemember = findViewById(R.id.checkBox_remember);
+
                 ImageView logo = findViewById(R.id.image_logo_fond);
                 editconfirm.setVisibility(View.VISIBLE);
                 editemail.setVisibility(View.VISIBLE);
-                checkRemember.setVisibility(View.GONE);
+
                 buttonSignIn.setVisibility(View.GONE);
 
                 ImageView imageSignUp = findViewById(R.id.image_signup);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         editconfirm.setVisibility(View.GONE);
                         editemail.setVisibility(View.GONE);
-                        checkRemember.setVisibility(View.VISIBLE);
+
                         buttonSignIn.setVisibility(View.VISIBLE);
                     }
                 });

@@ -24,27 +24,13 @@ public class CustomFilter extends Filter{
      * La searchview créait une nouvelle liste de monstres en les filtrant
      */
     public ArrayList<ItemModel> filteredItem;
+
+    public CustomFilter(ArrayList<FriendModel> filterList, FriendListAdapter friendListAdapter) {
+    }
+
     @Override
     protected FilterResults performFiltering(CharSequence constraint) {
-        FilterResults results = new FilterResults();
-
-        if (constraint != null && constraint.length() > 0) {
-            constraint = constraint.toString().toUpperCase();
-            filteredItem = new ArrayList<>();
-
-            for (int i = 0; i < filterList.size(); i++) {
-                if (filterList.get(i).getName().toUpperCase().contains(constraint)) {
-                    filteredItem.add(filterList.get(i));
-                }
-            }
-
-            results.count = filteredItem.size();
-            results.values = filteredItem;
-        } else {
-            results.count = filterList.size();
-            results.values = filterList;
-        }
-        return results;
+        return null;
     }
 
     @Override
