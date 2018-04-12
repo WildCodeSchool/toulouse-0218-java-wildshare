@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "747528383642",
+    "firebase_url": "https://wildshare-81f54.firebaseio.com",
+    "project_id": "wildshare-81f54",
+    "storage_bucket": "wildshare-81f54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747528383642:android:ee35425cffc43170",
+        "android_client_info": {
+          "package_name": "fr.wildcodeschool.wildshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "747528383642-01iqaugetm069hslbph6fk52qrsq8qu0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.wildcodeschool.wildshare",
+            "certificate_hash": "11948088565bbc0a9a3b759753e626e482552237"
+          }
+        },
+        {
+          "client_id": "747528383642-r612nsq0fupio1svsmrcem51o4731neq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNqrEoZhdzJJlwF62GXzQrIpgVoZvUslI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "747528383642-r612nsq0fupio1svsmrcem51o4731neq.apps.googleusercontent.com",
+
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,9 +6,21 @@
     android:layout_height="match_parent"
     tools:context="fr.wildcodeschool.wildshare.TabbedActivity$HomeFragment">
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:id="@+id/search_view_one" />
+
     <ListView
         android:id="@+id/lv_own_item_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search_view_one"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

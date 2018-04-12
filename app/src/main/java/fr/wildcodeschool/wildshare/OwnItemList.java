@@ -20,7 +20,7 @@ public class OwnItemList extends AppCompatActivity {
             itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
             itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-            final ListAdapter adapter = new ListAdapter(this, itemData);
+            final ListAdapter adapter = new ListAdapter(OwnItemList.this, itemData);
             ListView ownItemList = findViewById(R.id.lv_own_item_list);
             ownItemList.setAdapter(adapter);
 
