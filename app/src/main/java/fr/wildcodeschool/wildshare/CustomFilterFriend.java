@@ -29,12 +29,14 @@ public class CustomFilterFriend extends Filter {
             constraint = constraint.toString().toUpperCase();
             filteredFriend = new ArrayList<>();
 
-            for (int i = 0; i < filterList.size(); i++) {
-                if (filterList.get(i).getFirstname().toUpperCase().contains(constraint)
-                        ||
-                    filterList.get(i).getLastname().toUpperCase().contains(constraint)) {
+            if (filterList != null) {
+                for (int i = 0; i < filterList.size(); i++) {
+                    if (filterList.get(i).getFirstname().toUpperCase().contains(constraint)
+                            ||
+                            filterList.get(i).getLastname().toUpperCase().contains(constraint)) {
 
-                    filteredFriend.add(filterList.get(i));
+                        filteredFriend.add(filterList.get(i));
+                    }
                 }
             }
 

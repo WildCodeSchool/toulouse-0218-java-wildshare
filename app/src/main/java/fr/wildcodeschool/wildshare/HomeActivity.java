@@ -39,7 +39,6 @@ public class HomeActivity extends AppCompatActivity
     private static ListAdapter itemAdapter2;
     private static ListAdapter itemAdapter3;
     private static FriendListAdapter friendAdapter;
-    private  static CustomFilterFriend filterFriend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,16 +205,14 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
-
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
                 View rootView = inflater.inflate(R.layout.fragment_three, container, false);
-
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
                 itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest9", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest10", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
+                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
                 itemAdapter3 = new ListAdapter(this.getActivity(), itemData);
                 lv3.setAdapter(itemAdapter3);
@@ -236,7 +233,6 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
 
-
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
@@ -248,33 +244,39 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
                 friendAdapter = new FriendListAdapter(this.getActivity(), friendData);
-             /*   friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
-                    @Override
+
+
+                lvFriends.setAdapter(friendAdapter);
+                    SearchView searchView4 = rootView.findViewById(R.id.searchView4);
+                searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+
+                            friendAdapter.getFilter().filter(newText);
+
+
+                            return false;
+                        }
+                    });
+
+
+
+                   /* @Override
                     public void onClick(FriendModel friend) {
 
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
                         intent.putExtra("friend", friend);
                         startActivity(intent);
                     }
-                });*/
-             // TODO corriger bug texte dans la searchview
-                        lvFriends.setAdapter(friendAdapter);
-                SearchView searchView4 = rootView.findViewById(R.id.searchView4);
-                searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-
-                        friendAdapter.getFilter().filter(newText);
-
-
-                        return false;
-                    }
                 });
+                        lvFriends.setAdapter(friendAdapter);*/
+
+
                 return rootView;
             }
 
