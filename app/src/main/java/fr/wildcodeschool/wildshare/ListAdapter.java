@@ -21,10 +21,10 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
     private final Context mContext;
     public ArrayList<ItemModel> itemModels;
-    private CustomFilterFriend filter;
+    private CustomFilter filter;
     private ArrayList<ItemModel> filterList;
 
-    public ListAdapter(Context context, ArrayList<ItemModel> itemModels, CustomFilterFriend filter, ArrayList<ItemModel> filterList) {
+    public ListAdapter(Context context, ArrayList<ItemModel> itemModels, CustomFilter filter, ArrayList<ItemModel> filterList) {
         this.mContext = context;
         this.itemModels = itemModels;
         this.filter = filter;
@@ -73,7 +73,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
     @Override
     public Filter getFilter() {
         if (filter == null) {
-            filter = new CustomFilterFriend(filterList, this);
+            filter = new CustomFilter(filterList, this);
         }
         return filter;
     }

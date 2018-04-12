@@ -20,7 +20,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     private final Context mContext;
     public ArrayList<FriendModel> friendModel;
     private FriendClickListerner listener;
-    private CustomFilterFriend filter;
+    private CustomFilter filter;
     private ArrayList<FriendModel> filterList;
 
     public FriendListAdapter(Context mContext, ArrayList<FriendModel> friendModel) {
@@ -28,7 +28,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         this.friendModel = friendModel;
     }
 
-    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friendModel, CustomFilterFriend filter, ArrayList<FriendModel> filterList, FriendClickListerner listener) {
+    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friendModel, CustomFilter filter, ArrayList<FriendModel> filterList, FriendClickListerner listener) {
         this.mContext = mContext;
         this.friendModel = friendModel;
         this.listener = listener;
@@ -42,7 +42,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         this.listener = listener;
     }
 
-    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, CustomFilterFriend filter, ArrayList<FriendModel> filterList) {
+    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, CustomFilter filter, ArrayList<FriendModel> filterList) {
         this.mContext = mContext;
         this.friendModel = friend;
         this.filter = filter;
@@ -91,7 +91,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     @Override
     public Filter getFilter() {
         if (filter == null) {
-            filter = new CustomFilterFriend(filterList, this);
+            filter = new CustomFilter(filterList, this);
         }
         return filter;
     }
