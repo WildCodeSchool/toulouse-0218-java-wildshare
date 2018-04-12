@@ -1,42 +1,20 @@
 {
   "project_info": {
-<<<<<<< HEAD
-    "project_number": "368840231794",
-    "firebase_url": "https://wildshare-319b7.firebaseio.com",
-    "project_id": "wildshare-319b7",
-    "storage_bucket": "wildshare-319b7.appspot.com"
-=======
     "project_number": "747528383642",
     "firebase_url": "https://wildshare-81f54.firebaseio.com",
     "project_id": "wildshare-81f54",
     "storage_bucket": "wildshare-81f54.appspot.com"
->>>>>>> 71dd129eac5adb72ac38385154952a0a01e06145
   },
   "client": [
     {
       "client_info": {
-<<<<<<< HEAD
-        "mobilesdk_app_id": "1:368840231794:android:ee35425cffc43170",
-=======
         "mobilesdk_app_id": "1:747528383642:android:ee35425cffc43170",
->>>>>>> 71dd129eac5adb72ac38385154952a0a01e06145
         "android_client_info": {
           "package_name": "fr.wildcodeschool.wildshare"
         }
       },
       "oauth_client": [
         {
-<<<<<<< HEAD
-          "client_id": "368840231794-aoledl7pn5vpp5qfhmtgvl11d62rc38f.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "fr.wildcodeschool.wildshare",
-            "certificate_hash": "0395cfb73fe9f876598aa53c4eb3ef620f4048bd"
-          }
-        },
-        {
-          "client_id": "368840231794-fni8qthmtsr9iegtt5k3psdgrrnvq5gd.apps.googleusercontent.com",
-=======
           "client_id": "747528383642-01iqaugetm069hslbph6fk52qrsq8qu0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -46,17 +24,12 @@
         },
         {
           "client_id": "747528383642-r612nsq0fupio1svsmrcem51o4731neq.apps.googleusercontent.com",
->>>>>>> 71dd129eac5adb72ac38385154952a0a01e06145
           "client_type": 3
         }
       ],
       "api_key": [
         {
-<<<<<<< HEAD
-          "current_key": "AIzaSyBCoUD1IteZxyI7m27cAuRB6Cc4xLrF6pY"
-=======
           "current_key": "AIzaSyBNqrEoZhdzJJlwF62GXzQrIpgVoZvUslI"
->>>>>>> 71dd129eac5adb72ac38385154952a0a01e06145
         }
       ],
       "services": {
@@ -67,11 +40,8 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-<<<<<<< HEAD
-              "client_id": "368840231794-fni8qthmtsr9iegtt5k3psdgrrnvq5gd.apps.googleusercontent.com",
-=======
               "client_id": "747528383642-r612nsq0fupio1svsmrcem51o4731neq.apps.googleusercontent.com",
->>>>>>> 71dd129eac5adb72ac38385154952a0a01e06145
+
               "client_type": 3
             }
           ]

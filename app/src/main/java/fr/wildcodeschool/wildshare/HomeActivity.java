@@ -1,7 +1,5 @@
 package fr.wildcodeschool.wildshare;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,15 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    //private static ListAdapter itemAdapter;
     private static ListAdapter itemAdapter1;
     private static ListAdapter itemAdapter2;
     private static ListAdapter itemAdapter3;
@@ -116,8 +110,6 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -161,7 +153,7 @@ public class HomeActivity extends AppCompatActivity
 
                 itemAdapter1 = new ListAdapter(this.getActivity(), itemData);
                 lv1.setAdapter(itemAdapter1);
-                SearchView searchView = rootView.findViewById(R.id.searchView);
+                SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -189,7 +181,7 @@ public class HomeActivity extends AppCompatActivity
 
                 itemAdapter2 = new ListAdapter(this.getActivity(), itemData);
                 lv2.setAdapter(itemAdapter2);
-                SearchView searchView2 = rootView.findViewById(R.id.searchView2);
+                SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -218,7 +210,7 @@ public class HomeActivity extends AppCompatActivity
 
                 itemAdapter3 = new ListAdapter(this.getActivity(), itemData);
                 lv3.setAdapter(itemAdapter3);
-                SearchView searchView3 = rootView.findViewById(R.id.searchView3);
+                SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -249,7 +241,7 @@ public class HomeActivity extends AppCompatActivity
 
 
                 lvFriends.setAdapter(friendAdapter);
-                    SearchView searchView4 = rootView.findViewById(R.id.searchView4);
+                    SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
                         public boolean onQueryTextSubmit(String query) {
@@ -265,18 +257,6 @@ public class HomeActivity extends AppCompatActivity
                             return false;
                         }
                     });
-
-
-
-                   /* @Override
-                    public void onClick(FriendModel friend) {
-
-                        Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
-                        intent.putExtra("friend", friend);
-                        startActivity(intent);
-                    }
-                });
-                        lvFriends.setAdapter(friendAdapter);*/
 
 
                 return rootView;

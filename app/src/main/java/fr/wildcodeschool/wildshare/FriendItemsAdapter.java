@@ -37,7 +37,7 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         friendItemImage.setImageDrawable(friendItem.getImage());
 
         return convertView;
-        }
-
     }
+
+}
 
