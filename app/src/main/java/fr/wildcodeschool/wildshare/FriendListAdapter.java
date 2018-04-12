@@ -20,20 +20,12 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     private final Context mContext;
     public ArrayList<FriendModel> friendModel;
     private FriendClickListerner listener;
-    private CustomFilter filter;
+    private  CustomFilterFriend filter;
     private ArrayList<FriendModel> filterList;
 
     public FriendListAdapter(Context mContext, ArrayList<FriendModel> friendModel) {
         this.mContext = mContext;
         this.friendModel = friendModel;
-    }
-
-    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friendModel, CustomFilter filter, ArrayList<FriendModel> filterList, FriendClickListerner listener) {
-        this.mContext = mContext;
-        this.friendModel = friendModel;
-        this.listener = listener;
-        this.filter = filter;
-        this.filterList = filterList;
     }
 
     public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, FriendClickListerner listener) {
@@ -42,7 +34,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         this.listener = listener;
     }
 
-    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, CustomFilter filter, ArrayList<FriendModel> filterList) {
+    public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, CustomFilterFriend filter, ArrayList<FriendModel> filterList) {
         this.mContext = mContext;
         this.friendModel = friend;
         this.filter = filter;
@@ -70,13 +62,13 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.friend_list, parent, false);
         }
 
-        TextView friendFirstname = convertView.findViewById(R.id.tv_firstname);
-        TextView friendLastname = convertView.findViewById(R.id.tv_lastname);
-        ImageView avatar = convertView.findViewById(R.id.iv_avatar);
+            TextView friendFirstname = convertView.findViewById(R.id.tv_firstname);
+            TextView friendLastname = convertView.findViewById(R.id.tv_lastname);
+            ImageView avatar = convertView.findViewById(R.id.iv_avatar);
 
-        friendFirstname.setText(friend.getFirstname());
-        friendLastname.setText(friend.getLastname());
-        avatar.setImageDrawable(friend.getAvatar());
+            friendFirstname.setText(friend.getFirstname());
+            friendLastname.setText(friend.getLastname());
+            avatar.setImageDrawable(friend.getAvatar());
 
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +83,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     @Override
     public Filter getFilter() {
         if (filter == null) {
-            filter = new CustomFilter(filterList, this);
+            filter = new CustomFilterFriend(filterList, this);
         }
         return filter;
     }

@@ -23,20 +23,24 @@ public class ListAdapter extends BaseAdapter implements Filterable{
     public ArrayList<ItemModel> itemModels;
     private CustomFilter filter;
     private ArrayList<ItemModel> filterList;
-
-    public ListAdapter(Context context, ArrayList<ItemModel> itemModels, CustomFilter filter, ArrayList<ItemModel> filterList) {
-        this.mContext = context;
-        this.itemModels = itemModels;
-        this.filter = filter;
-        this.filterList = filterList;
-    }
-
+    private ItemClickListerner listener;
+    
     public ListAdapter(Context mContext, ArrayList<ItemModel> itemModels) {
         this.mContext = mContext;
         this.itemModels = itemModels;
         this.filterList = itemModels;
     }
+    public ListAdapter(Context mContext, ArrayList<ItemModel> itemModels, ItemClickListerner listener) {
+        this.mContext = mContext;
+        this.itemModels = itemModels;
+        this.listener = listener;
+    }
 
+    public interface ItemClickListerner {
+        void onClick (ItemModel itemModel);
+    }
+    
+    
     @Override
     public int getCount() {
         return itemModels.size();
@@ -54,7 +58,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ItemModel item = (ItemModel) getItem(position);
+        final ItemModel item = (ItemModel) getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_list, parent, false);
         }
@@ -67,6 +71,12 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         itemImage.setImageDrawable(item.getImage());
         ownerImage.setImageResource(item.getOwnerImage());
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(item);
+            }
+        });
         return convertView;
     }
 

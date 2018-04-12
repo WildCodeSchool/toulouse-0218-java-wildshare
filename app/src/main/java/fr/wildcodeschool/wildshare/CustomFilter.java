@@ -11,18 +11,16 @@ import java.util.ArrayList;
 public class CustomFilter extends Filter{
 
     private ArrayList<ItemModel> filterList;
-    private ListAdapter adapter;
+    private ListAdapter listAdapter;
 
 
-    public CustomFilter(ArrayList<ItemModel> filterList, ListAdapter adapter) {
+    public CustomFilter(ArrayList<ItemModel> filterList, ListAdapter listAdapter) {
 
         this.filterList = filterList;
-        this.adapter = adapter;
+        this.listAdapter = listAdapter;
     }
 
-    /** Création de la searchview qui va nous permettre de chercher un monstre par son nom
-     * La searchview créait une nouvelle liste de monstres en les filtrant
-     */
+
     public ArrayList<ItemModel> filteredItem;
 
     public CustomFilter(ArrayList<FriendModel> filterList, FriendListAdapter friendListAdapter) {
@@ -35,8 +33,8 @@ public class CustomFilter extends Filter{
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        adapter.itemModels = (ArrayList<ItemModel>) results.values;
-        adapter.notifyDataSetChanged();
+        listAdapter.itemModels = (ArrayList<ItemModel>) results.values;
+        listAdapter.notifyDataSetChanged();
     }
 
 

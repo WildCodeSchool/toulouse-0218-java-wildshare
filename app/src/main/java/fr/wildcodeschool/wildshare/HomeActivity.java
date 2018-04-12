@@ -39,11 +39,11 @@ public class HomeActivity extends AppCompatActivity
     private static ListAdapter itemAdapter2;
     private static ListAdapter itemAdapter3;
     private static FriendListAdapter friendAdapter;
+    private  static CustomFilterFriend filterFriend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -247,8 +247,8 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-
-                friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+                friendAdapter = new FriendListAdapter(this.getActivity(), friendData);
+             /*   friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
 
@@ -256,7 +256,8 @@ public class HomeActivity extends AppCompatActivity
                         intent.putExtra("friend", friend);
                         startActivity(intent);
                     }
-                });
+                });*/
+             // TODO corriger bug texte dans la searchview
                         lvFriends.setAdapter(friendAdapter);
                 SearchView searchView4 = rootView.findViewById(R.id.searchView4);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
