@@ -5,41 +5,43 @@ import android.widget.Filter;
 import java.util.ArrayList;
 
 /**
- * Created by wilder on 08/04/18.
+ * Created by wilder on 11/04/18.
  */
 
-public class CustomFilter extends Filter{
+public class CustomFilterFriend extends Filter {
 
-    private ArrayList<ItemModel> filterList;
-    private ListAdapter listAdapter;
+    private ArrayList<FriendModel> filterList;
+    private FriendListAdapter friendListAdapter;
 
-
-    public CustomFilter(ArrayList<ItemModel> filterList, ListAdapter listAdapter) {
+    public CustomFilterFriend(ArrayList<FriendModel> filterList, FriendListAdapter friendListAdapter) {
 
         this.filterList = filterList;
-        this.listAdapter = listAdapter;
+        this.friendListAdapter = friendListAdapter;
     }
 
     /** Création de la searchview qui va nous permettre de chercher un monstre par son nom
      * La searchview créait une nouvelle liste de monstres en les filtrant
      */
-    public ArrayList<ItemModel> filteredItem;
+    public ArrayList<FriendModel> filteredFriend;
     @Override
     protected FilterResults performFiltering(CharSequence constraint) {
         FilterResults results = new FilterResults();
 
         if (constraint != null && constraint.length() > 0) {
             constraint = constraint.toString().toUpperCase();
-            filteredItem = new ArrayList<>();
+            filteredFriend = new ArrayList<>();
 
             for (int i = 0; i < filterList.size(); i++) {
-                if (filterList.get(i).getName().toUpperCase().contains(constraint)) {
-                    filteredItem.add(filterList.get(i));
+                if (filterList.get(i).getFirstname().toUpperCase().contains(constraint)
+                        ||
+                    filterList.get(i).getLastname().toUpperCase().contains(constraint)) {
+
+                    filteredFriend.add(filterList.get(i));
                 }
             }
 
-            results.count = filteredItem.size();
-            results.values = filteredItem;
+            results.count = filteredFriend.size();
+            results.values = filteredFriend;
         } else {
             results.count = filterList.size();
             results.values = filterList;
@@ -49,9 +51,7 @@ public class CustomFilter extends Filter{
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        listAdapter.itemModels = (ArrayList<ItemModel>) results.values;
-        listAdapter.notifyDataSetChanged();
+        friendListAdapter.friendModel = (ArrayList<FriendModel>) results.values;
+        friendListAdapter.notifyDataSetChanged();
     }
-
-
 }

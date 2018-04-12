@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -26,8 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity
@@ -35,6 +32,9 @@ public class HomeActivity extends AppCompatActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private static ListAdapter itemAdapter;
+    private static FriendListAdapter friendAdapter;
+    private int mFragmentPosition = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +71,6 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-        final ListView lvOwnItemList = findViewById(R.id.lv_own_item_list);
     }
 
     @Override
@@ -123,7 +122,10 @@ public class HomeActivity extends AppCompatActivity
                 @Override
                 public boolean onQueryTextChange(String newText) {
 
-                    itemAdapter.getFilter().filter(newText);
+                      itemAdapter.getFilter().filter(newText);
+
+                     // friendAdapter.getFilter().filter(newText);
+
                     return false;
                 }
 
@@ -207,13 +209,16 @@ public class HomeActivity extends AppCompatActivity
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
+                CustomFilterFriend filter = null;
+                final ArrayList<FriendModel> filterList = new ArrayList<>();
+
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
                 friendData.add(new FriendModel("FirstnameTest1", "LastnameTest1", null));
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                final FriendListAdapter friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.ItemClickListerner() {
+                friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
 
@@ -222,6 +227,7 @@ public class HomeActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 });
+
                         lvFriends.setAdapter(friendAdapter);
 
                 return rootView;
@@ -239,6 +245,7 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
+            mFragmentPosition = position;
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
