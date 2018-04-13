@@ -204,7 +204,8 @@ public class HomeActivity extends AppCompatActivity
                         intent.putExtra("item", itemModel);
                         startActivity(intent);
                     }
-                });                lv2.setAdapter(itemAdapter2);
+                });
+                lv2.setAdapter(itemAdapter2);
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -239,7 +240,8 @@ public class HomeActivity extends AppCompatActivity
                         intent.putExtra("item", itemModel);
                         startActivity(intent);
                     }
-                });                lv3.setAdapter(itemAdapter3);
+                });
+                lv3.setAdapter(itemAdapter3);
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -276,8 +278,8 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
 
-                        lvFriends.setAdapter(friendAdapter);
-                    SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
+                lvFriends.setAdapter(friendAdapter);
+                SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
                         public boolean onQueryTextSubmit(String query) {
