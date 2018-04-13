@@ -37,22 +37,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);//TODO rentrer bon layout
-        editLogin = findViewById(R.id.edit_pseudo);
         mAuth = FirebaseAuth.getInstance();
-        // initialiser les sharedPreferences
-        final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        //initialiser les sharedPreferences
+        //final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
         //récupérer le username du cache s'il existe
-        String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
-        editLogin.setText(usernameCache);
+        //String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
+        //editLogin.setText(usernameCache);
 
         imageLogin = findViewById(R.id.image_log);
         imageLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                editLogin = findViewById(R.id.edit_pseudo);
+                String loginValue = editLogin.getText().toString();
                 editPassword = findViewById(R.id.edit_password);
                 String passwordValue = editPassword.getText().toString();
-                String loginValue = editLogin.getText().toString();
                 if (loginValue.isEmpty() || passwordValue.isEmpty()) {
                     Toast.makeText(MainActivity.this, R.string.enter_pseudo_password, Toast.LENGTH_SHORT).show();
                 } else {
