@@ -33,6 +33,8 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         this.mContext = mContext;
         this.friendModel = friend;
         this.listener = listener;
+        this.filterList = friend;
+
     }
 
     public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, CustomFilterFriend filter, ArrayList<FriendModel> filterList) {

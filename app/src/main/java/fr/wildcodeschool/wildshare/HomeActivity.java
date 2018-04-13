@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity
@@ -33,6 +35,8 @@ public class HomeActivity extends AppCompatActivity
     private static ListAdapter itemAdapter2;
     private static ListAdapter itemAdapter3;
     private static FriendListAdapter friendAdapter;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +73,8 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+
 
     }
 
@@ -107,6 +113,11 @@ public class HomeActivity extends AppCompatActivity
             // Handle the camera action
 
         } else if (id == R.id.nav_deconnexion) {
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            startActivity(new Intent(HomeActivity.this, MainActivity.class));
+
+
 
         } else if (id == R.id.nav_share) {
 
@@ -143,7 +154,7 @@ public class HomeActivity extends AppCompatActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
+                final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
                 ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
@@ -151,7 +162,14 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter1 = new ListAdapter(this.getActivity(), itemData);
+                itemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("item", itemModel);
+                        startActivity(intent);
+                    }
+                });
                 lv1.setAdapter(itemAdapter1);
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -171,7 +189,7 @@ public class HomeActivity extends AppCompatActivity
                 });
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-                View rootView = inflater.inflate(R.layout.fragment_two, container, false);
+                final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
@@ -179,7 +197,14 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter2 = new ListAdapter(this.getActivity(), itemData);
+                itemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("item", itemModel);
+                        startActivity(intent);
+                    }
+                });
                 lv2.setAdapter(itemAdapter2);
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -200,7 +225,7 @@ public class HomeActivity extends AppCompatActivity
 
                 return rootView;
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-                View rootView = inflater.inflate(R.layout.fragment_three, container, false);
+                final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
@@ -208,7 +233,14 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter3 = new ListAdapter(this.getActivity(), itemData);
+                itemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("item", itemModel);
+                        startActivity(intent);
+                    }
+                });
                 lv3.setAdapter(itemAdapter3);
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -237,11 +269,17 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                friendAdapter = new FriendListAdapter(this.getActivity(), friendData);
-
+                friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+                    @Override
+                    public void onClick(FriendModel friend) {
+                        Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
+                        intent.putExtra("friend", friend);
+                        startActivity(intent);
+                    }
+                });
 
                 lvFriends.setAdapter(friendAdapter);
-                    SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
+                SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
                         public boolean onQueryTextSubmit(String query) {
