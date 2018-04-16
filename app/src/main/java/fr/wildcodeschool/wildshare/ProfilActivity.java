@@ -10,27 +10,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-public class AddItem extends AppCompatActivity {
+public class ProfilActivity extends AppCompatActivity {
 
-    ImageView imgChoose;
+    Button btnCamera;
+    Button btnGallery;
+    Button btnLink;
+    Button btnOK;
+    EditText edLink;
+    ImageView imgProfilPic;
+    EditText editName;
+    Button btnValidModif;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_item);
+        setContentView(R.layout.activity_profil);
 
-        EditText nameItem = findViewById(R.id.et_newItemName);
-        EditText nameDesc = findViewById(R.id.et_description);
-        final EditText edLink = findViewById(R.id.editText_link);
-        Button btnCamera = findViewById(R.id.button_camera);
-        Button btnGallery = findViewById(R.id.button_gallery);
-        Button btnLink = findViewById(R.id.button_link);
-        Button addItem = findViewById(R.id.b_addToData);
-        final Button btnOK = findViewById(R.id.button_ok);
-        imgChoose = findViewById(R.id.imageView_imgChoose);
+
+        edLink = findViewById(R.id.editText_linkP);
+        btnCamera = findViewById(R.id.button_cameraP);
+        btnGallery = findViewById(R.id.button_galleryP);
+        btnLink = findViewById(R.id.button_linkP);
+        btnOK = findViewById(R.id.button_okP);
+        imgProfilPic = findViewById(R.id.imageView_profilPic);
+        editName = findViewById(R.id.editText_enterName);
+        btnValidModif = findViewById(R.id.button_validModif);
+
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,14 +53,13 @@ public class AddItem extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-        // Create intent to Open Image applications like Gallery, Google Photos
+                // Create intent to Open Image applications like Gallery, Google Photos
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Start the Intent
+                // Start the Intent
                 startActivityForResult(galleryIntent, 1);
             }
         });
-
 
         btnLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,17 +70,30 @@ public class AddItem extends AppCompatActivity {
             }
         });
 
-
-
-        final String url = "https://wildcodeschool.fr/wp-content/uploads/2017/01/logo_orange_pastille.png";
-
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String link = edLink.getText().toString();
-                Glide.with(AddItem.this).load(link) .into(imgChoose);
+                Glide.with(ProfilActivity.this).load(link) .into(imgProfilPic);
             }
         });
+
+        btnValidModif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String valueName = editName.getText().toString();
+                if (valueName.isEmpty()){
+                    Toast.makeText(ProfilActivity.this, "Enter a name", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intentHome = new Intent(ProfilActivity.this, HomeActivity.class);
+                    startActivity(intentHome);
+                }
+            }
+        });
+
+
+
     }
 
     @Override
@@ -81,16 +103,15 @@ public class AddItem extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK) {
                     Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    imgChoose.setImageBitmap(bitmap);
+                    imgProfilPic.setImageBitmap(bitmap);
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
-                    imgChoose.setImageURI(selectedImage);
+                    imgProfilPic.setImageURI(selectedImage);
                 }
                 break;
         }
     }
-
 }

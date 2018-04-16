@@ -110,7 +110,7 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profil) {
-            // Handle the camera action
+            startActivity(new Intent(HomeActivity.this, ProfilActivity.class));
 
         } else if (id == R.id.nav_deconnexion) {
             mAuth = FirebaseAuth.getInstance();

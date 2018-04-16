@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText newEmail;
     private EditText newPassword;
     private ImageView imageLogin;
+    ImageView imageSignUp;
     Button btnNewAccount;
     ProgressBar progressBar;
 
@@ -37,24 +38,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);//TODO rentrer bon layout
+        setContentView(R.layout.activity_main);
+
         mAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressbar);
+        editEmail = findViewById(R.id.edit_email);
+        editPassword = findViewById(R.id.edit_password);
+        imageLogin = findViewById(R.id.image_log);
+        imageSignUp = findViewById(R.id.image_signup);
+
         //initialiser les sharedPreferences
         //final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
         //récupérer le username du cache s'il existe
         //String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
         //editLogin.setText(usernameCache);
-        editEmail = findViewById(R.id.edit_email);
-        editPassword = findViewById(R.id.edit_password);
-        imageLogin = findViewById(R.id.image_log);
+
         imageLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String loginValue = editEmail.getText().toString();
-
                 String passwordValue = editPassword.getText().toString();
                 progressBar.setVisibility(view.VISIBLE);
                 if (loginValue.isEmpty() || passwordValue.isEmpty()) {
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        ImageView imageSignUp = findViewById(R.id.image_signup);
+
         imageSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()){
                                         Toast.makeText(MainActivity.this, "Account create", Toast.LENGTH_SHORT).show();
+                                        Intent intentProfil = new Intent(MainActivity.this, ProfilActivity.class);
+                                        startActivity(intentProfil);
                                     }
                                 }
                             });
@@ -123,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                ImageView imageSignUp = findViewById(R.id.image_signup);
+                imageSignUp = findViewById(R.id.image_signup);
                 imageSignUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
