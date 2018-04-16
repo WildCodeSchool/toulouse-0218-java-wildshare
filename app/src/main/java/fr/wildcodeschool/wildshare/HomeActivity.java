@@ -1,6 +1,7 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -147,9 +148,9 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest1", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
+                itemData.add(new ItemModel("ObjetTest2", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
+                itemData.add(new ItemModel("ObjetTest3", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
                 itemAdapter1 = new ListAdapter(this.getActivity(), itemData);
                 lv1.setAdapter(itemAdapter1);
@@ -175,9 +176,9 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
+                itemData.add(new ItemModel("ObjetTest6", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
+                itemData.add(new ItemModel("ObjetTest7", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
                 itemAdapter2 = new ListAdapter(this.getActivity(), itemData);
                 lv2.setAdapter(itemAdapter2);
@@ -204,9 +205,9 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
+                itemData.add(new ItemModel("ObjetTest6", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
+                itemData.add(new ItemModel("ObjetTest7", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
                 itemAdapter3 = new ListAdapter(this.getActivity(), itemData);
                 lv3.setAdapter(itemAdapter3);

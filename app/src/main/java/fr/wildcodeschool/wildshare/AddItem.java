@@ -15,20 +15,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.net.URL;
 
 public class AddItem extends AppCompatActivity {
 
     ImageView imgChoose;
+    ItemModel newItem = new ItemModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
-        EditText nameItem = findViewById(R.id.et_newItemName);
-        EditText nameDesc = findViewById(R.id.et_description);
+        final EditText nameItem = findViewById(R.id.et_newItemName);
+        final EditText itemDesc = findViewById(R.id.et_description);
         final EditText edLink = findViewById(R.id.editText_link);
         Button btnCamera = findViewById(R.id.button_camera);
         Button btnGallery = findViewById(R.id.button_gallery);
@@ -37,9 +42,22 @@ public class AddItem extends AppCompatActivity {
         final Button btnOK = findViewById(R.id.button_ok);
         imgChoose = findViewById(R.id.imageView_choose);
 
+        String newItemName = nameItem.getText().toString();
+        final String newItemDesc = itemDesc.getText().toString();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseDatabase items = FirebaseDatabase.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        final DatabaseReference itemsReference = items.getReference("items");
+       // databaseReference.child(user.getUid()).getDatabase().getReference();
+
+        newItem.setName(newItemName);
+        newItem.setOwnerID(user.getUid());
+
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String picture = MediaStore.ACTION_IMAGE_CAPTURE;
+                newItem.setImageURL(picture);
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePicture, 0);
             }
@@ -62,11 +80,8 @@ public class AddItem extends AppCompatActivity {
             public void onClick(View v) {
                 edLink.setVisibility(View.VISIBLE);
                 btnOK.setVisibility(View.VISIBLE);
-
             }
         });
-
-
 
         final String url = "https://wildcodeschool.fr/wp-content/uploads/2017/01/logo_orange_pastille.png";
 
@@ -74,7 +89,21 @@ public class AddItem extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String link = edLink.getText().toString();
+                newItem.setImageURL(link);
                 Glide.with(AddItem.this).load(link) .into(imgChoose);
+
+            }
+        });
+
+        addItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!newItemDesc.equals("")) {
+                    newItem.setDescription(newItemDesc);
+                }
+                itemsReference.setValue(newItem);
+                Intent intent = new Intent(AddItem.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -86,12 +115,14 @@ public class AddItem extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK) {
                     Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    newItem.setImageBit(bitmap);
                     imgChoose.setImageBitmap(bitmap);
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
+                    newItem.setImageURI(selectedImage);
                     imgChoose.setImageURI(selectedImage);
                 }
                 break;
