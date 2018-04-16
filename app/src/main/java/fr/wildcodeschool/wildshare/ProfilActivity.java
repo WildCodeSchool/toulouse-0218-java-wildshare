@@ -10,9 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ProfilActivity extends AppCompatActivity {
 
@@ -22,9 +27,13 @@ public class ProfilActivity extends AppCompatActivity {
     Button btnOK;
     EditText edLink;
     ImageView imgProfilPic;
-    EditText editName;
+    EditText editFirstName;
+    EditText editLastName;
     Button btnValidModif;
+    TextView tvFirstLast;
 
+    private DatabaseReference databaseReference;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +47,13 @@ public class ProfilActivity extends AppCompatActivity {
         btnLink = findViewById(R.id.button_linkP);
         btnOK = findViewById(R.id.button_okP);
         imgProfilPic = findViewById(R.id.imageView_profilPic);
-        editName = findViewById(R.id.editText_enterName);
+        editFirstName = findViewById(R.id.editText_enterFirstName);
+        editLastName = findViewById(R.id.editText_enterLastName);
         btnValidModif = findViewById(R.id.button_validModif);
+        tvFirstLast = findViewById(R.id.textViewFirstLast);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,19 +94,27 @@ public class ProfilActivity extends AppCompatActivity {
         btnValidModif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String valueName = editName.getText().toString();
-                if (valueName.isEmpty()){
-                    Toast.makeText(ProfilActivity.this, "Enter a name", Toast.LENGTH_SHORT).show();
+                String firstName = editFirstName.getText().toString();
+                String lastName = editLastName.getText().toString();
+                if (firstName.isEmpty() || (lastName.isEmpty())){
+                    Toast.makeText(ProfilActivity.this, "Enter a fistname and a lastname", Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    saveUserModel();
+
                     Intent intentHome = new Intent(ProfilActivity.this, HomeActivity.class);
                     startActivity(intentHome);
                 }
             }
         });
+    }
 
-
-
+    private void saveUserModel() {
+        String firstName = editFirstName.getText().toString();
+        String lastName = editLastName.getText().toString();
+        UserModel userModel = new UserModel(firstName, lastName);
+        FirebaseUser user = mAuth.getCurrentUser();
+        databaseReference.child(user.getUid()).setValue(userModel);
     }
 
     @Override

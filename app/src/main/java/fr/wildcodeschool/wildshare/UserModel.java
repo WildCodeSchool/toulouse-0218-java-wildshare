@@ -1,40 +1,54 @@
 package fr.wildcodeschool.wildshare;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by wilder on 27/03/18.
  */
 
 public class UserModel {
+    private String firstname;
+    private String lastname;
+    private Drawable profilPic;
 
-    private String username;
-    private String password;
-
-    public UserModel(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public UserModel() {
     }
 
-    public String getUsername() {
-        return username;
+    public UserModel(String firstname, String lastname, Drawable profilPic) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.profilPic = profilPic;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public UserModel(String firstname, String lastname) {
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 
-    public String getPassword() {
-        return password;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public UserModel setFirstname(String firstname) {
+        this.firstname = firstname;
+        return this;
     }
 
-    public void login() {
-
+    public String getLastname() {
+        return lastname;
     }
 
-    public void logout() {
+    public UserModel setLastname(String lastname) {
+        this.lastname = lastname;
+        return this;
+    }
 
+    public Drawable getProfilPic() {
+        return profilPic;
+    }
+
+    public UserModel setProfilPic(Drawable profilPic) {
+        this.profilPic = profilPic;
+        return this;
     }
 }
