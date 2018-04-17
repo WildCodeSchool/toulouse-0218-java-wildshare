@@ -7,39 +7,28 @@ import android.graphics.drawable.Drawable;
  */
 
 public class UserModel {
-    private String firstname;
-    private String lastname;
+    private String pseudo;
     private Drawable profilPic;
 
     public UserModel() {
+
     }
 
-    public UserModel(String firstname, String lastname, Drawable profilPic) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public UserModel(String pseudo, Drawable profilPic) {
+        this.pseudo = pseudo;
         this.profilPic = profilPic;
     }
 
-    public UserModel(String firstname, String lastname) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public UserModel(String pseudo) {
+        this.pseudo = pseudo;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public UserModel setFirstname(String firstname) {
-        this.firstname = firstname;
-        return this;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public UserModel setLastname(String lastname) {
-        this.lastname = lastname;
+    public UserModel setPseudo(String pseudo) {
+        this.pseudo = pseudo;
         return this;
     }
 

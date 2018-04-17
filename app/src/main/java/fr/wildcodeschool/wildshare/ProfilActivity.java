@@ -27,12 +27,12 @@ public class ProfilActivity extends AppCompatActivity {
     Button btnOK;
     EditText edLink;
     ImageView imgProfilPic;
-    EditText editFirstName;
-    EditText editLastName;
+    EditText editPseudo;
     Button btnValidModif;
     TextView tvFirstLast;
 
     private DatabaseReference databaseReference;
+    private FirebaseDatabase database;
     private FirebaseAuth mAuth;
 
     @Override
@@ -47,11 +47,11 @@ public class ProfilActivity extends AppCompatActivity {
         btnLink = findViewById(R.id.button_linkP);
         btnOK = findViewById(R.id.button_okP);
         imgProfilPic = findViewById(R.id.imageView_profilPic);
-        editFirstName = findViewById(R.id.editText_enterFirstName);
-        editLastName = findViewById(R.id.editText_enterLastName);
+        editPseudo = findViewById(R.id.editText_enterPseudo);
         btnValidModif = findViewById(R.id.button_validModif);
-        tvFirstLast = findViewById(R.id.textViewFirstLast);
+        tvFirstLast = findViewById(R.id.textViewPseudo);
 
+        database = FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
@@ -94,10 +94,9 @@ public class ProfilActivity extends AppCompatActivity {
         btnValidModif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String firstName = editFirstName.getText().toString();
-                String lastName = editLastName.getText().toString();
-                if (firstName.isEmpty() || (lastName.isEmpty())){
-                    Toast.makeText(ProfilActivity.this, "Enter a fistname and a lastname", Toast.LENGTH_SHORT).show();
+                String firstName = editPseudo.getText().toString();
+                if (firstName.isEmpty()){
+                    Toast.makeText(ProfilActivity.this, "Enter a pseudo", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     saveUserModel();
@@ -110,10 +109,10 @@ public class ProfilActivity extends AppCompatActivity {
     }
 
     private void saveUserModel() {
-        String firstName = editFirstName.getText().toString();
-        String lastName = editLastName.getText().toString();
-        UserModel userModel = new UserModel(firstName, lastName);
+        String pseudo = editPseudo.getText().toString();
+        UserModel userModel = new UserModel(pseudo);
         FirebaseUser user = mAuth.getCurrentUser();
+        databaseReference = database.getReference("User");
         databaseReference.child(user.getUid()).setValue(userModel);
     }
 
