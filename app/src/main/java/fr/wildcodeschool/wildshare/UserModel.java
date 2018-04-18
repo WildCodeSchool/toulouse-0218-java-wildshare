@@ -1,6 +1,7 @@
 package fr.wildcodeschool.wildshare;
 
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 
 /**
  * Created by wilder on 27/03/18.
@@ -8,13 +9,13 @@ import android.graphics.drawable.Drawable;
 
 public class UserModel {
     private String pseudo;
-    private Drawable profilPic;
+    private String profilPic;
 
     public UserModel() {
 
     }
 
-    public UserModel(String pseudo, Drawable profilPic) {
+    public UserModel(String pseudo, String profilPic) {
         this.pseudo = pseudo;
         this.profilPic = profilPic;
     }
@@ -32,11 +33,11 @@ public class UserModel {
         return this;
     }
 
-    public Drawable getProfilPic() {
+    public String getProfilPic() {
         return profilPic;
     }
 
-    public UserModel setProfilPic(Drawable profilPic) {
+    public UserModel setProfilPic(String profilPic) {
         this.profilPic = profilPic;
         return this;
     }

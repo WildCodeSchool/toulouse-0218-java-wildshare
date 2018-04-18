@@ -14,10 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class ProfilActivity extends AppCompatActivity {
 
@@ -29,11 +36,14 @@ public class ProfilActivity extends AppCompatActivity {
     ImageView imgProfilPic;
     EditText editPseudo;
     Button btnValidModif;
-    TextView tvFirstLast;
+    TextView tvPseudo;
+    private Uri uri = null;
+    String mUid;
 
     private DatabaseReference databaseReference;
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +59,49 @@ public class ProfilActivity extends AppCompatActivity {
         imgProfilPic = findViewById(R.id.imageView_profilPic);
         editPseudo = findViewById(R.id.editText_enterPseudo);
         btnValidModif = findViewById(R.id.button_validModif);
-        tvFirstLast = findViewById(R.id.textViewPseudo);
+        tvPseudo = findViewById(R.id.textViewPseudo);
 
         database = FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
+
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference pathID = database.getReference("User").child(mUid);
+
+        pathID.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if ((dataSnapshot.child("profilPic").getValue() != null)){
+                    String url = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(ProfilActivity.this).load(url) .into(imgProfilPic);
+                }
+
+                if ((dataSnapshot.child("pseudo").getValue() != null)){
+                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
+                    tvPseudo.setText(pseudo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePicture, 0);
-            }
+               }
         });
 
         btnGallery.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +150,23 @@ public class ProfilActivity extends AppCompatActivity {
     }
 
     private void saveUserModel() {
-        String pseudo = editPseudo.getText().toString();
-        UserModel userModel = new UserModel(pseudo);
-        FirebaseUser user = mAuth.getCurrentUser();
-        databaseReference = database.getReference("User");
-        databaseReference.child(user.getUid()).setValue(userModel);
+        final String pseudo = editPseudo.getText().toString();
+
+
+        StorageReference filePath = storageReference.child("profilPicture").child(uri.getLastPathSegment());
+        filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                String profilPic = downloadUrl.toString();
+                UserModel userModel = new UserModel(pseudo, profilPic);
+                FirebaseUser user = mAuth.getCurrentUser();
+                databaseReference = database.getReference("User");
+                databaseReference.child(user.getUid()).setValue(userModel);
+            }
+        });
+
+
     }
 
     @Override
@@ -128,10 +181,11 @@ public class ProfilActivity extends AppCompatActivity {
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    imgProfilPic.setImageURI(selectedImage);
+                    uri = imageReturnedIntent.getData();
+                    imgProfilPic.setImageURI(uri);
                 }
                 break;
         }
     }
+
 }

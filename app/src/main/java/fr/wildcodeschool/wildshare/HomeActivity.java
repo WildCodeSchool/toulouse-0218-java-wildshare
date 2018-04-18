@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -22,8 +23,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -36,6 +44,13 @@ public class HomeActivity extends AppCompatActivity
     private static ListAdapter itemAdapter3;
     private static FriendListAdapter friendAdapter;
     private FirebaseAuth mAuth;
+    private  String mUid;
+    private FirebaseDatabase database;
+    private ImageView ivProfilNav;
+    private TextView tvPseudoNav;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +90,37 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
 
+        View headerLayout = navigationView.getHeaderView(0);
+        database = FirebaseDatabase.getInstance();
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        ivProfilNav = (ImageView) headerLayout.findViewById(R.id.ivProfilNav);
+        tvPseudoNav = (TextView) headerLayout.findViewById(R.id.tvPseudoNav);
+
+        DatabaseReference pathID = database.getReference("User").child(mUid);
+
+        pathID.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if ((dataSnapshot.child("profilPic").getValue() != null)){
+                    String url = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(HomeActivity.this).load(url) .into(ivProfilNav);
+                }
+
+                if ((dataSnapshot.child("pseudo").getValue() != null)){
+                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
+                    tvPseudoNav.setText(pseudo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
 
     }
 
@@ -106,6 +152,7 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
