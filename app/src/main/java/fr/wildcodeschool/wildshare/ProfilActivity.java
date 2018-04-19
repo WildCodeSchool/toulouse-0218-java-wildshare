@@ -101,7 +101,7 @@ public class ProfilActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePicture, 0);
-               }
+            }
         });
 
         btnGallery.setOnClickListener(new View.OnClickListener() {

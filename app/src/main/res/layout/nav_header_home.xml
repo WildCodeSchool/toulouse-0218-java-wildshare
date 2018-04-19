@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView"
-        tools:text="Pseudo" />
+        tools:text="@string/pseudo" />
 
     <TextView
         android:id="@+id/textView"
