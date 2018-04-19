@@ -23,16 +23,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashActivity"></activity>
+        <activity android:name=".SplashActivity" />
         <activity
             android:name=".HomeActivity"
             android:label="WildShare"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddItem"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".FriendItemsList" />
-        <activity android:name=".ItemInfo"></activity>
+        <activity android:name=".ItemInfo" />
+        <activity android:name=".ProfilActivity"></activity>
     </application>
 
 </manifest>

@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -22,8 +23,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -31,11 +40,18 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private static ListAdapter itemAdapter1;
-    private static ListAdapter itemAdapter2;
-    private static ListAdapter itemAdapter3;
-    private static FriendListAdapter friendAdapter;
+    private static ListAdapter mItemAdapter1;
+    private static ListAdapter mItemAdapter2;
+    private static ListAdapter mItemAdapter3;
+    private static FriendListAdapter mFriendAdapter;
     private FirebaseAuth mAuth;
+    private  String mUid;
+    private FirebaseDatabase mDatabase;
+    private ImageView mIvProfilNav;
+    private TextView mTvPseudoNav;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +91,37 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
 
+        View headerLayout = navigationView.getHeaderView(0);
+        mDatabase = FirebaseDatabase.getInstance();
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mIvProfilNav = (ImageView) headerLayout.findViewById(R.id.iv_profil_nav);
+        mTvPseudoNav = (TextView) headerLayout.findViewById(R.id.tv_pseudo_nav);
+
+        DatabaseReference pathID = mDatabase.getReference("User").child(mUid);
+
+        pathID.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if ((dataSnapshot.child("profilPic").getValue() != null)){
+                    String url = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(HomeActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
+                }
+
+                if ((dataSnapshot.child("pseudo").getValue() != null)){
+                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
+                    mTvPseudoNav.setText(pseudo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
 
     }
 
@@ -106,11 +153,12 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_profil) {
-            // Handle the camera action
+            startActivity(new Intent(HomeActivity.this, ProfilActivity.class));
 
         } else if (id == R.id.nav_deconnexion) {
             mAuth = FirebaseAuth.getInstance();
@@ -162,7 +210,7 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
@@ -170,7 +218,7 @@ public class HomeActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 });
-                lv1.setAdapter(itemAdapter1);
+                lv1.setAdapter(mItemAdapter1);
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -181,7 +229,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        itemAdapter1.getFilter().filter(newText);
+                        mItemAdapter1.getFilter().filter(newText);
 
 
                         return false;
@@ -197,7 +245,7 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
@@ -205,7 +253,7 @@ public class HomeActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 });
-                lv2.setAdapter(itemAdapter2);
+                lv2.setAdapter(mItemAdapter2);
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -216,7 +264,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        itemAdapter2.getFilter().filter(newText);
+                        mItemAdapter2.getFilter().filter(newText);
 
 
                         return false;
@@ -233,7 +281,7 @@ public class HomeActivity extends AppCompatActivity
                 itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
                 itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
@@ -241,7 +289,7 @@ public class HomeActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 });
-                lv3.setAdapter(itemAdapter3);
+                lv3.setAdapter(mItemAdapter3);
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -252,7 +300,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        itemAdapter3.getFilter().filter(newText);
+                        mItemAdapter3.getFilter().filter(newText);
 
 
                         return false;
@@ -269,7 +317,7 @@ public class HomeActivity extends AppCompatActivity
                 friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
                 friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
                 friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                friendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+                mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
@@ -278,7 +326,7 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
 
-                lvFriends.setAdapter(friendAdapter);
+                lvFriends.setAdapter(mFriendAdapter);
                 SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
@@ -289,7 +337,7 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public boolean onQueryTextChange(String newText) {
 
-                            friendAdapter.getFilter().filter(newText);
+                            mFriendAdapter.getFilter().filter(newText);
 
 
                             return false;

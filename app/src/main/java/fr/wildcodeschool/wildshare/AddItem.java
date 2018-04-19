@@ -2,10 +2,7 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,8 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-
-import java.net.URL;
 
 public class AddItem extends AppCompatActivity {
 
@@ -35,7 +30,7 @@ public class AddItem extends AppCompatActivity {
         Button btnLink = findViewById(R.id.button_link);
         Button addItem = findViewById(R.id.b_addToData);
         final Button btnOK = findViewById(R.id.button_ok);
-        imgChoose = findViewById(R.id.imageView_choose);
+        imgChoose = findViewById(R.id.iv_img_choose);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,9 +61,6 @@ public class AddItem extends AppCompatActivity {
             }
         });
 
-
-
-        final String url = "https://wildcodeschool.fr/wp-content/uploads/2017/01/logo_orange_pastille.png";
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
