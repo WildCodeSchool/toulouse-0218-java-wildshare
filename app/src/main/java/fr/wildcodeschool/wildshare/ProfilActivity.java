@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,26 +42,35 @@ public class ProfilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profil);
 
 
-
-        Button btnCamera;
-        Button btnGallery;
-        Button btnLink;
-        final Button btnOK;
+        ImageView btnCancel;
+        ImageView btnCamera;
+        ImageView btnGallery;
+        ImageView btnLink;
+        final ImageView btnOk;
         final EditText edLink;
-        Button btnValidModif;
+        ImageView btnValidModif;
         final TextView tvPseudo;
         String uid;
 
+        btnCancel = findViewById(R.id.iv_cancel);
         edLink = findViewById(R.id.et_link);
-        btnCamera = findViewById(R.id.btn_camera);
-        btnGallery = findViewById(R.id.btn_gallery);
-        btnLink = findViewById(R.id.btn_link);
-        btnOK = findViewById(R.id.btn_ok);
+        btnCamera = findViewById(R.id.iv_camera);
+        btnGallery = findViewById(R.id.iv_gallery);
+        btnLink = findViewById(R.id.iv_url);
+        btnOk = findViewById(R.id.iv_validUrl);
         mImgProfilPic = findViewById(R.id.iv_profil_pic);
         mEditPseudo = findViewById(R.id.et_enter_pseudo);
-        btnValidModif = findViewById(R.id.btn_valid_modif);
+        btnValidModif = findViewById(R.id.iv_valid);
         tvPseudo = findViewById(R.id.tv_pseudo);
 
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfilActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mStorageReference = FirebaseStorage.getInstance().getReference();
@@ -123,16 +131,18 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 edLink.setVisibility(View.VISIBLE);
-                btnOK.setVisibility(View.VISIBLE);
+                btnOk.setVisibility(View.VISIBLE);
 
             }
         });
 
-        btnOK.setOnClickListener(new View.OnClickListener() {
+        btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String link = edLink.getText().toString();
                 Glide.with(ProfilActivity.this).load(link) .into(mImgProfilPic);
+                edLink.setVisibility(View.GONE);
+                btnOk.setVisibility(View.GONE);
             }
         });
 
