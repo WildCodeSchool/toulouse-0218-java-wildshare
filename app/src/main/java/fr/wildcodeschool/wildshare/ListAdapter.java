@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 /**
@@ -68,8 +70,8 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         ImageButton ownerImage = convertView.findViewById(R.id.button_owner);
 
         itemName.setText(item.getName());
-        itemImage.setImageDrawable(item.getImage());
-        ownerImage.setImageResource(item.getOwnerImage());
+        Glide.with(mContext).load(item.getImageURL()).into(itemImage);
+        Glide.with(mContext).load(item.getOwnerImage()).into(ownerImage);
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

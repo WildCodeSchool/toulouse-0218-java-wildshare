@@ -11,6 +11,8 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 /**
@@ -18,6 +20,7 @@ import java.util.ArrayList;
  */
 
 public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
+
 
     FriendItemsAdapter(Context context, ArrayList<ItemModel> monsters) {
         super(context, 0, monsters);
@@ -34,7 +37,7 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
 
         friendItemName.setText(friendItem.getName());
-        friendItemImage.setImageDrawable(friendItem.getImage());
+        Glide.with(getContext()).load(friendItem.getImageURL()).into(friendItemImage);
 
         return convertView;
     }

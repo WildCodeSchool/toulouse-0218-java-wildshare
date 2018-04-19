@@ -15,17 +15,28 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
+import android.net.Uri;
+
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 
 public class AddItem extends AppCompatActivity {
 
     ImageView imgChoose;
     ItemModel newItem = new ItemModel();
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
+    private StorageReference itemPictureRef = storage.getReference("itemPicture");
+    private Uri mUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +56,27 @@ public class AddItem extends AppCompatActivity {
         String newItemName = nameItem.getText().toString();
         final String newItemDesc = itemDesc.getText().toString();
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase items = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         final DatabaseReference itemsReference = items.getReference("items");
-       // databaseReference.child(user.getUid()).getDatabase().getReference();
+
+
+       // mStorageReference = storage.getReference();
+
+      /*  StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
+        filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                String profilPic = downloadUrl.toString();
+                UserModel userModel = new UserModel(pseudo, profilPic);
+                mDatabaseReference = mDatabase.getReference("User");
+                mDatabaseReference.child(user.getUid()).setValue(userModel);
+            }
+        });*/
+
+        // databaseReference.child(user.getUid()).getDatabase().getReference();
 
         newItem.setName(newItemName);
         newItem.setOwnerID(user.getUid());
@@ -84,8 +111,6 @@ public class AddItem extends AppCompatActivity {
             }
         });
 
-        final String url = "https://wildcodeschool.fr/wp-content/uploads/2017/01/logo_orange_pastille.png";
-
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +127,7 @@ public class AddItem extends AppCompatActivity {
                 if (!newItemDesc.equals("")) {
                     newItem.setDescription(newItemDesc);
                 }
-                itemsReference.setValue(newItem);
+                itemsReference.push().setValue(newItem);
                 Intent intent = new Intent(AddItem.this, HomeActivity.class);
                 startActivity(intent);
             }
@@ -115,16 +140,43 @@ public class AddItem extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
+
                     Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    newItem.setImageBit(bitmap);
                     imgChoose.setImageBitmap(bitmap);
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data = baos.toByteArray();
+
+                    StorageTask uploadPicture = itemPictureRef.putBytes(data);
+                    uploadPicture.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            String itemPic = downloadUrl.toString();
+                            newItem.setImageURL(itemPic);
+                        }
+                    });
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
+
                     Uri selectedImage = imageReturnedIntent.getData();
-                    newItem.setImageURI(selectedImage);
                     imgChoose.setImageURI(selectedImage);
+
+                    StorageTask uploadPicture = itemPictureRef.putFile(selectedImage);
+                    uploadPicture.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            String itemPic = downloadUrl.toString();
+                            newItem.setImageURL(itemPic);
+                        }
+                    });
+
+
+
                 }
                 break;
         }

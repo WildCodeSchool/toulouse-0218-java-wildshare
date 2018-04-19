@@ -28,10 +28,10 @@ public class FriendItemsList extends AppCompatActivity {
 
         ListView lvFriends = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();
-        friendItemsData.add(new ItemModel("NameTest1", null));
-        friendItemsData.add(new ItemModel("NameTest2", null));
-        friendItemsData.add(new ItemModel("NameTest3", null));
-        friendItemsData.add(new ItemModel("NameTest4", null));
+        friendItemsData.add(new ItemModel("NameTest1"));
+        friendItemsData.add(new ItemModel("NameTest2"));
+        friendItemsData.add(new ItemModel("NameTest3"));
+        friendItemsData.add(new ItemModel("NameTest4"));
         final FriendItemsAdapter adapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
         lvFriends.setAdapter(adapter);
     }

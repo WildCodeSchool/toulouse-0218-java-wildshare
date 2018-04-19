@@ -15,19 +15,12 @@ import java.net.URI;
 class ItemModel implements Parcelable {
 
     private String name;
-    private Drawable imageDraw;
-    private Bitmap imageBit;
     private String imageURL;
-    private Uri imageURI;
     private String description;
     private String ownerID;
-    private int ownerImage;
+    private String ownerImage;
 
-    public ItemModel(String name, Drawable image, String ownerID) {
-        this.name = name;
-        this.imageDraw = image;
-        this.ownerID = ownerID;
-    }
+
 
     public ItemModel(String name, String imageURL, String ownerID) {
         this.name = name;
@@ -35,36 +28,20 @@ class ItemModel implements Parcelable {
         this.ownerID = ownerID;
     }
 
-    public ItemModel(String name, Bitmap imageBit, String ownerID) {
-        this.name = name;
-        this.imageBit = imageBit;
-        this.ownerID = ownerID;
-    }
-
-    public ItemModel(String name, Uri imageURI, String ownerID) {
-        this.name = name;
-        this.imageURI = imageURI;
-        this.ownerID = ownerID;
-    }
-
-    public ItemModel(String name, Drawable image) {
-        this.name = name;
-        this.imageDraw = image;
-    }
-
 
     public ItemModel() {
     }
 
+    public ItemModel(String name) {
+        this.name = name;
+    }
 
     protected ItemModel(Parcel in) {
         name = in.readString();
-        imageBit = in.readParcelable(Bitmap.class.getClassLoader());
         imageURL = in.readString();
-        imageURI = in.readParcelable(Uri.class.getClassLoader());
         description = in.readString();
         ownerID = in.readString();
-        ownerImage = in.readInt();
+        ownerImage = in.readString();
     }
 
     public static final Creator<ItemModel> CREATOR = new Creator<ItemModel>() {
@@ -87,14 +64,6 @@ class ItemModel implements Parcelable {
         this.name = name;
     }
 
-    public Drawable getImageDraw() {
-        return imageDraw;
-    }
-
-    public void setImageDraw(Drawable image) {
-        this.imageDraw = image;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -103,11 +72,11 @@ class ItemModel implements Parcelable {
         this.description = description;
     }
 
-    public int getOwnerImage() {
+    public String getOwnerImage() {
         return ownerImage;
     }
 
-    public void setOwnerImage(int ownerImage) {
+    public void setOwnerImage(String ownerImage) {
         this.ownerImage = ownerImage;
     }
 
@@ -118,14 +87,6 @@ class ItemModel implements Parcelable {
     public String getOwnerID() {return ownerID;}
 
     public void setOwnerID(String ownerID) {this.ownerID = ownerID;}
-
-    public Bitmap getImageBit() {return imageBit;}
-
-    public void setImageBit(Bitmap imageBit) {this.imageBit = imageBit;}
-
-    public Uri getImageURI() {return imageURI;}
-
-    public void setImageURI(Uri imageURI) {this.imageURI = imageURI;}
 
     @Override
     public int describeContents() {

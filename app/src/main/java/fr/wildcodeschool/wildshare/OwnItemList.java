@@ -16,9 +16,9 @@ public class OwnItemList extends AppCompatActivity {
 
             // Database objets de l'utilisateur
             final ArrayList<ItemModel> itemData = new ArrayList<>();
-            itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-            itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-            itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+            itemData.add(new ItemModel("ObjetTest1"));
+            itemData.add(new ItemModel("ObjetTest2"));
+            itemData.add(new ItemModel("ObjetTest3"));
 
             final ListAdapter adapter = new ListAdapter(OwnItemList.this, itemData);
             ListView ownItemList = findViewById(R.id.lv_own_item_list);
@@ -30,9 +30,9 @@ public class OwnItemList extends AppCompatActivity {
 
             // Database objets de l'utilisateur
             final ArrayList<ItemModel> itemData = new ArrayList<>();
-            itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-            itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-            itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+            itemData.add(new ItemModel("ObjetTest1"));
+            itemData.add(new ItemModel("ObjetTest2"));
+            itemData.add(new ItemModel("ObjetTest3"));
 
             //Récupération des données depuis AddItem
             itemData.add(newItem);
