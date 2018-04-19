@@ -2,21 +2,17 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-
-import java.net.URL;
+import com.bumptech.glide.request.RequestOptions;
 
 public class AddItem extends AppCompatActivity {
 
@@ -30,10 +26,10 @@ public class AddItem extends AppCompatActivity {
         EditText nameItem = findViewById(R.id.et_newItemName);
         EditText nameDesc = findViewById(R.id.et_description);
         final EditText edLink = findViewById(R.id.editText_link);
-        Button btnCamera = findViewById(R.id.button_camera);
-        Button btnGallery = findViewById(R.id.button_gallery);
-        Button btnLink = findViewById(R.id.button_link);
-        Button addItem = findViewById(R.id.b_addToData);
+        ImageView btnCamera = findViewById(R.id.iv_picture);
+        ImageView btnGallery = findViewById(R.id.iv_gallery);
+        ImageView btnLink = findViewById(R.id.iv_url);
+        ImageView addItem = findViewById(R.id.iv_valid);
         final Button btnOK = findViewById(R.id.button_ok);
         imgChoose = findViewById(R.id.imageView_choose);
 
@@ -86,7 +82,7 @@ public class AddItem extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK) {
                     Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    imgChoose.setImageBitmap(bitmap);
+                    Glide.with(this).load(bitmap).apply(RequestOptions.circleCropTransform()).into(imgChoose);
                 }
                 break;
             case 1:

@@ -158,13 +158,12 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+
 
                 itemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
+
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
                         intent.putExtra("item", itemModel);
                         startActivity(intent);

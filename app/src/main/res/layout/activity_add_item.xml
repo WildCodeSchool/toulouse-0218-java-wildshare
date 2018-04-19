@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/new_item_s_name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_link" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_gallery" />
 
     <EditText
         android:id="@+id/et_description"
@@ -35,18 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_newItemName" />
 
-    <Button
-        android:id="@+id/b_addToData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_description" />
-
     <ImageView
 
         android:id="@+id/imageView_choose"
@@ -58,51 +46,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher" />
-
-    <Button
-        android:id="@+id/button_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/camera"
-        app:layout_constraintEnd_toStartOf="@+id/button_gallery"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_choose" />
-
-    <Button
-        android:id="@+id/button_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/gallery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_choose" />
-
-    <Button
-        android:id="@+id/button_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/link"
-        app:layout_constraintStart_toEndOf="@+id/button_gallery"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_choose" />
+        app:srcCompat="?android:attr/listChoiceIndicatorSingle" />
 
     <EditText
         android:id="@+id/editText_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/image_link"
         android:inputType="textUri"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/et_newItemName"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        tools:layout_editor_absoluteY="264dp" />
 
     <Button
         android:id="@+id/button_ok"
@@ -110,11 +65,60 @@
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="@string/ok"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editText_link"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        tools:layout_editor_absoluteY="264dp" />
+
+    <ImageView
+        android:id="@+id/iv_picture"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_gallery"
+        app:layout_constraintHorizontal_bias="0.709"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_choose"
+        app:srcCompat="@drawable/picture_button" />
+
+    <ImageView
+        android:id="@+id/iv_gallery"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_choose"
+        app:srcCompat="@drawable/gallery_button" />
+
+    <ImageView
+        android:id="@+id/iv_url"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.302"
+        app:layout_constraintStart_toEndOf="@+id/iv_gallery"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_choose"
+        app:srcCompat="@drawable/button_url" />
+
+    <ImageView
+        android:id="@+id/iv_valid"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_description"
+        app:srcCompat="@drawable/buton_valid" />
 
 </android.support.constraint.ConstraintLayout>
