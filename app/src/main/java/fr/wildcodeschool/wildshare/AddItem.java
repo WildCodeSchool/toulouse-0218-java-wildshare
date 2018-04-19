@@ -44,6 +44,7 @@ public class AddItem extends AppCompatActivity {
 
         String newItemName = nameItem.getText().toString();
         final String newItemDesc = itemDesc.getText().toString();
+
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase items = FirebaseDatabase.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();

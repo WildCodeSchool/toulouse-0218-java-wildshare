@@ -21,8 +21,6 @@ class ItemModel implements Parcelable {
     private Uri imageURI;
     private String description;
     private String ownerID;
-    private String ownerFirstame;
-    private String ownerLastame;
     private int ownerImage;
 
     public ItemModel(String name, Drawable image, String ownerID) {
@@ -54,32 +52,19 @@ class ItemModel implements Parcelable {
         this.imageDraw = image;
     }
 
-    public ItemModel(String name, Drawable image, String description, String ownerFirstame, String ownerLastame, int ownerImage) {
-        this.name = name;
-        this.imageDraw = image;
-        this.description = description;
-        this.ownerFirstame = ownerFirstame;
-        this.ownerLastame = ownerLastame;
-        this.ownerImage = ownerImage;
-    }
-
-    public ItemModel(String name, String imageURL, String description, String ownerFirstame, String ownerLastame, int ownerImage) {
-        this.name = name;
-        this.imageURL = imageURL;
-        this.description = description;
-        this.ownerFirstame = ownerFirstame;
-        this.ownerLastame = ownerLastame;
-        this.ownerImage = ownerImage;
-    }
 
     public ItemModel() {
     }
 
+
     protected ItemModel(Parcel in) {
         name = in.readString();
+        imageBit = in.readParcelable(Bitmap.class.getClassLoader());
+        imageURL = in.readString();
+        imageURI = in.readParcelable(Uri.class.getClassLoader());
         description = in.readString();
-        ownerFirstame = in.readString();
-        ownerLastame = in.readString();
+        ownerID = in.readString();
+        ownerImage = in.readInt();
     }
 
     public static final Creator<ItemModel> CREATOR = new Creator<ItemModel>() {
@@ -118,22 +103,6 @@ class ItemModel implements Parcelable {
         this.description = description;
     }
 
-    public String getOwnerFirstame() {
-        return ownerFirstame;
-    }
-
-    public void setOwnerFirstame(String ownerFirstame) {
-        this.ownerFirstame = ownerFirstame;
-    }
-
-    public String getOwnerLastame() {
-        return ownerLastame;
-    }
-
-    public void setOwnerLastame(String ownerLastame) {
-        this.ownerLastame = ownerLastame;
-    }
-
     public int getOwnerImage() {
         return ownerImage;
     }
@@ -167,7 +136,6 @@ class ItemModel implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(name);
         parcel.writeString(description);
-        parcel.writeString(ownerFirstame);
-        parcel.writeString(ownerLastame);
+
     }
 }
