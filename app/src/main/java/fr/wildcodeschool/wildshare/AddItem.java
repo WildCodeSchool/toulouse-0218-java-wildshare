@@ -30,7 +30,7 @@ public class AddItem extends AppCompatActivity {
         Button btnLink = findViewById(R.id.button_link);
         Button addItem = findViewById(R.id.b_addToData);
         final Button btnOK = findViewById(R.id.button_ok);
-        imgChoose = findViewById(R.id.imageView_imgChoose);
+        imgChoose = findViewById(R.id.iv_img_choose);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,9 +61,6 @@ public class AddItem extends AppCompatActivity {
             }
         });
 
-
-
-        final String url = "https://wildcodeschool.fr/wp-content/uploads/2017/01/logo_orange_pastille.png";
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override

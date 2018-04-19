@@ -27,4 +27,6 @@
     <string name="enter_a_valid_email">Enter a valid email</string>
     <string name="create_new_account">create new account</string>
     <string name="pseudo">Pseudo</string>
+    <string name="enter_both_values">Enter both values</string>
+    <string name="account_create">Account create</string>
 </resources>

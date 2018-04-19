@@ -22,18 +22,18 @@ public class MainActivity extends AppCompatActivity {
     public static String CACHE_USERNAME = "username";
     public static String EXTRA_LOGIN = "EXTRA_LOGIN";
 
-    private EditText editEmail;
-    private EditText editPassword;
-    private EditText newEmail;
-    private EditText newPassword;
-    private ImageView imageLogin;
-    ImageView imageSignUp;
-    Button btnNewAccount;
-    ProgressBar progressBar;
+    private EditText mEditEmail;
+    private EditText mEditPassword;
+    private EditText mNewEmail;
+    private EditText mNewPassword;
+    private ImageView mImageLogin;
+    ImageView mImageSignUp;
+    Button mBtnNewAccount;
+    ProgressBar mProgressBar;
 
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.progressbar);
-        editEmail = findViewById(R.id.edit_email);
-        editPassword = findViewById(R.id.edit_password);
-        imageLogin = findViewById(R.id.image_log);
-        imageSignUp = findViewById(R.id.image_signup);
+        mProgressBar = findViewById(R.id.progressbar);
+        mEditEmail = findViewById(R.id.edit_email);
+        mEditPassword = findViewById(R.id.edit_password);
+        mImageLogin = findViewById(R.id.image_log);
+        mImageSignUp = findViewById(R.id.image_signup);
 
         //initialiser les sharedPreferences
         //final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -54,20 +54,20 @@ public class MainActivity extends AppCompatActivity {
         //String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
         //editLogin.setText(usernameCache);
 
-        imageLogin.setOnClickListener(new View.OnClickListener() {
+        mImageLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String loginValue = editEmail.getText().toString();
-                String passwordValue = editPassword.getText().toString();
-                progressBar.setVisibility(view.VISIBLE);
+                String loginValue = mEditEmail.getText().toString();
+                String passwordValue = mEditPassword.getText().toString();
+                mProgressBar.setVisibility(view.VISIBLE);
                 if (loginValue.isEmpty() || passwordValue.isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, R.string.enter_pseudo_password, Toast.LENGTH_SHORT).show();
                 } else {
                     mAuth.signInWithEmailAndPassword(loginValue, passwordValue).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            progressBar.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             if (!task.isSuccessful()){
                                 Toast.makeText(MainActivity.this, "Incorrect email or password", Toast.LENGTH_SHORT).show();
                             }
@@ -89,36 +89,36 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        imageSignUp.setOnClickListener(new View.OnClickListener() {
+        mImageSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newEmail = findViewById(R.id.new_mail);
-                newPassword = findViewById(R.id.new_password);
-                btnNewAccount = findViewById(R.id.btnNewAccount);
+                mNewEmail = findViewById(R.id.new_mail);
+                mNewPassword = findViewById(R.id.new_password);
+                mBtnNewAccount = findViewById(R.id.btn_new_account);
                 final ImageView buttonSignIn = findViewById(R.id.image_log);
 
                 ImageView logo = findViewById(R.id.image_logo_fond);
-                newPassword.setVisibility(View.VISIBLE);
-                newEmail.setVisibility(View.VISIBLE);
-                btnNewAccount.setVisibility(View.VISIBLE);
-                editEmail.setVisibility(View.GONE);
-                editPassword.setVisibility(View.GONE);
+                mNewPassword.setVisibility(View.VISIBLE);
+                mNewEmail.setVisibility(View.VISIBLE);
+                mBtnNewAccount.setVisibility(View.VISIBLE);
+                mEditEmail.setVisibility(View.GONE);
+                mEditPassword.setVisibility(View.GONE);
                 buttonSignIn.setVisibility(View.GONE);
 
-                btnNewAccount.setOnClickListener(new View.OnClickListener() {
+                mBtnNewAccount.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String emailN = newEmail.getText().toString();
-                        String passwordN = newPassword.getText().toString();
+                        String emailN = mNewEmail.getText().toString();
+                        String passwordN = mNewPassword.getText().toString();
                         if (TextUtils.isEmpty(emailN) || (TextUtils.isEmpty(passwordN))){
-                            Toast.makeText(MainActivity.this, "Enter both values", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, R.string.enter_both_values, Toast.LENGTH_SHORT).show();
                         }
                         else {
                             mAuth.createUserWithEmailAndPassword(emailN, passwordN).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()){
-                                        Toast.makeText(MainActivity.this, "Account create", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, R.string.account_create, Toast.LENGTH_SHORT).show();
                                         Intent intentProfil = new Intent(MainActivity.this, ProfilActivity.class);
                                         startActivity(intentProfil);
                                     }
@@ -128,16 +128,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                imageSignUp = findViewById(R.id.image_signup);
-                imageSignUp.setOnClickListener(new View.OnClickListener() {
+                mImageSignUp = findViewById(R.id.image_signup);
+                mImageSignUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        newPassword.setVisibility(View.GONE);
-                        newEmail.setVisibility(View.GONE);
-                        btnNewAccount.setVisibility(View.GONE);
+                        mNewPassword.setVisibility(View.GONE);
+                        mNewEmail.setVisibility(View.GONE);
+                        mBtnNewAccount.setVisibility(View.GONE);
                         buttonSignIn.setVisibility(View.VISIBLE);
-                        editEmail.setVisibility(View.VISIBLE);
-                        editPassword.setVisibility(View.VISIBLE);
+                        mEditEmail.setVisibility(View.VISIBLE);
+                        mEditPassword.setVisibility(View.VISIBLE);
 
 
                     }
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null){
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(authStateListener);
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
 }

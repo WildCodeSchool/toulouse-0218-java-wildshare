@@ -7,7 +7,7 @@
     tools:context="fr.wildcodeschool.wildshare.ProfilActivity">
 
     <TextView
-        android:id="@+id/textViewPseudo"
+        android:id="@+id/tv_pseudo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -19,7 +19,7 @@
         tools:text="pseudo" />
 
     <ImageView
-        android:id="@+id/imageView_profilPic"
+        android:id="@+id/iv_profil_pic"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginEnd="8dp"
@@ -27,21 +27,21 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPseudo"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pseudo"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <Button
-        android:id="@+id/button_cameraP"
+        android:id="@+id/btn_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/camera"
-        app:layout_constraintEnd_toStartOf="@+id/button_galleryP"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_profilPic" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_gallery"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <Button
-        android:id="@+id/button_galleryP"
+        android:id="@+id/btn_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -50,20 +50,20 @@
         android:text="@string/gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_profilPic" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <Button
-        android:id="@+id/button_linkP"
+        android:id="@+id/btn_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/link"
-        app:layout_constraintStart_toEndOf="@+id/button_galleryP"
-        app:layout_constraintTop_toBottomOf="@+id/imageView_profilPic" />
+        app:layout_constraintStart_toEndOf="@+id/btn_gallery"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <EditText
-        android:id="@+id/editText_linkP"
+        android:id="@+id/et_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -71,10 +71,10 @@
         android:hint="@string/image_link"
         android:inputType="textUri"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/button_galleryP" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
 
     <Button
-        android:id="@+id/button_okP"
+        android:id="@+id/btn_ok"
         android:layout_width="46dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
@@ -83,11 +83,11 @@
         android:text="@string/ok"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText_linkP"
-        app:layout_constraintTop_toBottomOf="@+id/button_galleryP" />
+        app:layout_constraintStart_toEndOf="@+id/et_link"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
 
     <EditText
-        android:id="@+id/editText_enterPseudo"
+        android:id="@+id/et_enter_pseudo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -98,10 +98,10 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_galleryP" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
 
     <Button
-        android:id="@+id/button_validModif"
+        android:id="@+id/btn_valid_modif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -110,6 +110,6 @@
         android:text="Valid modifications"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_enterPseudo" />
+        app:layout_constraintTop_toBottomOf="@+id/et_enter_pseudo" />
 
 </android.support.constraint.ConstraintLayout>
