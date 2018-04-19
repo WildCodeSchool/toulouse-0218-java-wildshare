@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                             mAuth.createUserWithEmailAndPassword(emailN, passwordN).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         Toast.makeText(MainActivity.this, R.string.account_create, Toast.LENGTH_SHORT).show();
                                         Intent intentProfil = new Intent(MainActivity.this, ProfilActivity.class);
                                         startActivity(intentProfil);

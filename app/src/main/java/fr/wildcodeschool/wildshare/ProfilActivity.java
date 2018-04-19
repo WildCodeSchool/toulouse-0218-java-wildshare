@@ -76,12 +76,12 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if ((dataSnapshot.child("profilPic").getValue() != null)){
+                if ((dataSnapshot.child("profilPic").getValue() != null)) {
                     String url = dataSnapshot.child("profilPic").getValue(String.class);
                     Glide.with(ProfilActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 }
 
-                if ((dataSnapshot.child("pseudo").getValue() != null)){
+                if ((dataSnapshot.child("pseudo").getValue() != null)) {
                     String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
                     tvPseudo.setText(pseudo);
                 }
@@ -137,7 +137,7 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String firstName = mEditPseudo.getText().toString();
-                if (firstName.isEmpty()){
+                if (firstName.isEmpty()) {
                     Toast.makeText(ProfilActivity.this, "Enter a pseudo", Toast.LENGTH_SHORT).show();
                 }
                 else {
