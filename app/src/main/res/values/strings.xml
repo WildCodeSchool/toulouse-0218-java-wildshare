@@ -29,4 +29,5 @@
     <string name="pseudo">Pseudo</string>
     <string name="enter_both_values">Enter both values</string>
     <string name="account_create">Account create</string>
+    <string name="pseudo_missed">Enter a pseudo</string>
 </resources>

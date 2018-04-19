@@ -3,6 +3,7 @@ package fr.wildcodeschool.wildshare;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +43,8 @@ public class ProfilActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profil);
+
+
 
         Button btnCamera;
         Button btnGallery;
@@ -101,6 +104,8 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                mUri = CameraUtils.getOutputMediaFileUri(ProfilActivity.this);
+                takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
                 startActivityForResult(takePicture, 0);
             }
         });
@@ -138,7 +143,7 @@ public class ProfilActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String firstName = mEditPseudo.getText().toString();
                 if (firstName.isEmpty()) {
-                    Toast.makeText(ProfilActivity.this, "Enter a pseudo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfilActivity.this, R.string.pseudo_missed, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     saveUserModel();
@@ -176,8 +181,8 @@ public class ProfilActivity extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-                    Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    mImgProfilPic.setImageBitmap(bitmap);
+                    //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    mImgProfilPic.setImageURI(mUri);
                 }
                 break;
             case 1:
