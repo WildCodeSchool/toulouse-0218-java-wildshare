@@ -1,12 +1,10 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.StrictMode;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -164,10 +162,12 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                assert downloadUrl != null;
                 String profilPic = downloadUrl.toString();
                 UserModel userModel = new UserModel(pseudo, profilPic);
                 FirebaseUser user = mAuth.getCurrentUser();
                 mDatabaseReference = mDatabase.getReference("User");
+                assert user != null;
                 mDatabaseReference.child(user.getUid()).setValue(userModel);
             }
         });

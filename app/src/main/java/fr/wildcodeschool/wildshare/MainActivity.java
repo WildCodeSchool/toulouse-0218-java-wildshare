@@ -1,14 +1,13 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,10 +25,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText mEditPassword;
     private EditText mNewEmail;
     private EditText mNewPassword;
-    private ImageView mImageLogin;
-    ImageView mImageSignUp;
+    private Button mButtonLogin;
+    Button mButtonSignUp;
     Button mBtnNewAccount;
     ProgressBar mProgressBar;
+    Button mButtonReturn;
 
 
     private FirebaseAuth mAuth;
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressbar);
         mEditEmail = findViewById(R.id.edit_email);
         mEditPassword = findViewById(R.id.edit_password);
-        mImageLogin = findViewById(R.id.image_log);
-        mImageSignUp = findViewById(R.id.image_signup);
+        mButtonLogin = findViewById(R.id.b_singin);
+        mButtonSignUp = findViewById(R.id.b_signup);
 
         //initialiser les sharedPreferences
         //final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         //String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
         //editLogin.setText(usernameCache);
 
-        mImageLogin.setOnClickListener(new View.OnClickListener() {
+        mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String loginValue = mEditEmail.getText().toString();
@@ -89,21 +89,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mImageSignUp.setOnClickListener(new View.OnClickListener() {
+        mButtonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mNewEmail = findViewById(R.id.new_mail);
                 mNewPassword = findViewById(R.id.new_password);
                 mBtnNewAccount = findViewById(R.id.btn_new_account);
-                final ImageView buttonSignIn = findViewById(R.id.image_log);
-
-                ImageView logo = findViewById(R.id.image_logo_fond);
+                mButtonReturn = findViewById(R.id.b_return);
+                mButtonSignUp.setVisibility(View.GONE);
+                mButtonReturn.setVisibility(View.VISIBLE);
                 mNewPassword.setVisibility(View.VISIBLE);
                 mNewEmail.setVisibility(View.VISIBLE);
                 mBtnNewAccount.setVisibility(View.VISIBLE);
                 mEditEmail.setVisibility(View.GONE);
                 mEditPassword.setVisibility(View.GONE);
-                buttonSignIn.setVisibility(View.GONE);
+                mButtonLogin.setVisibility(View.GONE);
 
                 mBtnNewAccount.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -128,16 +128,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                mImageSignUp = findViewById(R.id.image_signup);
-                mImageSignUp.setOnClickListener(new View.OnClickListener() {
+
+                mButtonReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         mNewPassword.setVisibility(View.GONE);
                         mNewEmail.setVisibility(View.GONE);
                         mBtnNewAccount.setVisibility(View.GONE);
-                        buttonSignIn.setVisibility(View.VISIBLE);
+                        mButtonSignUp.setVisibility(View.VISIBLE);
+                        mButtonReturn.setVisibility(View.GONE);
                         mEditEmail.setVisibility(View.VISIBLE);
                         mEditPassword.setVisibility(View.VISIBLE);
+                        mButtonLogin.setVisibility(View.VISIBLE);
+
 
 
                     }
