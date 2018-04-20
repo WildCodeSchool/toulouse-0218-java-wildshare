@@ -71,6 +71,7 @@
         android:hint="@string/image_link"
         android:inputType="textUri"
         android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/et_enter_pseudo"
         app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
 
     <Button
@@ -97,8 +98,9 @@
         android:hint="Enter your pseudo"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
+        app:layout_constraintTop_toBottomOf="@+id/et_link" />
 
     <Button
         android:id="@+id/btn_valid_modif"

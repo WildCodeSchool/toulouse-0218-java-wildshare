@@ -34,6 +34,7 @@ public class ProfilActivity extends AppCompatActivity {
     private Uri mUri = null;
     ImageView mImgProfilPic;
     String link;
+    String urlSave;
 
     private DatabaseReference mDatabaseReference;
     private FirebaseDatabase mDatabase;
@@ -81,13 +82,14 @@ public class ProfilActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if ((dataSnapshot.child("profilPic").getValue() != null)) {
-                    String url = dataSnapshot.child("profilPic").getValue(String.class);
-                    Glide.with(ProfilActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+                    urlSave = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(ProfilActivity.this).load(urlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 }
 
                 if ((dataSnapshot.child("pseudo").getValue() != null)) {
                     String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
                     tvPseudo.setText(pseudo);
+                    mEditPseudo.setText(pseudo);
                 }
 
             }
@@ -138,6 +140,8 @@ public class ProfilActivity extends AppCompatActivity {
             public void onClick(View v) {
                 link = edLink.getText().toString();
                 Glide.with(ProfilActivity.this).load(link) .into(mImgProfilPic);
+                edLink.setVisibility(View.GONE);
+                btnOK.setVisibility(View.GONE);
             }
         });
 
@@ -162,11 +166,22 @@ public class ProfilActivity extends AppCompatActivity {
         final String pseudo = mEditPseudo.getText().toString();
 
         if (mUri == null){
-            String profilPic = link;
-            UserModel userModel = new UserModel(pseudo, profilPic);
-            FirebaseUser user = mAuth.getCurrentUser();
-            mDatabaseReference = mDatabase.getReference("User");
-            mDatabaseReference.child(user.getUid()).setValue(userModel);
+
+            if (link != null){
+                String profilPic = link;
+                UserModel userModel = new UserModel(pseudo, profilPic);
+                FirebaseUser user = mAuth.getCurrentUser();
+                mDatabaseReference = mDatabase.getReference("User");
+                mDatabaseReference.child(user.getUid()).setValue(userModel);
+            }
+            else{
+                String profilPic = urlSave;
+                UserModel userModel = new UserModel(pseudo, profilPic);
+                FirebaseUser user = mAuth.getCurrentUser();
+                mDatabaseReference = mDatabase.getReference("User");
+                mDatabaseReference.child(user.getUid()).setValue(userModel);
+            }
+
 
         }
         else {
