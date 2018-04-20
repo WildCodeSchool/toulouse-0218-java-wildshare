@@ -33,6 +33,7 @@ public class ProfilActivity extends AppCompatActivity {
     EditText mEditPseudo;
     private Uri mUri = null;
     ImageView mImgProfilPic;
+    String link;
 
     private DatabaseReference mDatabaseReference;
     private FirebaseDatabase mDatabase;
@@ -103,6 +104,8 @@ public class ProfilActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 mUri = CameraUtils.getOutputMediaFileUri(ProfilActivity.this);
                 takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
@@ -133,7 +136,7 @@ public class ProfilActivity extends AppCompatActivity {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String link = edLink.getText().toString();
+                link = edLink.getText().toString();
                 Glide.with(ProfilActivity.this).load(link) .into(mImgProfilPic);
             }
         });
@@ -158,19 +161,29 @@ public class ProfilActivity extends AppCompatActivity {
     private void saveUserModel() {
         final String pseudo = mEditPseudo.getText().toString();
 
+        if (mUri == null){
+            String profilPic = link;
+            UserModel userModel = new UserModel(pseudo, profilPic);
+            FirebaseUser user = mAuth.getCurrentUser();
+            mDatabaseReference = mDatabase.getReference("User");
+            mDatabaseReference.child(user.getUid()).setValue(userModel);
 
-        StorageReference filePath = mStorageReference.child("profilPicture").child(mUri.getLastPathSegment());
-        filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                String profilPic = downloadUrl.toString();
-                UserModel userModel = new UserModel(pseudo, profilPic);
-                FirebaseUser user = mAuth.getCurrentUser();
-                mDatabaseReference = mDatabase.getReference("User");
-                mDatabaseReference.child(user.getUid()).setValue(userModel);
-            }
-        });
+        }
+        else {
+            StorageReference filePath = mStorageReference.child("profilPicture").child(mUri.getLastPathSegment());
+            filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    String profilPic = downloadUrl.toString();
+                    UserModel userModel = new UserModel(pseudo, profilPic);
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    mDatabaseReference = mDatabase.getReference("User");
+                    mDatabaseReference.child(user.getUid()).setValue(userModel);
+                }
+            });
+        }
+
 
 
     }
