@@ -1,7 +1,6 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -33,8 +32,8 @@ public class ProfilActivity extends AppCompatActivity {
     EditText mEditPseudo;
     private Uri mUri = null;
     ImageView mImgProfilPic;
-    String link;
-    String urlSave;
+    String mLink;
+    String mUrlSave;
 
     private DatabaseReference mDatabaseReference;
     private FirebaseDatabase mDatabase;
@@ -82,8 +81,8 @@ public class ProfilActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if ((dataSnapshot.child("profilPic").getValue() != null)) {
-                    urlSave = dataSnapshot.child("profilPic").getValue(String.class);
-                    Glide.with(ProfilActivity.this).load(urlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+                    mUrlSave = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(ProfilActivity.this).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 }
 
                 if ((dataSnapshot.child("pseudo").getValue() != null)) {
@@ -138,8 +137,8 @@ public class ProfilActivity extends AppCompatActivity {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                link = edLink.getText().toString();
-                Glide.with(ProfilActivity.this).load(link) .into(mImgProfilPic);
+                mLink = edLink.getText().toString();
+                Glide.with(ProfilActivity.this).load(mLink) .into(mImgProfilPic);
                 edLink.setVisibility(View.GONE);
                 btnOK.setVisibility(View.GONE);
             }
@@ -167,15 +166,15 @@ public class ProfilActivity extends AppCompatActivity {
 
         if (mUri == null){
 
-            if (link != null){
-                String profilPic = link;
+            if (mLink != null){
+                String profilPic = mLink;
                 UserModel userModel = new UserModel(pseudo, profilPic);
                 FirebaseUser user = mAuth.getCurrentUser();
                 mDatabaseReference = mDatabase.getReference("User");
                 mDatabaseReference.child(user.getUid()).setValue(userModel);
             }
             else{
-                String profilPic = urlSave;
+                String profilPic = mUrlSave;
                 UserModel userModel = new UserModel(pseudo, profilPic);
                 FirebaseUser user = mAuth.getCurrentUser();
                 mDatabaseReference = mDatabase.getReference("User");
