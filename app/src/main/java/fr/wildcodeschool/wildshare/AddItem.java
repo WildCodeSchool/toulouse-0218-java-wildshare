@@ -3,15 +3,15 @@ package fr.wildcodeschool.wildshare;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 public class AddItem extends AppCompatActivity {
 
@@ -24,14 +24,23 @@ public class AddItem extends AppCompatActivity {
 
         EditText nameItem = findViewById(R.id.et_newItemName);
         EditText nameDesc = findViewById(R.id.et_description);
-        final EditText edLink = findViewById(R.id.editText_link);
-        Button btnCamera = findViewById(R.id.button_camera);
-        Button btnGallery = findViewById(R.id.button_gallery);
-        Button btnLink = findViewById(R.id.button_link);
-        Button addItem = findViewById(R.id.b_addToData);
-        final Button btnOK = findViewById(R.id.button_ok);
-        imgChoose = findViewById(R.id.iv_img_choose);
+        final EditText edLink = findViewById(R.id.et_url);
+        ImageView btnCamera = findViewById(R.id.iv_camera);
+        ImageView btnGallery = findViewById(R.id.iv_gallery);
+        ImageView btnLink = findViewById(R.id.iv_url);
+        ImageView addItem = findViewById(R.id.iv_valid);
+        final ImageView btnValidUrl = findViewById(R.id.iv_validUrl);
+        imgChoose = findViewById(R.id.imageView_choose);
+        ImageView btnCancel = findViewById(R.id.iv_cancel);
 
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddItem.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,18 +65,21 @@ public class AddItem extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 edLink.setVisibility(View.VISIBLE);
-                btnOK.setVisibility(View.VISIBLE);
+                btnValidUrl.setVisibility(View.VISIBLE);
 
             }
         });
 
 
-        btnOK.setOnClickListener(new View.OnClickListener() {
+        btnValidUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String link = edLink.getText().toString();
-                Glide.with(AddItem.this).load(link) .into(imgChoose);
+                Glide.with(AddItem.this).load(link).apply(RequestOptions.circleCropTransform()) .into(imgChoose);
+                edLink.setVisibility(View.GONE);
+                btnValidUrl.setVisibility(View.GONE);
             }
+
         });
     }
 
@@ -78,7 +90,7 @@ public class AddItem extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK) {
                     Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    imgChoose.setImageBitmap(bitmap);
+                    Glide.with(AddItem.this).load(bitmap).apply(RequestOptions.circleCropTransform()) .into(imgChoose);
                 }
                 break;
             case 1:

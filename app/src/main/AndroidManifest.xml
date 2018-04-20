@@ -27,10 +27,13 @@
         <activity
             android:name=".HomeActivity"
             android:label="WildShare"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+
+    </activity>
+
         <activity
             android:name=".AddItem"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".FriendItemsList" />
         <activity android:name=".ItemInfo" />
         <activity android:name=".ProfilActivity"></activity>
