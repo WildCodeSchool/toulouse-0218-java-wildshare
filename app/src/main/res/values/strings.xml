@@ -30,4 +30,6 @@
     <string name="enter_both_values">Enter both values</string>
     <string name="account_create">Account create</string>
     <string name="pseudo_missed">Enter a pseudo</string>
+    <string name="enter_your_pseudo">Enter your pseudo</string>
+    <string name="valid_modifications">Valid modifications</string>
 </resources>

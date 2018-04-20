@@ -1,7 +1,6 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -33,6 +32,8 @@ public class ProfilActivity extends AppCompatActivity {
     EditText mEditPseudo;
     private Uri mUri = null;
     ImageView mImgProfilPic;
+    String mLink;
+    String mUrlSave;
 
     private DatabaseReference mDatabaseReference;
     private FirebaseDatabase mDatabase;
@@ -80,13 +81,14 @@ public class ProfilActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if ((dataSnapshot.child("profilPic").getValue() != null)) {
-                    String url = dataSnapshot.child("profilPic").getValue(String.class);
-                    Glide.with(ProfilActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+                    mUrlSave = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(ProfilActivity.this).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 }
 
                 if ((dataSnapshot.child("pseudo").getValue() != null)) {
                     String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
                     tvPseudo.setText(pseudo);
+                    mEditPseudo.setText(pseudo);
                 }
 
             }
@@ -103,6 +105,8 @@ public class ProfilActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 mUri = CameraUtils.getOutputMediaFileUri(ProfilActivity.this);
                 takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
@@ -133,8 +137,10 @@ public class ProfilActivity extends AppCompatActivity {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String link = edLink.getText().toString();
-                Glide.with(ProfilActivity.this).load(link) .into(mImgProfilPic);
+                mLink = edLink.getText().toString();
+                Glide.with(ProfilActivity.this).load(mLink) .into(mImgProfilPic);
+                edLink.setVisibility(View.GONE);
+                btnOK.setVisibility(View.GONE);
             }
         });
 
@@ -158,19 +164,40 @@ public class ProfilActivity extends AppCompatActivity {
     private void saveUserModel() {
         final String pseudo = mEditPseudo.getText().toString();
 
+        if (mUri == null){
 
-        StorageReference filePath = mStorageReference.child("profilPicture").child(mUri.getLastPathSegment());
-        filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                String profilPic = downloadUrl.toString();
+            if (mLink != null){
+                String profilPic = mLink;
                 UserModel userModel = new UserModel(pseudo, profilPic);
                 FirebaseUser user = mAuth.getCurrentUser();
                 mDatabaseReference = mDatabase.getReference("User");
                 mDatabaseReference.child(user.getUid()).setValue(userModel);
             }
-        });
+            else{
+                String profilPic = mUrlSave;
+                UserModel userModel = new UserModel(pseudo, profilPic);
+                FirebaseUser user = mAuth.getCurrentUser();
+                mDatabaseReference = mDatabase.getReference("User");
+                mDatabaseReference.child(user.getUid()).setValue(userModel);
+            }
+
+
+        }
+        else {
+            StorageReference filePath = mStorageReference.child("profilPicture").child(mUri.getLastPathSegment());
+            filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    String profilPic = downloadUrl.toString();
+                    UserModel userModel = new UserModel(pseudo, profilPic);
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    mDatabaseReference = mDatabase.getReference("User");
+                    mDatabaseReference.child(user.getUid()).setValue(userModel);
+                }
+            });
+        }
+
 
 
     }
