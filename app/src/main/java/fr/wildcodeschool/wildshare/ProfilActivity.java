@@ -71,9 +71,8 @@ public class ProfilActivity extends AppCompatActivity {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-
+        //Rappel du pseudo et de la profilPic sur la page si existant
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         DatabaseReference pathID = mDatabase.getReference("User").child(uid);
 
         pathID.addValueEventListener(new ValueEventListener() {
@@ -161,6 +160,7 @@ public class ProfilActivity extends AppCompatActivity {
         });
     }
 
+    //methode qui envois les données sur firebase
     private void saveUserModel() {
         final String pseudo = mEditPseudo.getText().toString();
 
@@ -202,6 +202,7 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
+    //Methode qui convertis les photo de l'appareil et de la gallerie en Uri
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);

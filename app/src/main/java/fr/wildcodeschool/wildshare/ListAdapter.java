@@ -67,10 +67,11 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
         ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
         ImageButton ownerImage = convertView.findViewById(R.id.button_owner);
-
+        /*
         itemName.setText(item.getName());
         itemImage.setImageDrawable(item.getImage());
         ownerImage.setImageResource(item.getOwnerImage());
+        */
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
