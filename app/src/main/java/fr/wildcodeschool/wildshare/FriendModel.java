@@ -8,53 +8,33 @@ import android.os.Parcelable;
  * Created by wilder on 03/04/18.
  */
 
-public class FriendModel implements Parcelable{
+public class FriendModel {
 
-    private String firstname;
-    private String lastname;
-    private Drawable avatar;
+    private String pseudo;
+    private String profilPic;
 
-    public FriendModel(String firstname, String lastname, Drawable avatar) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.avatar = avatar;
+    public FriendModel() {}
+
+    public FriendModel(String pseudo, String profilPic) {
+        this.pseudo = pseudo;
+        this.profilPic = profilPic;
     }
 
-
-    public String getFirstname() {return firstname;}
-    public void setFirstname(String firstname) {this.firstname = firstname;}
-    public String getLastname() {return lastname;}
-    public void setLastname(String lastname) {this.lastname = lastname;}
-    public Drawable getAvatar() {return avatar;}
-    public void setAvatar(Drawable avatar) {this.avatar = avatar;}
-
-
-
-    protected FriendModel(Parcel in) {
-        firstname = in.readString();
-        lastname = in.readString();
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public static final Creator<FriendModel> CREATOR = new Creator<FriendModel>() {
-        @Override
-        public FriendModel createFromParcel(Parcel in) {
-            return new FriendModel(in);
-        }
-
-        @Override
-        public FriendModel[] newArray(int size) {
-            return new FriendModel[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public FriendModel setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+        return this;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(firstname);
-        parcel.writeString(lastname);
+    public String getProfilPic() {
+        return profilPic;
+    }
+
+    public FriendModel setProfilPic(String profilPic) {
+        this.profilPic = profilPic;
+        return this;
     }
 }
