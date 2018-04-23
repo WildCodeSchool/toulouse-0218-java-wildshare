@@ -1,11 +1,8 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Parcelable;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,71 +20,53 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-
-import android.net.Uri;
-
-import java.io.ByteArrayOutputStream;
-import java.net.URL;
 
 public class AddItem extends AppCompatActivity {
 
-    ImageView imgChoose;
-    ItemModel newItem = new ItemModel();
-    final FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference itemPictureRef = storage.getReference("itemPicture");
+    ImageView mImgChoose;
+    EditText mItemName;
+    EditText mItemDesc;
     private Uri mUri = null;
+    String mLink;
+    String mUrlSave;
+
+
+    private DatabaseReference mDatabaseReference;
+    private DatabaseReference mDatabaseReferenceU;
+    private FirebaseDatabase mDatabase;
+    private FirebaseAuth mAuth;
+    private StorageReference mStorageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
 
-        final EditText nameItem = findViewById(R.id.et_newItemName);
-        final EditText itemDesc = findViewById(R.id.et_description);
+        mItemName = findViewById(R.id.et_newItemName);
+        mItemDesc = findViewById(R.id.et_description);
         final EditText edLink = findViewById(R.id.editText_link);
         Button btnCamera = findViewById(R.id.button_camera);
         Button btnGallery = findViewById(R.id.button_gallery);
         Button btnLink = findViewById(R.id.button_link);
-        Button addItem = findViewById(R.id.b_addToData);
+        Button btnAddItem = findViewById(R.id.b_addToData);
         final Button btnOK = findViewById(R.id.button_ok);
-        imgChoose = findViewById(R.id.iv_img_choose);
+        mImgChoose = findViewById(R.id.iv_img_choose);
 
-        String newItemName = nameItem.getText().toString();
-        final String newItemDesc = itemDesc.getText().toString();
-
-        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseDatabase items = FirebaseDatabase.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        final DatabaseReference itemsReference = items.getReference("items");
-
-
-       // mStorageReference = storage.getReference();
-
-      /*  StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
-        filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                String profilPic = downloadUrl.toString();
-                UserModel userModel = new UserModel(pseudo, profilPic);
-                mDatabaseReference = mDatabase.getReference("User");
-                mDatabaseReference.child(user.getUid()).setValue(userModel);
-            }
-        });*/
-
-        // databaseReference.child(user.getUid()).getDatabase().getReference();
-
-        newItem.setName(newItemName);
-        newItem.setOwnerID(user.getUid());
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReferenceU = FirebaseDatabase.getInstance().getReference();
+        mStorageReference = FirebaseStorage.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String picture = MediaStore.ACTION_IMAGE_CAPTURE;
-                newItem.setImageURL(picture);
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                mUri = CameraUtils.getOutputMediaFileUri(AddItem.this);
+                takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
                 startActivityForResult(takePicture, 0);
             }
         });
@@ -94,48 +74,87 @@ public class AddItem extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-        // Create intent to Open Image applications like Gallery, Google Photos
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Start the Intent
                 startActivityForResult(galleryIntent, 1);
             }
         });
-
 
         btnLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 edLink.setVisibility(View.VISIBLE);
                 btnOK.setVisibility(View.VISIBLE);
+
             }
         });
-
-
-
-        final String url = "https://wildcodeschool.fr/wp-content/uploads/2017/01/logo_orange_pastille.png";
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String link = edLink.getText().toString();
-                newItem.setImageURL(link);
-                Glide.with(AddItem.this).load(link) .into(imgChoose);
-
+                mLink = edLink.getText().toString();
+                Glide.with(AddItem.this).load(mLink) .into(mImgChoose);
+                edLink.setVisibility(View.GONE);
+                btnOK.setVisibility(View.GONE);
             }
         });
 
-        addItem.setOnClickListener(new View.OnClickListener() {
+        btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!newItemDesc.equals("")) {
-                    newItem.setDescription(newItemDesc);
+                String itemName = mItemName.getText().toString();
+                String itemDesc = mItemDesc.getText().toString();
+                if (itemName.isEmpty() || (itemDesc.isEmpty())) {
+                    Toast.makeText(AddItem.this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
                 }
-                itemsReference.push().setValue(newItem);
-                Intent intent = new Intent(AddItem.this, HomeActivity.class);
-                startActivity(intent);
+                else {
+                    saveItemModel();
+                    Intent intentHome = new Intent(AddItem.this, HomeActivity.class);
+                    startActivity(intentHome);
+                }
             }
         });
+    }
+
+    private void saveItemModel() {
+        final String name = mItemName.getText().toString();
+        final String description = mItemDesc.getText().toString();
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final String ownerId = user.getUid().toString();
+        mDatabaseReference = mDatabase.getReference("Item");
+        mDatabaseReferenceU = mDatabase.getReference("User");
+        final String itemKey = mDatabaseReference.push().getKey();
+
+        if (mUri == null){
+
+            if (mLink != null){
+                String image = mLink;
+                ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                mDatabaseReference.child(itemKey).setValue(itemModel);
+            }
+            else{
+                String image = mUrlSave;
+                ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                mDatabaseReference.child(itemKey).setValue(itemModel);
+            }
+
+        }
+        else {
+            StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
+            filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    String image = downloadUrl.toString();
+                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                    mDatabaseReference.child(itemKey).setValue(itemModel);
+                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+                }
+            });
+        }
+
+
+
     }
 
     @Override
@@ -144,43 +163,13 @@ public class AddItem extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-
-                    Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    imgChoose.setImageBitmap(bitmap);
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] data = baos.toByteArray();
-
-                    StorageTask uploadPicture = itemPictureRef.putBytes(data);
-                    uploadPicture.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            String itemPic = downloadUrl.toString();
-                            newItem.setImageURL(itemPic);
-                        }
-                    });
+                    mImgChoose.setImageURI(mUri);
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    imgChoose.setImageURI(selectedImage);
-
-                    StorageTask uploadPicture = itemPictureRef.putFile(selectedImage);
-                    uploadPicture.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            String itemPic = downloadUrl.toString();
-                            newItem.setImageURL(itemPic);
-                        }
-                    });
-
-
-
+                    mUri = imageReturnedIntent.getData();
+                    mImgChoose.setImageURI(mUri);
                 }
                 break;
         }

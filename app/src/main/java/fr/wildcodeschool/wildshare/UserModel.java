@@ -11,9 +11,10 @@ public class UserModel {
     private String pseudo;
     private String profilPic;
 
-    public UserModel() {
 
-    }
+
+    public UserModel() {}
+
 
     public UserModel(String pseudo, String profilPic) {
         this.pseudo = pseudo;

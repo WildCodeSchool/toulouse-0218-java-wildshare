@@ -20,6 +20,7 @@ public class FriendModel implements Parcelable{
         this.avatar = avatar;
     }
 
+
     public String getFirstname() {return firstname;}
     public void setFirstname(String firstname) {this.firstname = firstname;}
     public String getLastname() {return lastname;}
