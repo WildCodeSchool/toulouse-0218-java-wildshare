@@ -343,20 +343,41 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
-                friendData.add(new FriendModel("FirstnameTest1", "LastnameTest1", null));
-                friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
-                friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
-                friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
+
                 mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
-                        intent.putExtra("friend", friend);
                         startActivity(intent);
                     }
                 });
 
                 lvFriends.setAdapter(mFriendAdapter);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference userRef = database.getReference("User");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+                userRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        friendData.clear();
+                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+                            FriendModel friendModel = friendDataSnapshot.getValue(FriendModel.class);
+                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                        }
+                        Collections.reverse(friendData);
+                        mFriendAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
