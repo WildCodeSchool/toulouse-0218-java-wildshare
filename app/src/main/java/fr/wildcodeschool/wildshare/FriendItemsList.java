@@ -22,7 +22,7 @@ public class FriendItemsList extends AppCompatActivity {
         ImageView avatar = findViewById(R.id.iv_avatar);
         TextView fullName = findViewById(R.id.tv_firstname_lastname);
 
-       // avatar.setImageDrawable(friend.getAvatar());
+        avatar.setImageDrawable(friend.getAvatar());
         fullName.setText(friend.getFirstname() + " " + friend.getLastname());
 
 
@@ -34,5 +34,6 @@ public class FriendItemsList extends AppCompatActivity {
         friendItemsData.add(new ItemModel("NameTest4", null));
         final FriendItemsAdapter adapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
         lvFriends.setAdapter(adapter);
+
     }
 }

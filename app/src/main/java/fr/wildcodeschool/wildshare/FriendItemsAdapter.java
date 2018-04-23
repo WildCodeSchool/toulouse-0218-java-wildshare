@@ -11,6 +11,9 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 
 /**
@@ -34,7 +37,8 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
 
         friendItemName.setText(friendItem.getName());
-        friendItemImage.setImageDrawable(friendItem.getImage());
+        Glide.with(getContext()).load(friendItem.getImage()).apply(RequestOptions.circleCropTransform()).into(friendItemImage);
+
 
         return convertView;
     }
