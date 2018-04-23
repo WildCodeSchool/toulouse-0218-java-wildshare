@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -205,11 +206,8 @@ public class HomeActivity extends AppCompatActivity
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
 
-                ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
+                final ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest1", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest1", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest1", null, "ownerProfilPic"));
 
 
                 mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
@@ -220,6 +218,32 @@ public class HomeActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 });
+
+                lv1.setAdapter(mItemAdapter1);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference userRef = database.getReference("User");
+
+
+                userRef.orderByChild("bestScore").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemData.clear();
+                        for (DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
+                            UserModel userModel = userDataSnapshot.getValue(UserModel.class);
+                            itemData.add(new ItemModel(userModel.getName(), userModel.getBestScore()));
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter1.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 lv1.setAdapter(mItemAdapter1);
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
