@@ -10,6 +10,5 @@ public class ItemInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_info);
 
-        ItemModel item = getIntent().getExtras().getParcelable("item");
     }
 }
