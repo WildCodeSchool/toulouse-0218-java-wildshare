@@ -69,6 +69,8 @@ public class AddItem extends AppCompatActivity {
                 Glide.with(AddItem.this).load(link) .into(imgChoose);
             }
         });
+        /*Button buttonvalid = findViewById(R.id.button_ok);
+        buttonvalid.setOnClickListener();*/
     }
 
     @Override

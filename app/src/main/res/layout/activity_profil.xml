@@ -6,59 +6,47 @@
     android:layout_height="match_parent"
     tools:context="fr.wildcodeschool.wildshare.ProfilActivity">
 
-    <TextView
-        android:id="@+id/tv_pseudo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="pseudo" />
-
     <ImageView
         android:id="@+id/iv_profil_pic"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="56dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_pseudo"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <Button
         android:id="@+id/btn_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/camera"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/picture_button"
         app:layout_constraintEnd_toStartOf="@+id/btn_gallery"
         app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <Button
         android:id="@+id/btn_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/gallery"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/gallery_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <Button
         android:id="@+id/btn_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/link"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_url"
         app:layout_constraintStart_toEndOf="@+id/btn_gallery"
         app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
@@ -66,26 +54,27 @@
         android:id="@+id/et_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="56dp"
         android:ems="10"
         android:hint="@string/image_link"
         android:inputType="textUri"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/et_enter_pseudo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
 
     <Button
         android:id="@+id/btn_ok"
-        android:layout_width="46dp"
+        android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/ok"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/buton_valid"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/et_link"
-        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_link" />
 
     <EditText
         android:id="@+id/et_enter_pseudo"
@@ -93,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="@string/enter_your_pseudo"
         android:inputType="textPersonName"
@@ -104,13 +93,14 @@
 
     <Button
         android:id="@+id/btn_valid_modif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/valid_modifications"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/buton_valid"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_enter_pseudo" />
 
