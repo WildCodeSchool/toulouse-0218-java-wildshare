@@ -302,24 +302,49 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
+
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+
                 final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
                 mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-
                         startActivity(intent);
                     }
                 });
+
                 lv3.setAdapter(mItemAdapter3);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference userRef = database.getReference("Item");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+                userRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemData.clear();
+                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage(), itemModel.getOwnerProfilPic()));
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter3.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -338,6 +363,7 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
+
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
