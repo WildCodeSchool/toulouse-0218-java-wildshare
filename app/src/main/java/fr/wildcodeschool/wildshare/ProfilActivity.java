@@ -116,10 +116,9 @@ public class ProfilActivity extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create intent to Open Image applications like Gallery, Google Photos
+
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                // Start the Intent
                 startActivityForResult(galleryIntent, 1);
             }
         });
@@ -209,8 +208,6 @@ public class ProfilActivity extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-                    //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    //mImgProfilPic.setImageURI(mUri);
                     Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
 
                 }
@@ -218,7 +215,6 @@ public class ProfilActivity extends AppCompatActivity {
             case 1:
                 if(resultCode == RESULT_OK){
                     mUri = imageReturnedIntent.getData();
-                    //mImgProfilPic.setImageURI(mUri);
                     Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
 
                 }

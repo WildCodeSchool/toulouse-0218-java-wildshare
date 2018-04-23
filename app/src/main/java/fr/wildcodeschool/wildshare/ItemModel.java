@@ -37,6 +37,11 @@ public class ItemModel {
         this.ownerProfilPic = ownerProfilPic;
     }
 
+    public ItemModel(String name, String image) {
+        this.name = name;
+        this.image = image;
+    }
+
     public String getName() {
         return name;
     }
@@ -90,36 +95,6 @@ public class ItemModel {
         this.ownerId = ownerId;
         return this;
     }
-
-/*
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeString(description);
-        parcel.writeString(ownerFirstame);
-        parcel.writeString(ownerLastame);
-    }
-    */
-
-
-    /*
-    public static final Creator<ItemModel> CREATOR = new Creator<ItemModel>() {
-        @Override
-        public ItemModel createFromParcel(Parcel in) {
-            return new ItemModel(in);
-        }
-
-        @Override
-        public ItemModel[] newArray(int size) {
-            return new ItemModel[size];
-        }
-    };
-    */
 
 
 }

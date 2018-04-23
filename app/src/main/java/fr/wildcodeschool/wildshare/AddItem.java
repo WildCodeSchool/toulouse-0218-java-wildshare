@@ -59,34 +59,6 @@ public class AddItem extends AppCompatActivity {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        /*
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference pathID = mDatabase.getReference("User").child(uid);
-
-        pathID.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if ((dataSnapshot.child("profilPic").getValue() != null)) {profil
-                    mUrlSave = dataSnapshot.child("profilPic").getValue(String.class);
-                    Glide.with(AddItem.this).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
-                }
-
-                if ((dataSnapshot.child("pseudo").getValue() != null)) {
-                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
-                    tvPseudo.setText(pseudo);
-                    mEditPseudo.setText(pseudo);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        */
-
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,10 +74,8 @@ public class AddItem extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create intent to Open Image applications like Gallery, Google Photos
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                // Start the Intent
                 startActivityForResult(galleryIntent, 1);
             }
         });
@@ -193,7 +163,6 @@ public class AddItem extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-                    //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     mImgChoose.setImageURI(mUri);
                 }
                 break;

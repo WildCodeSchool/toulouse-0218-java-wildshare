@@ -72,9 +72,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         ImageButton ownerImage = convertView.findViewById(R.id.button_owner);
 
         itemName.setText(item.getName());
-        //itemImage.setText(item.getImage());
-        Glide.with(mContext).load(item.getImage()).apply(RequestOptions.circleCropTransform()).into(ownerImage);
-        //ownerImage.setImageResource(item.getOwnerProfilPic());
+        Glide.with(mContext).load(item.getImage()).apply(RequestOptions.circleCropTransform()).into(itemImage);
         Glide.with(mContext).load(item.getOwnerProfilPic()).apply(RequestOptions.circleCropTransform()).into(ownerImage);
 
 

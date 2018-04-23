@@ -46,7 +46,7 @@ public class HomeActivity extends AppCompatActivity
     private static ListAdapter mItemAdapter3;
     private static FriendListAdapter mFriendAdapter;
     private FirebaseAuth mAuth;
-    private  String mUid;
+    private String mUid;
     private FirebaseDatabase mDatabase;
     private ImageView mIvProfilNav;
     private TextView mTvPseudoNav;
@@ -222,16 +222,17 @@ public class HomeActivity extends AppCompatActivity
                 lv1.setAdapter(mItemAdapter1);
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = database.getReference("User");
+                final DatabaseReference itemRef = database.getReference("Item");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-                userRef.orderByChild("bestScore").addValueEventListener(new ValueEventListener() {
+                itemRef.orderByChild("ownerId").equalTo(uid).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
-                        for (DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
-                            UserModel userModel = userDataSnapshot.getValue(UserModel.class);
-                            itemData.add(new ItemModel(userModel.getName(), userModel.getBestScore()));
+                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage()));
                         }
                         Collections.reverse(itemData);
                         mItemAdapter1.notifyDataSetChanged();
