@@ -209,8 +209,6 @@ public class ProfilActivity extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-                    //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    //mImgProfilPic.setImageURI(mUri);
                     Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
 
                 }
@@ -218,7 +216,6 @@ public class ProfilActivity extends AppCompatActivity {
             case 1:
                 if(resultCode == RESULT_OK){
                     mUri = imageReturnedIntent.getData();
-                    //mImgProfilPic.setImageURI(mUri);
                     Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
 
                 }

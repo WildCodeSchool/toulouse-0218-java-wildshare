@@ -32,8 +32,8 @@ public class AddItem extends AppCompatActivity {
     String mUrlSave;
 
 
-    private DatabaseReference mDatabaseReference;
-    private DatabaseReference mDatabaseReferenceU;
+    private DatabaseReference mDatabaseReferenceItem;
+    private DatabaseReference mDatabaseReferenceUser;
     private FirebaseDatabase mDatabase;
     private FirebaseAuth mAuth;
     private StorageReference mStorageReference;
@@ -54,38 +54,11 @@ public class AddItem extends AppCompatActivity {
         mImgChoose = findViewById(R.id.iv_img_choose);
 
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mDatabaseReferenceU = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReferenceItem = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReferenceUser = FirebaseDatabase.getInstance().getReference();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        /*
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference pathID = mDatabase.getReference("User").child(uid);
-
-        pathID.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if ((dataSnapshot.child("profilPic").getValue() != null)) {profil
-                    mUrlSave = dataSnapshot.child("profilPic").getValue(String.class);
-                    Glide.with(AddItem.this).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
-                }
-
-                if ((dataSnapshot.child("pseudo").getValue() != null)) {
-                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
-                    tvPseudo.setText(pseudo);
-                    mEditPseudo.setText(pseudo);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        */
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,21 +124,21 @@ public class AddItem extends AppCompatActivity {
         final String description = mItemDesc.getText().toString();
         final FirebaseUser user = mAuth.getCurrentUser();
         final String ownerId = user.getUid().toString();
-        mDatabaseReference = mDatabase.getReference("Item");
-        mDatabaseReferenceU = mDatabase.getReference("User");
-        final String itemKey = mDatabaseReference.push().getKey();
+        mDatabaseReferenceItem = mDatabase.getReference("Item");
+        mDatabaseReferenceUser = mDatabase.getReference("User");
+        final String itemKey = mDatabaseReferenceItem.push().getKey();
 
         if (mUri == null){
 
             if (mLink != null){
                 String image = mLink;
                 ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                mDatabaseReference.child(itemKey).setValue(itemModel);
+                mDatabaseReferenceItem.child(itemKey).setValue(itemModel);
             }
             else{
                 String image = mUrlSave;
                 ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                mDatabaseReference.child(itemKey).setValue(itemModel);
+                mDatabaseReferenceItem.child(itemKey).setValue(itemModel);
             }
 
         }
@@ -177,8 +150,8 @@ public class AddItem extends AppCompatActivity {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     String image = downloadUrl.toString();
                     ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                    mDatabaseReference.child(itemKey).setValue(itemModel);
-                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+                    mDatabaseReferenceItem.child(itemKey).setValue(itemModel);
+                    mDatabaseReferenceUser.child(user.getUid()).child("Item").child(itemKey).setValue("0");
                 }
             });
         }
@@ -193,7 +166,6 @@ public class AddItem extends AppCompatActivity {
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-                    //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     mImgChoose.setImageURI(mUri);
                 }
                 break;
