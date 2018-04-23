@@ -71,9 +71,8 @@ public class ProfilActivity extends AppCompatActivity {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-
+        //Rappel du pseudo et de la profilPic sur la page si existant
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         DatabaseReference pathID = mDatabase.getReference("User").child(uid);
 
         pathID.addValueEventListener(new ValueEventListener() {
@@ -138,7 +137,7 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLink = edLink.getText().toString();
-                Glide.with(ProfilActivity.this).load(mLink) .into(mImgProfilPic);
+                Glide.with(ProfilActivity.this).load(mLink).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 edLink.setVisibility(View.GONE);
                 btnOK.setVisibility(View.GONE);
             }
@@ -161,6 +160,7 @@ public class ProfilActivity extends AppCompatActivity {
         });
     }
 
+    //methode qui envois les données sur firebase
     private void saveUserModel() {
         final String pseudo = mEditPseudo.getText().toString();
 
@@ -202,20 +202,22 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
+    //Methode qui convertis les photo de l'appareil et de la gallerie en Uri
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK) {
-                    //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    mImgProfilPic.setImageURI(mUri);
+                    Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
                     mUri = imageReturnedIntent.getData();
-                    mImgProfilPic.setImageURI(mUri);
+                    Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+
                 }
                 break;
         }

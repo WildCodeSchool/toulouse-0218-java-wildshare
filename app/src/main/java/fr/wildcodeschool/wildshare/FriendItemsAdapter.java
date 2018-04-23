@@ -32,9 +32,10 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
         TextView friendItemName = convertView.findViewById(R.id.tv_name);
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
-
+        /*
         friendItemName.setText(friendItem.getName());
         friendItemImage.setImageDrawable(friendItem.getImage());
+        */
 
         return convertView;
     }
