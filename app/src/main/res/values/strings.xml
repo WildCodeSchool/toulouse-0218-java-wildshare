@@ -20,4 +20,16 @@
     <string name="link">Link</string>
     <string name="image_link">Image Link</string>
     <string name="ok">OK</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="enter_a_password">Enter a password</string>
+    <string name="enter_a_valid_email">Enter a valid email</string>
+    <string name="create_new_account">create new account</string>
+    <string name="pseudo">Pseudo</string>
+    <string name="enter_both_values">Enter both values</string>
+    <string name="account_create">Account create</string>
+    <string name="pseudo_missed">Enter a pseudo</string>
+    <string name="enter_your_pseudo">Enter your pseudo</string>
+    <string name="valid_modifications">Valid modifications</string>
 </resources>

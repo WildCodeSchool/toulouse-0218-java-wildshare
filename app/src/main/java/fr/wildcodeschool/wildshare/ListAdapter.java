@@ -36,6 +36,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         this.mContext = mContext;
         this.itemModels = itemModels;
         this.listener = listener;
+        this.filterList = itemModels;
     }
 
     public interface ItemClickListerner {

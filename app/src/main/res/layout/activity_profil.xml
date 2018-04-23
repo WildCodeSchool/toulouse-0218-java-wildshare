@@ -4,52 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fr.wildcodeschool.wildshare.AddItem">
+    tools:context="fr.wildcodeschool.wildshare.ProfilActivity">
 
-    <EditText
-        android:id="@+id/et_newItemName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/new_item_s_name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_link" />
-
-    <EditText
-        android:id="@+id/et_description"
-        android:layout_width="wrap_content"
-        android:layout_height="101dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/description"
-        android:inputType="textMultiLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_newItemName" />
-
-    <Button
-        android:id="@+id/b_addToData"
+    <TextView
+        android:id="@+id/tv_pseudo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:text="@string/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_description" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="pseudo" />
 
     <ImageView
-
-        android:id="@+id/iv_img_choose"
+        android:id="@+id/iv_profil_pic"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginEnd="8dp"
@@ -57,21 +27,21 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pseudo"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <Button
-        android:id="@+id/button_camera"
+        android:id="@+id/btn_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/camera"
-        app:layout_constraintEnd_toStartOf="@+id/button_gallery"
-        app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_gallery"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <Button
-        android:id="@+id/button_gallery"
+        android:id="@+id/btn_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -80,20 +50,20 @@
         android:text="@string/gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <Button
-        android:id="@+id/button_link"
+        android:id="@+id/btn_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/link"
-        app:layout_constraintStart_toEndOf="@+id/button_gallery"
-        app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
+        app:layout_constraintStart_toEndOf="@+id/btn_gallery"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profil_pic" />
 
     <EditText
-        android:id="@+id/editText_link"
+        android:id="@+id/et_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -101,11 +71,11 @@
         android:hint="@string/image_link"
         android:inputType="textUri"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/et_newItemName"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        app:layout_constraintStart_toStartOf="@+id/et_enter_pseudo"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
 
     <Button
-        android:id="@+id/button_ok"
+        android:id="@+id/btn_ok"
         android:layout_width="46dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
@@ -114,7 +84,34 @@
         android:text="@string/ok"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText_link"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        app:layout_constraintStart_toEndOf="@+id/et_link"
+        app:layout_constraintTop_toBottomOf="@+id/btn_gallery" />
+
+    <EditText
+        android:id="@+id/et_enter_pseudo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/enter_your_pseudo"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_link" />
+
+    <Button
+        android:id="@+id/btn_valid_modif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/valid_modifications"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_enter_pseudo" />
 
 </android.support.constraint.ConstraintLayout>
