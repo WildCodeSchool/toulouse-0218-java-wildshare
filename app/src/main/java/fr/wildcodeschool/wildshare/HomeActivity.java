@@ -321,17 +321,22 @@ public class HomeActivity extends AppCompatActivity
                 lv3.setAdapter(mItemAdapter3);
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = database.getReference("Item");
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference itemRef = database.getReference("Item");
+                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-                userRef.addValueEventListener(new ValueEventListener() {
+
+                itemRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
                         for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage(), itemModel.getOwnerProfilPic()));
+                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
+                            if (!objetUID.equals(uid)){
+                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                                itemData.add(itemModel);
+                            }
+
                         }
                         Collections.reverse(itemData);
                         mItemAdapter3.notifyDataSetChanged();
