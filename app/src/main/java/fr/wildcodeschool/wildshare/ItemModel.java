@@ -31,6 +31,12 @@ public class ItemModel {
         this.ownerId = ownerId;
     }
 
+    public ItemModel(String name, String image, String ownerProfilPic) {
+        this.name = name;
+        this.image = image;
+        this.ownerProfilPic = ownerProfilPic;
+    }
+
     public String getName() {
         return name;
     }

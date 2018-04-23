@@ -197,7 +197,7 @@ public class HomeActivity extends AppCompatActivity
             fragment.setArguments(args);
             return fragment;
         }
-        /*
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -207,16 +207,16 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest1", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest1", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest1", null, "ownerProfilPic"));
 
 
                 mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("item", itemModel);
+
                         startActivity(intent);
                     }
                 });
@@ -238,20 +238,23 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
                 return rootView;
+
+
+
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
                 mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("item", itemModel);
+
                         startActivity(intent);
                     }
                 });
@@ -279,15 +282,15 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
                 mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("item", itemModel);
+
                         startActivity(intent);
                     }
                 });
@@ -351,7 +354,8 @@ public class HomeActivity extends AppCompatActivity
             }
 
             return null;
-        }*/
+
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

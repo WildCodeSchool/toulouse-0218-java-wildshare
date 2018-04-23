@@ -137,7 +137,7 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLink = edLink.getText().toString();
-                Glide.with(ProfilActivity.this).load(mLink) .into(mImgProfilPic);
+                Glide.with(ProfilActivity.this).load(mLink).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 edLink.setVisibility(View.GONE);
                 btnOK.setVisibility(View.GONE);
             }
@@ -210,13 +210,17 @@ public class ProfilActivity extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK) {
                     //Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    mImgProfilPic.setImageURI(mUri);
+                    //mImgProfilPic.setImageURI(mUri);
+                    Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
                     mUri = imageReturnedIntent.getData();
-                    mImgProfilPic.setImageURI(mUri);
+                    //mImgProfilPic.setImageURI(mUri);
+                    Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+
                 }
                 break;
         }
