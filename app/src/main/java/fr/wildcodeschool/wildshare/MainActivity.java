@@ -47,12 +47,6 @@ public class MainActivity extends AppCompatActivity {
         mImageLogin = findViewById(R.id.image_log);
         mImageSignUp = findViewById(R.id.image_signup);
 
-        //initialiser les sharedPreferences
-        //final SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-
-        //récupérer le username du cache s'il existe
-        //String usernameCache = sharedPref.getString(CACHE_USERNAME, "");
-        //editLogin.setText(usernameCache);
 
         mImageLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,13 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-
-
-                    // TODO : initialiser l'utilisateur
-                    //UserModel username = new UserModel(loginValue, passwordValue);
-                    //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    //intent.putExtra(EXTRA_LOGIN, username.getUsername());
-                    //MainActivity.this.startActivity(intent);
 
             }
 

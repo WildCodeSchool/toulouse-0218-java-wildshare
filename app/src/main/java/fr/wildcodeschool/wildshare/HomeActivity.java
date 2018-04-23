@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,7 +46,7 @@ public class HomeActivity extends AppCompatActivity
     private static ListAdapter mItemAdapter3;
     private static FriendListAdapter mFriendAdapter;
     private FirebaseAuth mAuth;
-    private  String mUid;
+    private String mUid;
     private FirebaseDatabase mDatabase;
     private ImageView mIvProfilNav;
     private TextView mTvPseudoNav;
@@ -204,20 +205,46 @@ public class HomeActivity extends AppCompatActivity
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
-                ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
+
+                final ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest1", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest2", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest3", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+
 
                 mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("item", itemModel);
+
                         startActivity(intent);
                     }
                 });
+
+                lv1.setAdapter(mItemAdapter1);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference itemRef = database.getReference("Item");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+                itemRef.orderByChild("ownerId").equalTo(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemData.clear();
+                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage()));
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter1.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 lv1.setAdapter(mItemAdapter1);
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -236,20 +263,23 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
                 return rootView;
+
+
+
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
                 mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("item", itemModel);
+
                         startActivity(intent);
                     }
                 });
@@ -277,15 +307,15 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
                 mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("item", itemModel);
+
                         startActivity(intent);
                     }
                 });
@@ -349,6 +379,7 @@ public class HomeActivity extends AppCompatActivity
             }
 
             return null;
+
         }
     }
 
