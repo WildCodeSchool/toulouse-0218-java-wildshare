@@ -21,10 +21,6 @@ public class FriendItemsList extends AppCompatActivity {
         ImageView avatar = findViewById(R.id.iv_avatar);
         TextView fullName = findViewById(R.id.tv_firstname_lastname);
 
-        //avatar.setImageDrawable(friend.getAvatar());
-        //fullName.setText(friend.getFirstname() + " " + friend.getLastname());
-
-
         ListView lvFriends = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();
         friendItemsData.add(new ItemModel("NameTest1", null));
