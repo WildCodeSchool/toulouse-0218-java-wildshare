@@ -207,6 +207,8 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            // ONGLET 1
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
@@ -270,7 +272,7 @@ public class HomeActivity extends AppCompatActivity
                 return rootView;
 
 
-
+                // ONGLET 2
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
@@ -308,6 +310,8 @@ public class HomeActivity extends AppCompatActivity
 
                 return rootView;
 
+
+                // ONGLET 3
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
 
                 final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
@@ -326,17 +330,22 @@ public class HomeActivity extends AppCompatActivity
                 lv3.setAdapter(mItemAdapter3);
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = database.getReference("Item");
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference itemRef = database.getReference("Item");
+                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-                userRef.addValueEventListener(new ValueEventListener() {
+
+                itemRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
                         for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage(), itemModel.getOwnerProfilPic()));
+                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
+                            if (!objetUID.equals(uid)){
+                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                                itemData.add(itemModel);
+                            }
+
                         }
                         Collections.reverse(itemData);
                         mItemAdapter3.notifyDataSetChanged();
@@ -369,6 +378,7 @@ public class HomeActivity extends AppCompatActivity
 
                 return rootView;
 
+                // ONGLET 4
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
