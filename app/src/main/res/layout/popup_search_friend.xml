@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_PseudoSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_alignLeft="@+id/tv_addFriend"
+        android:layout_alignStart="@+id/tv_addFriend"
+        android:layout_below="@+id/tv_addFriend"
+        android:inputType="textPersonName"
+        android:text="Pseudo" />
+
+</RelativeLayout>
