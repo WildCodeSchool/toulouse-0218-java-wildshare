@@ -202,6 +202,8 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            // ONGLET 1
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
@@ -265,7 +267,7 @@ public class HomeActivity extends AppCompatActivity
                 return rootView;
 
 
-
+                // ONGLET 2
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
@@ -303,6 +305,8 @@ public class HomeActivity extends AppCompatActivity
 
                 return rootView;
 
+
+                // ONGLET 3
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
 
                 final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
@@ -369,6 +373,7 @@ public class HomeActivity extends AppCompatActivity
 
                 return rootView;
 
+                // ONGLET 4
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
