@@ -18,13 +18,8 @@ public class FriendItemsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_items_list);
 
-        FriendModel friend = getIntent().getExtras().getParcelable("friend");
         ImageView avatar = findViewById(R.id.iv_avatar);
         TextView fullName = findViewById(R.id.tv_firstname_lastname);
-
-        avatar.setImageDrawable(friend.getAvatar());
-        fullName.setText(friend.getFirstname() + " " + friend.getLastname());
-
 
         ListView lvFriends = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();

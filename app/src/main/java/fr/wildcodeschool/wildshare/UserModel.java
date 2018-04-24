@@ -21,9 +21,11 @@ public class UserModel {
         this.profilPic = profilPic;
     }
 
-    public UserModel(String pseudo) {
-        this.pseudo = pseudo;
+    public UserModel (String profilPic){
+        this.profilPic = profilPic;
     }
+
+
 
     public String getPseudo() {
         return pseudo;

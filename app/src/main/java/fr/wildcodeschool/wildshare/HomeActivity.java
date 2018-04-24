@@ -61,14 +61,6 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AddItem.class);
-                startActivity(intent);
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -183,16 +175,22 @@ public class HomeActivity extends AppCompatActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static DialogListener sListener;
 
         public PlaceholderFragment() {
+        }
+
+        public void setListener(DialogListener listener) {
+            sListener = listener;
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber, DialogListener listener) {
             PlaceholderFragment fragment = new PlaceholderFragment();
+            fragment.setListener(listener);
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -202,8 +200,19 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            // ONGLET 1
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
+
+                FloatingActionButton fab = rootView.findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(rootView.getContext(), AddItem.class);
+                        startActivity(intent);
+                    }
+                });
 
 
                 final ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
@@ -265,7 +274,7 @@ public class HomeActivity extends AppCompatActivity
                 return rootView;
 
 
-
+                // ONGLET 2
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
@@ -302,24 +311,56 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
+
+
+                // ONGLET 3
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+
                 final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
                 mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-
                         startActivity(intent);
                     }
                 });
+
                 lv3.setAdapter(mItemAdapter3);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference itemRef = database.getReference("Item");
+                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+
+                itemRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemData.clear();
+                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
+                            if (!objetUID.equals(uid)){
+                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                                itemData.add(itemModel);
+                            }
+
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter3.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -338,25 +379,60 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
+
+                // ONGLET 4
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
+                FloatingActionButton fab = rootView.findViewById(R.id.fab2);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openDialog();
+                    }
+                    public void openDialog(){
+                        sListener.onDialog();
+                    }
+
+                });
+
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
-                friendData.add(new FriendModel("FirstnameTest1", "LastnameTest1", null));
-                friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
-                friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
-                friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
+
                 mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
-                        intent.putExtra("friend", friend);
                         startActivity(intent);
                     }
                 });
 
                 lvFriends.setAdapter(mFriendAdapter);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference userRef = database.getReference("User");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+                userRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        friendData.clear();
+                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+                            FriendModel friendModel = friendDataSnapshot.getValue(FriendModel.class);
+                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                        }
+                        Collections.reverse(friendData);
+                        mFriendAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
@@ -381,6 +457,11 @@ public class HomeActivity extends AppCompatActivity
             return null;
 
         }
+
+        public interface DialogListener {
+
+            void onDialog();
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -391,10 +472,16 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-
             // getItem is called to instantiate the fragment for the given page.
+
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position + 1, new PlaceholderFragment.DialogListener() {
+                @Override
+                public void onDialog() {
+                    PopUpAddFriends popupadd = new PopUpAddFriends();
+                    popupadd.show(getSupportFragmentManager(), "PopUpAddFriends");
+                }
+            });
         }
 
         @Override
