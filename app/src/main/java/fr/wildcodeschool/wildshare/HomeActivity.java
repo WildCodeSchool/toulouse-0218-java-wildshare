@@ -280,19 +280,20 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
+
 
                 mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-
                         startActivity(intent);
                     }
                 });
+
                 lv2.setAdapter(mItemAdapter2);
+
+
+
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
