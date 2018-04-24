@@ -23,14 +23,14 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.popup_search_friend,null);
 
         builder.setView(view)
-                .setTitle("Add Friends")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.add_friends)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
