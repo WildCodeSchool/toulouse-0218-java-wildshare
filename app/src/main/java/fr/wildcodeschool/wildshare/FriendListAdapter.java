@@ -10,6 +10,9 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 
 /**
@@ -33,6 +36,8 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         this.mContext = mContext;
         this.friendModel = friend;
         this.listener = listener;
+        this.filterList = friend;
+
     }
 
     public FriendListAdapter(Context mContext, ArrayList<FriendModel> friend, CustomFilterFriend filter, ArrayList<FriendModel> filterList) {
@@ -63,13 +68,11 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.friend_list, parent, false);
         }
 
-        TextView friendFirstname = convertView.findViewById(R.id.tv_firstname);
-        TextView friendLastname = convertView.findViewById(R.id.tv_lastname);
-        ImageView avatar = convertView.findViewById(R.id.iv_avatar);
+        TextView pseudo = convertView.findViewById(R.id.tv_pseudoFriend);
+        ImageView profilPic = convertView.findViewById(R.id.iv_profilPicFriend);
 
-        friendFirstname.setText(friend.getFirstname());
-        friendLastname.setText(friend.getLastname());
-        avatar.setImageDrawable(friend.getAvatar());
+        pseudo.setText(friend.getPseudo());
+        Glide.with(mContext).load(friend.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(profilPic);
 
 
         convertView.setOnClickListener(new View.OnClickListener() {

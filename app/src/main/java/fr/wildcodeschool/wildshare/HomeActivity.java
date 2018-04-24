@@ -1,7 +1,6 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -23,17 +23,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private static ListAdapter itemAdapter1;
-    private static ListAdapter itemAdapter2;
-    private static ListAdapter itemAdapter3;
-    private static FriendListAdapter friendAdapter;
+    private static ListAdapter mItemAdapter1;
+    private static ListAdapter mItemAdapter2;
+    private static ListAdapter mItemAdapter3;
+    private static FriendListAdapter mFriendAdapter;
+    private FirebaseAuth mAuth;
+    private String mUid;
+    private FirebaseDatabase mDatabase;
+    private ImageView mIvProfilNav;
+    private TextView mTvPseudoNav;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +61,6 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AddItem.class);
-                startActivity(intent);
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,6 +82,39 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+
+        View headerLayout = navigationView.getHeaderView(0);
+        mDatabase = FirebaseDatabase.getInstance();
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mIvProfilNav = (ImageView) headerLayout.findViewById(R.id.iv_profil_nav);
+        mTvPseudoNav = (TextView) headerLayout.findViewById(R.id.tv_pseudo_nav);
+
+        DatabaseReference pathID = mDatabase.getReference("User").child(mUid);
+
+        pathID.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if ((dataSnapshot.child("profilPic").getValue() != null)){
+                    String url = dataSnapshot.child("profilPic").getValue(String.class);
+                    Glide.with(HomeActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
+                }
+
+                if ((dataSnapshot.child("pseudo").getValue() != null)){
+                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
+                    mTvPseudoNav.setText(pseudo);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
 
     }
 
@@ -101,13 +146,19 @@ public class HomeActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_profil) {
-            // Handle the camera action
+            startActivity(new Intent(HomeActivity.this, ProfilActivity.class));
 
         } else if (id == R.id.nav_deconnexion) {
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            startActivity(new Intent(HomeActivity.this, MainActivity.class));
+
+
 
         } else if (id == R.id.nav_share) {
 
@@ -124,16 +175,22 @@ public class HomeActivity extends AppCompatActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static DialogListener sListener;
 
         public PlaceholderFragment() {
+        }
+
+        public void setListener(DialogListener listener) {
+            sListener = listener;
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber, DialogListener listener) {
             PlaceholderFragment fragment = new PlaceholderFragment();
+            fragment.setListener(listener);
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -143,17 +200,61 @@ public class HomeActivity extends AppCompatActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            // ONGLET 1
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
+                final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
 
-                ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
+                FloatingActionButton fab = rootView.findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(rootView.getContext(), AddItem.class);
+                        startActivity(intent);
+                    }
+                });
+
+
+                final ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest1", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest2", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest3", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter1 = new ListAdapter(this.getActivity(), itemData);
-                lv1.setAdapter(itemAdapter1);
+
+                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+
+                        startActivity(intent);
+                    }
+                });
+
+                lv1.setAdapter(mItemAdapter1);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference itemRef = database.getReference("Item");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+                itemRef.orderByChild("ownerId").equalTo(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemData.clear();
+                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage()));
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter1.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+                lv1.setAdapter(mItemAdapter1);
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -164,24 +265,34 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        itemAdapter1.getFilter().filter(newText);
+                        mItemAdapter1.getFilter().filter(newText);
 
 
                         return false;
                     }
                 });
                 return rootView;
+
+
+                // ONGLET 2
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-                View rootView = inflater.inflate(R.layout.fragment_two, container, false);
+                final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
+                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
+                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
 
-                itemAdapter2 = new ListAdapter(this.getActivity(), itemData);
-                lv2.setAdapter(itemAdapter2);
+                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+
+                        startActivity(intent);
+                    }
+                });
+                lv2.setAdapter(mItemAdapter2);
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -192,7 +303,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        itemAdapter2.getFilter().filter(newText);
+                        mItemAdapter2.getFilter().filter(newText);
 
 
                         return false;
@@ -200,17 +311,56 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
+
+
+                // ONGLET 3
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-                View rootView = inflater.inflate(R.layout.fragment_three, container, false);
+
+                final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
 
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.orange));
-                itemData.add(new ItemModel("ObjetTest6", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.red));
-                itemData.add(new ItemModel("ObjetTest7", (Drawable) null, "Description", "ownerFirstame", "ownerLastame", R.color.yellow));
 
-                itemAdapter3 = new ListAdapter(this.getActivity(), itemData);
-                lv3.setAdapter(itemAdapter3);
+                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        startActivity(intent);
+                    }
+                });
+
+                lv3.setAdapter(mItemAdapter3);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference itemRef = database.getReference("Item");
+                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+
+                itemRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        itemData.clear();
+                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
+                            if (!objetUID.equals(uid)){
+                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                                itemData.add(itemModel);
+                            }
+
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter3.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -221,7 +371,7 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        itemAdapter3.getFilter().filter(newText);
+                        mItemAdapter3.getFilter().filter(newText);
 
 
                         return false;
@@ -229,20 +379,61 @@ public class HomeActivity extends AppCompatActivity
                 });
 
                 return rootView;
+
+                // ONGLET 4
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
+                FloatingActionButton fab = rootView.findViewById(R.id.fab2);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openDialog();
+                    }
+                    public void openDialog(){
+                        sListener.onDialog();
+                    }
+
+                });
+
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
-                friendData.add(new FriendModel("FirstnameTest1", "LastnameTest1", null));
-                friendData.add(new FriendModel("FirstnameTest2", "LastnameTest2", null));
-                friendData.add(new FriendModel("FirstnameTest3", "LastnameTest3", null));
-                friendData.add(new FriendModel("FirstnameTest4", "LastnameTest4", null));
-                friendAdapter = new FriendListAdapter(this.getActivity(), friendData);
+
+                mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
+                    @Override
+                    public void onClick(FriendModel friend) {
+                        Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
+                        startActivity(intent);
+                    }
+                });
+
+                lvFriends.setAdapter(mFriendAdapter);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference userRef = database.getReference("User");
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-                lvFriends.setAdapter(friendAdapter);
-                    SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
+                userRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        friendData.clear();
+                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+                            FriendModel friendModel = friendDataSnapshot.getValue(FriendModel.class);
+                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                        }
+                        Collections.reverse(friendData);
+                        mFriendAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+                SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
                         public boolean onQueryTextSubmit(String query) {
@@ -252,7 +443,7 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public boolean onQueryTextChange(String newText) {
 
-                            friendAdapter.getFilter().filter(newText);
+                            mFriendAdapter.getFilter().filter(newText);
 
 
                             return false;
@@ -264,6 +455,12 @@ public class HomeActivity extends AppCompatActivity
             }
 
             return null;
+
+        }
+
+        public interface DialogListener {
+
+            void onDialog();
         }
     }
 
@@ -275,10 +472,16 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-
             // getItem is called to instantiate the fragment for the given page.
+
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position + 1, new PlaceholderFragment.DialogListener() {
+                @Override
+                public void onDialog() {
+                    PopUpAddFriends popupadd = new PopUpAddFriends();
+                    popupadd.show(getSupportFragmentManager(), "PopUpAddFriends");
+                }
+            });
         }
 
         @Override

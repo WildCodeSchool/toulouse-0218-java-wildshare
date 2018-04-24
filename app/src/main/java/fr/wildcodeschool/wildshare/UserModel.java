@@ -1,40 +1,47 @@
 package fr.wildcodeschool.wildshare;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+
 /**
  * Created by wilder on 27/03/18.
  */
 
 public class UserModel {
+    private String pseudo;
+    private String profilPic;
 
-    private String username;
-    private String password;
 
-    public UserModel(String username, String password) {
-        this.username = username;
-        this.password = password;
+
+    public UserModel() {}
+
+
+    public UserModel(String pseudo, String profilPic) {
+        this.pseudo = pseudo;
+        this.profilPic = profilPic;
     }
 
-    public String getUsername() {
-        return username;
+    public UserModel (String profilPic){
+        this.profilPic = profilPic;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+
+
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public String getPassword() {
-        return password;
+    public UserModel setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+        return this;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getProfilPic() {
+        return profilPic;
     }
 
-    public void login() {
-
-    }
-
-    public void logout() {
-
+    public UserModel setProfilPic(String profilPic) {
+        this.profilPic = profilPic;
+        return this;
     }
 }

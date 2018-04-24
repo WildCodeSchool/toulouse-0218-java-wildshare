@@ -1,35 +1,51 @@
 {
   "project_info": {
-    "project_number": "747528383642",
-    "firebase_url": "https://wildshare-81f54.firebaseio.com",
-    "project_id": "wildshare-81f54",
-    "storage_bucket": "wildshare-81f54.appspot.com"
+    "project_number": "368840231794",
+    "firebase_url": "https://wildshare-319b7.firebaseio.com",
+    "project_id": "wildshare-319b7",
+    "storage_bucket": "wildshare-319b7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:747528383642:android:ee35425cffc43170",
+        "mobilesdk_app_id": "1:368840231794:android:ee35425cffc43170",
         "android_client_info": {
           "package_name": "fr.wildcodeschool.wildshare"
         }
       },
       "oauth_client": [
         {
-          "client_id": "747528383642-01iqaugetm069hslbph6fk52qrsq8qu0.apps.googleusercontent.com",
+          "client_id": "368840231794-oh2nds6ik2clkkpuo39ssr0aibd6qt40.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "fr.wildcodeschool.wildshare",
-            "certificate_hash": "11948088565bbc0a9a3b759753e626e482552237"
+            "certificate_hash": "84bc3017cbafa2b4c8df915def4a15ab3f8fe413"
           }
         },
         {
-          "client_id": "747528383642-r612nsq0fupio1svsmrcem51o4731neq.apps.googleusercontent.com",
+          "client_id": "368840231794-no63csiqbeshecvjk2fj4lui2nc8f1tm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.wildcodeschool.wildshare",
+            "certificate_hash": "23c5ea9fba4f828924413eca8517485e2d3dc741"
+          }
+        },
+        {
+          "client_id": "368840231794-aoledl7pn5vpp5qfhmtgvl11d62rc38f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fr.wildcodeschool.wildshare",
+            "certificate_hash": "0395cfb73fe9f876598aa53c4eb3ef620f4048bd"
+          }
+        },
+        {
+          "client_id": "368840231794-fni8qthmtsr9iegtt5k3psdgrrnvq5gd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBNqrEoZhdzJJlwF62GXzQrIpgVoZvUslI"
+          "current_key": "AIzaSyBCoUD1IteZxyI7m27cAuRB6Cc4xLrF6pY"
         }
       ],
       "services": {
@@ -40,8 +56,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "747528383642-r612nsq0fupio1svsmrcem51o4731neq.apps.googleusercontent.com",
-
+              "client_id": "368840231794-fni8qthmtsr9iegtt5k3psdgrrnvq5gd.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
