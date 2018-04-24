@@ -36,7 +36,7 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
 
                     }
                 });
-        etpseudo = view.findViewById(R.id.et_PseudoSearch);
+        etpseudo = view.findViewById(R.id.et_pseudo_search);
         return builder.create();
     }
 

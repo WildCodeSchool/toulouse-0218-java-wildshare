@@ -39,4 +39,5 @@
     <string name="add">Add</string>
     <string name="item_s_name">Item\'s name</string>
     <string name="item_s_description">Item\'s description</string>
+    <string name="pseudo">Pseudo</string>
 </resources>
