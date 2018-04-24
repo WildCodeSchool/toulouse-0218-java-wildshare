@@ -56,10 +56,11 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
                                     if (pseudoAdd.equals(pseudoComp)) {
                                         String stringKey = itemDataSnapshot.getKey().toString();
                                         pathUser.child(user.getUid()).child("Friends").child(stringKey).setValue("true");
+                                        return;
                                     }
-                                    else {
-                                        Toast.makeText(getContext(), R.string.pseudo_do_not_exist, Toast.LENGTH_SHORT).show();
-                                    }
+                                    //else {
+                                        //Toast.makeText(getContext(), R.string.pseudo_do_not_exist, Toast.LENGTH_SHORT).show();
+                                    //}
                                 }
                             }
 

@@ -335,6 +335,7 @@ public class HomeActivity extends AppCompatActivity
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference itemRef = database.getReference("Item");
                 final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
 
 
 
@@ -342,13 +343,24 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
-                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
-                            if (!objetUID.equals(uid)){
-                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                                itemData.add(itemModel);
-                            }
+                        for (final DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+                            myFriendsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot myFriendDataSnapshot : dataSnapshot.getChildren()) {
+                                        if (myFriendDataSnapshot.getKey().toString().equals(itemDataSnapshot.child("ownerId").getValue().toString())){
+                                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+                                            itemData.add(itemModel);
+                                        }
+                                    }
 
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                         Collections.reverse(itemData);
                         mItemAdapter3.notifyDataSetChanged();
@@ -413,15 +425,32 @@ public class HomeActivity extends AppCompatActivity
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference userRef = database.getReference("User");
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
 
 
                 userRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         friendData.clear();
-                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
-                            FriendModel friendModel = friendDataSnapshot.getValue(FriendModel.class);
-                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                        for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
+                            myFriendsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+                                        if (userDataSnapshot.getKey().toString().equals(friendDataSnapshot.getKey().toString())) {
+                                            FriendModel friendModel = userDataSnapshot.getValue(FriendModel.class);
+                                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                                        }
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
                         Collections.reverse(friendData);
                         mFriendAdapter.notifyDataSetChanged();
