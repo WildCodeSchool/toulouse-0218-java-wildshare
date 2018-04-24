@@ -1,6 +1,7 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -64,6 +65,10 @@ public class ProfilActivity extends AppCompatActivity {
         mEditPseudo = findViewById(R.id.et_enter_pseudo);
         btnValidModif = findViewById(R.id.btn_valid_modif);
 
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        
 
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();

@@ -1,5 +1,6 @@
 package fr.wildcodeschool.wildshare;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,7 +13,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -61,14 +66,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AddItem.class);
-                startActivity(intent);
-            }
-        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,6 +123,7 @@ public class HomeActivity extends AppCompatActivity
         });
 
     }
+
 
     @Override
     public void onBackPressed() {
@@ -183,16 +182,22 @@ public class HomeActivity extends AppCompatActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private static DialogListener sListener;
 
         public PlaceholderFragment() {
+        }
+
+        public void setListener(DialogListener listener) {
+            sListener = listener;
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber, DialogListener listener) {
             PlaceholderFragment fragment = new PlaceholderFragment();
+            fragment.setListener(listener);
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -200,7 +205,7 @@ public class HomeActivity extends AppCompatActivity
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
@@ -367,6 +372,20 @@ public class HomeActivity extends AppCompatActivity
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
+                FloatingActionButton fab = rootView.findViewById(R.id.fab2);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openDialog();
+                    }
+                    public void openDialog(){
+                        sListener.onDialog();
+                    }
+
+                });
+
+
+
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
 
@@ -428,9 +447,14 @@ public class HomeActivity extends AppCompatActivity
             return null;
 
         }
+
+        public interface DialogListener {
+
+            void onDialog();
+        }
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+   public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -441,7 +465,13 @@ public class HomeActivity extends AppCompatActivity
 
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position + 1, new PlaceholderFragment.DialogListener() {
+                @Override
+                public void onDialog() {
+                    PopUpAddFriends popupadd = new PopUpAddFriends();
+                    popupadd.show(getSupportFragmentManager(), "PopUpAddFriends");
+                }
+            });
         }
 
         @Override
