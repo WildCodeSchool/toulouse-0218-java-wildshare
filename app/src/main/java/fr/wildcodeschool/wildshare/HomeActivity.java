@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -47,6 +48,7 @@ public class HomeActivity extends AppCompatActivity
     private static FriendListAdapter mFriendAdapter;
     private FirebaseAuth mAuth;
     private String mUid;
+    private String mShare;
     private FirebaseDatabase mDatabase;
     private ImageView mIvProfilNav;
     private TextView mTvPseudoNav;
@@ -58,14 +60,14 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, AddItem.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -114,7 +116,6 @@ public class HomeActivity extends AppCompatActivity
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
@@ -251,7 +252,6 @@ public class HomeActivity extends AppCompatActivity
 
                         mItemAdapter1.getFilter().filter(newText);
 
-
                         return false;
                     }
                 });
@@ -262,21 +262,76 @@ public class HomeActivity extends AppCompatActivity
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
-                ListView lv2 = rootView.findViewById(R.id.take_list);
+                final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference friendRef = mDatabase.getReference("User").child(userId).child("Friend");
+                final DatabaseReference itemRef = mDatabase.getReference("Item");
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
+
+                ListView lv2 = rootView.findViewById(R.id.take_list);
+
+                friendRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for (final DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+
+                            final String friendId = friendRef.getKey();
+                            final DatabaseReference friendItemRef = mDatabase.getReference(friendId).child("Item");
+
+                            friendItemRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    for (DataSnapshot friendItemDataSnapshot : dataSnapshot.getChildren()) {
+
+                                        final String item = friendItemRef.getKey();
+                                        final String itemValue = friendItemDataSnapshot.child(item).getValue().toString();
+
+                                        if (itemValue.equals(userId)) {
+
+                                            itemRef.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                                    for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+
+                                                        ItemModel itemModel = itemDataSnapshot.child(item).getValue(ItemModel.class);
+                                                        itemData.add(itemModel);
+                                                    }
+                                                }
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                        Collections.reverse(itemData);
+                        mItemAdapter2.notifyDataSetChanged();
+
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
 
                 mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
 
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
                         startActivity(intent);
                     }
                 });
+
                 lv2.setAdapter(mItemAdapter2);
+
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -288,7 +343,6 @@ public class HomeActivity extends AppCompatActivity
                     public boolean onQueryTextChange(String newText) {
 
                         mItemAdapter2.getFilter().filter(newText);
-
 
                         return false;
                     }
@@ -350,7 +404,6 @@ public class HomeActivity extends AppCompatActivity
 
                         mItemAdapter3.getFilter().filter(newText);
 
-
                         return false;
                     }
                 });
@@ -360,12 +413,24 @@ public class HomeActivity extends AppCompatActivity
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 4) {
                 final View rootView = inflater.inflate(R.layout.fragment_four, container, false);
 
+                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+
+                DatabaseReference mDatabaseReferenceU = mDatabase.getReference();
+                DatabaseReference mDatabaseReference = mDatabase.getReference();
+                mDatabaseReference = mDatabase.getReference("Item");
+                mDatabaseReferenceU = mDatabase.getReference("User");
+
+
+                EditText newFriend = rootView.findViewById(R.id.et_new_friend);
+                String pseudoNewFriend = newFriend.getText().toString();
+
                 FloatingActionButton fabFour =  rootView.findViewById(R.id.fab_four);
                 fabFour.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(rootView.getContext(), AddItem.class);
-                        startActivity(intent);
+
+
+
                     }
                 });
 
