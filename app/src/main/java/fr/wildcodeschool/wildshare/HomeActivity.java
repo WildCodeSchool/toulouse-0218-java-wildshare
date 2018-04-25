@@ -1,6 +1,5 @@
 package fr.wildcodeschool.wildshare;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,10 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -66,7 +61,14 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, AddItem.class);
+                startActivity(intent);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -102,13 +104,13 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if ((dataSnapshot.child("profilPic").getValue() != null)){
-                    String url = dataSnapshot.child("profilPic").getValue(String.class);
+                if ((dataSnapshot.child("Profil").child("profilPic").getValue() != null)){
+                    String url = dataSnapshot.child("Profil").child("profilPic").getValue(String.class);
                     Glide.with(HomeActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
                 }
 
-                if ((dataSnapshot.child("pseudo").getValue() != null)){
-                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
+                if ((dataSnapshot.child("Profil").child("pseudo").getValue() != null)){
+                    String pseudo = dataSnapshot.child("Profil").child("pseudo").getValue(String.class);
                     mTvPseudoNav.setText(pseudo);
                 }
 
@@ -123,7 +125,6 @@ public class HomeActivity extends AppCompatActivity
         });
 
     }
-
 
     @Override
     public void onBackPressed() {
@@ -205,12 +206,21 @@ public class HomeActivity extends AppCompatActivity
         }
 
         @Override
-        public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
             // ONGLET 1
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
+
+                FloatingActionButton fab = rootView.findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(rootView.getContext(), AddItem.class);
+                        startActivity(intent);
+                    }
+                });
 
 
                 final ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
@@ -278,19 +288,81 @@ public class HomeActivity extends AppCompatActivity
 
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
+
 
                 mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-
                         startActivity(intent);
                     }
                 });
+
                 lv2.setAdapter(mItemAdapter2);
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference userRef = database.getReference("User");
+                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
+
+                final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference friendRef = mDatabase.getReference("User").child(userId).child("Friends");
+                final DatabaseReference itemRef = mDatabase.getReference("Item");
+
+
+
+                friendRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+
+                            final String friendId = friendDataSnapshot.getKey();
+                            final DatabaseReference friendItemRef = mDatabase.getReference("User").child(friendId).child("Item");
+
+                            friendItemRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    itemData.clear();
+                                    for (DataSnapshot friendItemDataSnapshot : dataSnapshot.getChildren()) {
+
+                                        final String itemId = friendItemDataSnapshot.getKey();
+                                        final String itemValue = friendItemDataSnapshot.getValue(String.class);
+
+                                        if (itemValue.equals(userId)) {
+
+                                            itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                                                    ItemModel itemModel = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                    itemData.add(itemModel);
+
+                                                    mItemAdapter2.notifyDataSetChanged();
+
+                                                }
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+
+
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -332,23 +404,51 @@ public class HomeActivity extends AppCompatActivity
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference itemRef = database.getReference("Item");
                 final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference userRef = database.getReference("User");
+                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
 
 
-
-                itemRef.addValueEventListener(new ValueEventListener() {
+                myFriendsRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
-                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
-                            if (!objetUID.equals(uid)){
-                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                                itemData.add(itemModel);
-                            }
+                        for (DataSnapshot myFriendDataSnapshot : dataSnapshot.getChildren()) {
+                            String friendId = myFriendDataSnapshot.getKey();
+                            userRef.child(friendId).child("Item").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot myFriendItemDataSnapshot : dataSnapshot.getChildren()) {
+                                        String itemId = myFriendItemDataSnapshot.getKey();
+                                        itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
+                                                    itemData.add(itemModel);
+
+                                                mItemAdapter3.notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
 
                         }
-                        Collections.reverse(itemData);
-                        mItemAdapter3.notifyDataSetChanged();
+
+
                     }
 
                     @Override
@@ -356,6 +456,8 @@ public class HomeActivity extends AppCompatActivity
 
                     }
                 });
+
+
 
 
 
@@ -400,8 +502,6 @@ public class HomeActivity extends AppCompatActivity
                 mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
-
-
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
                         startActivity(intent);
                     }
@@ -412,15 +512,32 @@ public class HomeActivity extends AppCompatActivity
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference userRef = database.getReference("User");
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
 
-                
+
                 userRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         friendData.clear();
-                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
-                            FriendModel friendModel = friendDataSnapshot.getValue(FriendModel.class);
-                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                        for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
+                            myFriendsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+                                        if (userDataSnapshot.getKey().toString().equals(friendDataSnapshot.getKey().toString())) {
+                                            FriendModel friendModel = userDataSnapshot.child("Profil").getValue(FriendModel.class);
+                                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+                                        }
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
                         Collections.reverse(friendData);
                         mFriendAdapter.notifyDataSetChanged();
@@ -464,7 +581,7 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-   public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -472,8 +589,8 @@ public class HomeActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-
             // getItem is called to instantiate the fragment for the given page.
+
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1, new PlaceholderFragment.DialogListener() {
                 @Override

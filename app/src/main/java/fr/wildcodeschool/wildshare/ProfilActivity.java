@@ -1,7 +1,6 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -54,6 +53,7 @@ public class ProfilActivity extends AppCompatActivity {
         final Button btnOK;
         final EditText edLink;
         Button btnValidModif;
+        final TextView tvPseudo;
         String uid;
 
         edLink = findViewById(R.id.et_link);
@@ -64,11 +64,7 @@ public class ProfilActivity extends AppCompatActivity {
         mImgProfilPic = findViewById(R.id.iv_profil_pic);
         mEditPseudo = findViewById(R.id.et_enter_pseudo);
         btnValidModif = findViewById(R.id.btn_valid_modif);
-
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        
+        tvPseudo = findViewById(R.id.tv_pseudo);
 
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -83,13 +79,14 @@ public class ProfilActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if ((dataSnapshot.child("profilPic").getValue() != null)) {
-                    mUrlSave = dataSnapshot.child("profilPic").getValue(String.class);
+                if ((dataSnapshot.child("Profil").child("profilPic").getValue() != null)) {
+                    mUrlSave = dataSnapshot.child("Profil").child("profilPic").getValue(String.class);
                     Glide.with(ProfilActivity.this).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 }
 
-                if ((dataSnapshot.child("pseudo").getValue() != null)) {
-                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
+                if ((dataSnapshot.child("Profil").child("pseudo").getValue() != null)) {
+                    String pseudo = dataSnapshot.child("Profil").child("pseudo").getValue(String.class);
+                    tvPseudo.setText(pseudo);
                     mEditPseudo.setText(pseudo);
                 }
 
@@ -173,14 +170,14 @@ public class ProfilActivity extends AppCompatActivity {
                 UserModel userModel = new UserModel(pseudo, profilPic);
                 FirebaseUser user = mAuth.getCurrentUser();
                 mDatabaseReference = mDatabase.getReference("User");
-                mDatabaseReference.child(user.getUid()).setValue(userModel);
+                mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
             }
             else{
                 String profilPic = mUrlSave;
                 UserModel userModel = new UserModel(pseudo, profilPic);
                 FirebaseUser user = mAuth.getCurrentUser();
                 mDatabaseReference = mDatabase.getReference("User");
-                mDatabaseReference.child(user.getUid()).setValue(userModel);
+                mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
             }
 
 
@@ -195,7 +192,7 @@ public class ProfilActivity extends AppCompatActivity {
                     UserModel userModel = new UserModel(pseudo, profilPic);
                     FirebaseUser user = mAuth.getCurrentUser();
                     mDatabaseReference = mDatabase.getReference("User");
-                    mDatabaseReference.child(user.getUid()).setValue(userModel);
+                    mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
                 }
             });
         }
