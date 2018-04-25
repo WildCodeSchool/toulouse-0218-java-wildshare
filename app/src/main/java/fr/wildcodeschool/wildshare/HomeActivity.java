@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -61,14 +62,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AddItem.class);
-                startActivity(intent);
-            }
-        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -243,6 +237,8 @@ public class HomeActivity extends AppCompatActivity
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
+
+
                 itemRef.orderByChild("ownerId").equalTo(uid).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -254,6 +250,8 @@ public class HomeActivity extends AppCompatActivity
                         Collections.reverse(itemData);
                         mItemAdapter1.notifyDataSetChanged();
                     }
+
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

@@ -92,4 +92,5 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         }
         return filter;
     }
+
 }
