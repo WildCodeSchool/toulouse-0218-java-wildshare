@@ -404,8 +404,11 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
+
+
                         for (DataSnapshot myFriendDataSnapshot : dataSnapshot.getChildren()) {
-                            String friendId = myFriendDataSnapshot.getKey();
+                            final String friendId = myFriendDataSnapshot.getKey();
+
                             userRef.child(friendId).child("Item").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -415,10 +418,23 @@ public class HomeActivity extends AppCompatActivity
                                             itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
-                                                    itemData.add(itemModel);
+                                                    final ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
 
-                                                    mItemAdapter3.notifyDataSetChanged();
+                                                    userRef.child(friendId).child("Profil").addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                                                            itemModel.setOwnerProfilPic(userModel.getProfilPic());
+                                                            itemData.add(itemModel);
+
+                                                            mItemAdapter3.notifyDataSetChanged();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
                                                 }
 
                                                 @Override
