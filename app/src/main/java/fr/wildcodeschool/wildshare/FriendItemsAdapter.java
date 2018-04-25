@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
+
     FriendItemsAdapter(Context context, ArrayList<ItemModel> monsters) {
         super(context, 0, monsters);
     }

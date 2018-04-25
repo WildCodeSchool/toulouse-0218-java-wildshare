@@ -13,6 +13,7 @@ public class ItemModel {
     private String ownerProfilPic;
     private String ownerId;
 
+
     public ItemModel(){}
 
     public ItemModel(String name, String image, String description, String ownerPseudo, String ownerProfilPic, String ownerId) {
@@ -37,10 +38,13 @@ public class ItemModel {
         this.ownerProfilPic = ownerProfilPic;
     }
 
+
+
     public ItemModel(String name, String image) {
         this.name = name;
         this.image = image;
     }
+
 
     public String getName() {
         return name;

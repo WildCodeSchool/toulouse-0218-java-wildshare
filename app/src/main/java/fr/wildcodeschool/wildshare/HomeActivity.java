@@ -107,17 +107,12 @@ public class HomeActivity extends AppCompatActivity
                     String pseudo = dataSnapshot.child("Profil").child("pseudo").getValue(String.class);
                     mTvPseudoNav.setText(pseudo);
                 }
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
-
-
         });
-
     }
 
     @Override
@@ -224,8 +219,9 @@ public class HomeActivity extends AppCompatActivity
                 mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
 
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
                 });
@@ -273,7 +269,6 @@ public class HomeActivity extends AppCompatActivity
 
                         mItemAdapter1.getFilter().filter(newText);
 
-
                         return false;
                     }
                 });
@@ -287,11 +282,12 @@ public class HomeActivity extends AppCompatActivity
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
-
                 mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
+
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
                 });
@@ -333,12 +329,27 @@ public class HomeActivity extends AppCompatActivity
                                             itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    final ItemModel itemModel = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                    userRef.child(friendId).child("Profil").addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+
+                                                            itemModel.setOwnerProfilPic(userModel.getProfilPic());
+                                                            itemData.add(itemModel);
+
+                                                            mItemAdapter2.notifyDataSetChanged();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
 
 
-                                                    ItemModel itemModel = dataSnapshot.child(itemId).getValue(ItemModel.class);
-                                                    itemData.add(itemModel);
 
-                                                    mItemAdapter2.notifyDataSetChanged();
+
 
                                                 }
                                                 @Override
@@ -373,7 +384,6 @@ public class HomeActivity extends AppCompatActivity
 
                         mItemAdapter2.getFilter().filter(newText);
 
-
                         return false;
                     }
                 });
@@ -392,7 +402,9 @@ public class HomeActivity extends AppCompatActivity
                 mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
+
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
                 });
@@ -410,30 +422,47 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         itemData.clear();
+
+
                         for (DataSnapshot myFriendDataSnapshot : dataSnapshot.getChildren()) {
-                            String friendId = myFriendDataSnapshot.getKey();
+                            final String friendId = myFriendDataSnapshot.getKey();
+
                             userRef.child(friendId).child("Item").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot myFriendItemDataSnapshot : dataSnapshot.getChildren()) {
-                                        String itemId = myFriendItemDataSnapshot.getKey();
-                                        itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
-                                                    itemData.add(itemModel);
+                                        if (myFriendItemDataSnapshot.getValue().toString().equals("0")) {
+                                            String itemId = myFriendItemDataSnapshot.getKey();
+                                            itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    final ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
 
-                                                mItemAdapter3.notifyDataSetChanged();
-                                            }
+                                                    userRef.child(friendId).child("Profil").addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                                                            itemModel.setOwnerProfilPic(userModel.getProfilPic());
+                                                            itemData.add(itemModel);
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
+                                                            mItemAdapter3.notifyDataSetChanged();
+                                                        }
 
-                                            }
-                                        });
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+
                                     }
-
-
                                 }
 
                                 @Override
@@ -441,12 +470,7 @@ public class HomeActivity extends AppCompatActivity
 
                                 }
                             });
-
-
-
                         }
-
-
                     }
 
                     @Override
@@ -470,7 +494,6 @@ public class HomeActivity extends AppCompatActivity
                     public boolean onQueryTextChange(String newText) {
 
                         mItemAdapter3.getFilter().filter(newText);
-
 
                         return false;
                     }
@@ -497,10 +520,12 @@ public class HomeActivity extends AppCompatActivity
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
 
+
                 mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
+                        intent.putExtra("pseudo", friend.getPseudo());
                         startActivity(intent);
                     }
                 });
@@ -511,7 +536,6 @@ public class HomeActivity extends AppCompatActivity
                 final DatabaseReference userRef = database.getReference("User");
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
-
 
                 userRef.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -525,6 +549,7 @@ public class HomeActivity extends AppCompatActivity
                                         if (userDataSnapshot.getKey().toString().equals(friendDataSnapshot.getKey().toString())) {
                                             FriendModel friendModel = userDataSnapshot.child("Profil").getValue(FriendModel.class);
                                             friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
+
                                         }
 
                                     }
@@ -537,7 +562,6 @@ public class HomeActivity extends AppCompatActivity
                             });
 
                         }
-                        Collections.reverse(friendData);
                         mFriendAdapter.notifyDataSetChanged();
                     }
 
@@ -547,24 +571,21 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
 
-
                 SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return false;
-                        }
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
 
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
 
-                            mFriendAdapter.getFilter().filter(newText);
+                        mFriendAdapter.getFilter().filter(newText);
 
-
-                            return false;
-                        }
-                    });
-
+                        return false;
+                    }
+                });
 
                 return rootView;
             }
