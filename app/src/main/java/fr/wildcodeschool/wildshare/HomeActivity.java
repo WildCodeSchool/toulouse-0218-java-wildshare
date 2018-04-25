@@ -217,8 +217,9 @@ public class HomeActivity extends AppCompatActivity
                 mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
 
+                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
                 });
@@ -280,6 +281,7 @@ public class HomeActivity extends AppCompatActivity
                     public void onClick(ItemModel itemModel) {
 
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
                 });
@@ -379,7 +381,9 @@ public class HomeActivity extends AppCompatActivity
                 mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
+
                         Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
                 });
