@@ -46,6 +46,9 @@ public class ItemModel {
         this.name = name;
         this.image = image;
     }
+    public ItemModel(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
