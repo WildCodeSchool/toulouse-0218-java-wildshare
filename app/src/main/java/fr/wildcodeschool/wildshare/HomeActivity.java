@@ -410,21 +410,24 @@ public class HomeActivity extends AppCompatActivity
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot myFriendItemDataSnapshot : dataSnapshot.getChildren()) {
-                                        String itemId = myFriendItemDataSnapshot.getKey();
-                                        itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (myFriendItemDataSnapshot.getValue().toString().equals("0")) {
+                                            String itemId = myFriendItemDataSnapshot.getKey();
+                                            itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
                                                     ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
                                                     itemData.add(itemModel);
 
-                                                mItemAdapter3.notifyDataSetChanged();
-                                            }
+                                                    mItemAdapter3.notifyDataSetChanged();
+                                                }
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 
-                                            }
-                                        });
+                                                }
+                                            });
+                                        }
+
                                     }
 
 
