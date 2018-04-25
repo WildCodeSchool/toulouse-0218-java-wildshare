@@ -52,7 +52,7 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                                    String pseudoComp = itemDataSnapshot.child("pseudo").getValue().toString();
+                                    String pseudoComp = itemDataSnapshot.child("Profil").child("pseudo").getValue().toString();
                                     if (pseudoAdd.equals(pseudoComp)) {
                                         String stringKey = itemDataSnapshot.getKey().toString();
                                         pathUser.child(user.getUid()).child("Friends").child(stringKey).setValue("true");
