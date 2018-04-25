@@ -111,8 +111,5 @@ public class FriendItemsList extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 }
