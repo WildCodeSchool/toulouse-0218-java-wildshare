@@ -1,7 +1,10 @@
 package fr.wildcodeschool.wildshare;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +22,9 @@ import java.util.ArrayList;
 
 public class FriendItemsList extends AppCompatActivity {
 
+    private static FriendItemsAdapter mFriendItemsAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +32,22 @@ public class FriendItemsList extends AppCompatActivity {
 
         final ImageView avatar = findViewById(R.id.iv_avatar);
         TextView pseudo = findViewById(R.id.tv_pseudo);
-        final ListView lvFriends = findViewById(R.id.lv_friend_items);
+        final ListView lvFriendItems = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();
-        final FriendItemsAdapter friendItemsAdapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
 
-        lvFriends.setAdapter(friendItemsAdapter);
+        mFriendItemsAdapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
+
+        lvFriendItems.setAdapter(mFriendItemsAdapter);
+        lvFriendItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                String itemName = friendItemsData.get(position).getName();
+                Intent intent = new Intent(FriendItemsList.this, ItemInfo.class);
+                intent.putExtra("itemName", itemName);
+                FriendItemsList.this.startActivity(intent);
+            }
+        });
 
         final String pseudoValue = getIntent().getStringExtra("pseudo");
         pseudo.setText(pseudoValue);
@@ -38,8 +55,6 @@ public class FriendItemsList extends AppCompatActivity {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -55,6 +70,7 @@ public class FriendItemsList extends AppCompatActivity {
 
                         String profilPic = userDataSnapshot.child("Profil").child("profilPic").getValue(String.class);
                         Glide.with(FriendItemsList.this).load(profilPic).apply(RequestOptions.circleCropTransform()).into(avatar);
+
                         final DatabaseReference friendItemRef = database.getReference("User").child(friendId).child("Item");
                         friendItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -67,10 +83,10 @@ public class FriendItemsList extends AppCompatActivity {
                                     itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+
                                             ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
                                             friendItemsData.add(item);
-                                            friendItemsAdapter.notifyDataSetChanged();
-
+                                            mFriendItemsAdapter.notifyDataSetChanged();
                                         }
 
                                         @Override
