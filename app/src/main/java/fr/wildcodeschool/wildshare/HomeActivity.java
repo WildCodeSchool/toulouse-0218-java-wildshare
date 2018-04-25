@@ -394,14 +394,14 @@ public class HomeActivity extends AppCompatActivity
 
                 });
 
-
-
                 ListView lvFriends = rootView.findViewById(R.id.lv_friends);
                 final ArrayList<FriendModel> friendData = new ArrayList<>();
 
                 mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
                     @Override
                     public void onClick(FriendModel friend) {
+
+
                         Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
                         startActivity(intent);
                     }
@@ -413,7 +413,7 @@ public class HomeActivity extends AppCompatActivity
                 final DatabaseReference userRef = database.getReference("User");
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-
+                
                 userRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

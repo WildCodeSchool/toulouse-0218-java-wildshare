@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_link" />
+        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
 
     <EditText
         android:id="@+id/et_description"
@@ -37,13 +37,11 @@
 
     <Button
         android:id="@+id/b_addToData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/buton_valid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_description" />
 
@@ -57,38 +55,39 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_link"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <Button
         android:id="@+id/button_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/camera"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/picture_button"
         app:layout_constraintEnd_toStartOf="@+id/button_gallery"
         app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
 
     <Button
         android:id="@+id/button_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/gallery"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/gallery_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
 
     <Button
         android:id="@+id/button_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/link"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_url"
+        android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/button_gallery"
         app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
 
@@ -96,25 +95,34 @@
         android:id="@+id/editText_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/image_link"
         android:inputType="textUri"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/et_newItemName"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_ok"
-        android:layout_width="46dp"
+        android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/ok"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/buton_valid"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editText_link"
-        app:layout_constraintTop_toBottomOf="@+id/button_gallery" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/b_cancel"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_annuler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_description" />
 
 </android.support.constraint.ConstraintLayout>
