@@ -1,6 +1,5 @@
 package fr.wildcodeschool.wildshare;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -9,8 +8,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import static fr.wildcodeschool.wildshare.FriendItemsAdapter.*;
-
 public class FriendItemsList extends AppCompatActivity {
 
     @Override
@@ -18,12 +15,12 @@ public class FriendItemsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_items_list);
 
+        String pseudoValue = getIntent().getStringExtra("pseudo");
+
         ImageView avatar = findViewById(R.id.iv_avatar);
-        TextView fullName = findViewById(R.id.tv_firstname_lastname);
+        TextView pseudo = findViewById(R.id.tv_pseudo);
 
-        //avatar.setImageDrawable(friend.getAvatar());
-        //fullName.setText(friend.getFirstname() + " " + friend.getLastname());
-
+        pseudo.setText(pseudoValue);
 
         ListView lvFriends = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();

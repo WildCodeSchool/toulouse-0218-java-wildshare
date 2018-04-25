@@ -23,8 +23,8 @@ import java.util.ArrayList;
 public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
 
-    FriendItemsAdapter(Context context, ArrayList<ItemModel> monsters) {
-        super(context, 0, monsters);
+    FriendItemsAdapter(Context context, ArrayList<ItemModel> item) {
+        super(context, 0, item);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
