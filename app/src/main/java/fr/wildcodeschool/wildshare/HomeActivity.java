@@ -327,12 +327,27 @@ public class HomeActivity extends AppCompatActivity
                                             itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    final ItemModel itemModel = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                    userRef.child(friendId).child("Profil").addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+
+                                                            itemModel.setOwnerProfilPic(userModel.getProfilPic());
+                                                            itemData.add(itemModel);
+
+                                                            mItemAdapter2.notifyDataSetChanged();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
 
 
-                                                    ItemModel itemModel = dataSnapshot.child(itemId).getValue(ItemModel.class);
-                                                    itemData.add(itemModel);
 
-                                                    mItemAdapter2.notifyDataSetChanged();
+
 
                                                 }
                                                 @Override
