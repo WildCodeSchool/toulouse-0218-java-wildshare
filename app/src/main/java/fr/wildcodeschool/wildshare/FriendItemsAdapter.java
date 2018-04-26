@@ -87,32 +87,6 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
                     }
                 });
-
-
-                /*ownerItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for (DataSnapshot ownerItemDataSnapshot : dataSnapshot.getChildren()) {
-
-                            String itemLoop = ownerItemDataSnapshot.getKey();
-
-                            if (itemLoop.equals(itemId)) {
-
-                                ownerItemRef.child(itemId).setValue(userId);
-
-
-                            }
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });*/
-
-
-
             }
         });
 

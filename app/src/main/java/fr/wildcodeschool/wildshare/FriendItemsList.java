@@ -59,10 +59,10 @@ public class FriendItemsList extends AppCompatActivity {
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                friendItemsData.clear();
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
                     String friendId = userDataSnapshot.getKey();
