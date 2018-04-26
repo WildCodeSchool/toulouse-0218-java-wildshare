@@ -47,7 +47,6 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         final ImageButton bAdd = convertView.findViewById(R.id.b_add);
         final TextView friendItemName = convertView.findViewById(R.id.tv_name);
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
-        final TextView test = convertView.findViewById(R.id.textView);
 
         friendItemName.setText(friendItem.getName());
         Glide.with(getContext()).load(friendItem.getImage()).apply(RequestOptions.circleCropTransform()).into(friendItemImage);
@@ -59,33 +58,33 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         final String ownerId = friendItem.getOwnerId();
         final String itemName = friendItem.getName();
 
-        itemRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-
-                    ItemModel itemModel = itemSnapshot.getValue(ItemModel.class);
-                    String itemNameCompare = itemModel.getName();
-
-                    if (itemNameCompare.equals(itemName) && itemModel.getOwnerId().equals(friendItem.getOwnerId())) {
-
-                        itemId = itemSnapshot.getKey();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         final DatabaseReference ownerItemRef = database.getReference("User").child(ownerId).child("Item");
 
         bAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                itemRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+
+                            ItemModel itemModel = itemSnapshot.getValue(ItemModel.class);
+                            String itemNameCompare = itemModel.getName();
+
+                            if (itemNameCompare.equals(itemName) && itemModel.getOwnerId().equals(friendItem.getOwnerId())) {
+
+                                itemId = itemSnapshot.getKey();
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 ownerItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,7 +97,6 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
                                 ownerItemRef.child(itemId).setValue(userId);
 
-
                             }
                         }
                     }
@@ -107,9 +105,6 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
                     }
                 });
-
-
-
             }
         });
 
