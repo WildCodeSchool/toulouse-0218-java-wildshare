@@ -214,7 +214,7 @@ public class HomeActivity extends AppCompatActivity
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
 
-                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, "myItem", new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
 
@@ -276,7 +276,7 @@ public class HomeActivity extends AppCompatActivity
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
-                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, "myBorrowed", new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
 
@@ -384,7 +384,7 @@ public class HomeActivity extends AppCompatActivity
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
-                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, "freeItem", new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
 

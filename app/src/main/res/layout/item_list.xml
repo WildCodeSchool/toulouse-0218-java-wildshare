@@ -26,6 +26,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Item name"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_give_back"
         app:layout_constraintStart_toEndOf="@+id/iv_item_image"
@@ -50,8 +52,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="36dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/rendre_min"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_owner"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?android:attr/actionModeCloseDrawable" />
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

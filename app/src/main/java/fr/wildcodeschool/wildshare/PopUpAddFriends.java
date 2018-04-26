@@ -48,7 +48,7 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
                         final DatabaseReference pathUser = FirebaseDatabase.getInstance().getReference("User");
                         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                        pathUser.addValueEventListener(new ValueEventListener() {
+                        pathUser.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {

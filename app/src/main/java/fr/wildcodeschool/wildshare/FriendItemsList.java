@@ -61,9 +61,7 @@ public class FriendItemsList extends AppCompatActivity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 friendItemsData.clear();
-
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
                     String friendId = userDataSnapshot.getKey();
@@ -97,7 +95,7 @@ public class FriendItemsList extends AppCompatActivity {
                                             }
                                             @Override
                                             public void onCancelled(DatabaseError databaseError) {
-                                                friendItemsData.clear();
+
                                             }
                                         });
                                     }
@@ -106,7 +104,7 @@ public class FriendItemsList extends AppCompatActivity {
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                friendItemsData.clear();
+
                             }
                         });
                     }
@@ -115,7 +113,7 @@ public class FriendItemsList extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                friendItemsData.clear();
+
             }
         });
     }
