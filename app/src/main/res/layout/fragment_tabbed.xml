@@ -4,7 +4,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange"
+
     tools:context="fr.wildcodeschool.wildshare.TabbedActivity$HomeFragment">
 
     <android.support.design.widget.FloatingActionButton
@@ -19,7 +19,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        app:backgroundTint="#FF8C00"
+        app:backgroundTint="#FFC107"
         app:rippleColor="@color/black"
         app:srcCompat="@android:drawable/ic_input_add" />
 

@@ -2,6 +2,7 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -14,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -51,7 +53,8 @@ public class HomeActivity extends AppCompatActivity
     private FirebaseDatabase mDatabase;
     private ImageView mIvProfilNav;
     private TextView mTvPseudoNav;
-
+    private ImageView mbuttonTake;
+    private ImageView mbuttonGiveBack;
 
 
 
@@ -77,11 +80,53 @@ public class HomeActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_autoreniew);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_archive);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_face_white);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_priority_high_white);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_rss);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_group_add_white);
+
+        this.setTitle("My List");
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                switch (tab.getPosition()) {
+                    case 0 :
+                        HomeActivity.this.setTitle("My List");
+                        ImageView ivTake = (ImageView) findViewById(R.id.iv_take);
+                        ivTake.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1 :
+                        HomeActivity.this.setTitle("Borrow");
+
+
+                        break;
+                    case 2 :
+                        HomeActivity.this.setTitle("New Share");
+
+
+
+                        break;
+                    case 3 :
+                        HomeActivity.this.setTitle("FriendList");
+
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 

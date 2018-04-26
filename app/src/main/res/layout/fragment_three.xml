@@ -19,5 +19,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/search_view_three" />
+        android:layout_below="@+id/search_view_three"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
 </RelativeLayout>
