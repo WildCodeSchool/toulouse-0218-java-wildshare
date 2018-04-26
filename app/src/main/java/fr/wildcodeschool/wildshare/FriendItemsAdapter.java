@@ -48,6 +48,7 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         final TextView friendItemName = convertView.findViewById(R.id.tv_name);
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
 
+
         friendItemName.setText(friendItem.getName());
         Glide.with(getContext()).load(friendItem.getImage()).apply(RequestOptions.circleCropTransform()).into(friendItemImage);
 
@@ -77,6 +78,7 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
                             if (itemNameCompare.equals(itemName) && itemModel.getOwnerId().equals(friendItem.getOwnerId())) {
 
                                 itemId = itemSnapshot.getKey();
+                                ownerItemRef.child(itemId).setValue(userId);
                             }
                         }
                     }
@@ -85,7 +87,9 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
                     }
                 });
-                ownerItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                /*ownerItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -97,6 +101,7 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
                                 ownerItemRef.child(itemId).setValue(userId);
 
+
                             }
                         }
                     }
@@ -104,7 +109,10 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                });*/
+
+
+
             }
         });
 
