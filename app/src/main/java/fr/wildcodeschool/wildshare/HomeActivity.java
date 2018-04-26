@@ -95,8 +95,7 @@ public class HomeActivity extends AppCompatActivity
                 switch (tab.getPosition()) {
                     case 0 :
                         HomeActivity.this.setTitle("My List");
-                        ImageView ivTake = (ImageView) findViewById(R.id.iv_take);
-                        ivTake.setVisibility(View.INVISIBLE);
+
                         break;
                     case 1 :
                         HomeActivity.this.setTitle("Borrow");
@@ -261,7 +260,7 @@ public class HomeActivity extends AppCompatActivity
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
 
-                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, "myItem", new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
 
@@ -327,7 +326,7 @@ public class HomeActivity extends AppCompatActivity
                 ListView lv2 = rootView.findViewById(R.id.take_list);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
-                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, "myBorrowed", new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
 
@@ -341,9 +340,6 @@ public class HomeActivity extends AppCompatActivity
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference userRef = database.getReference("User");
-                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
-
                 final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
                 final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 final DatabaseReference friendRef = mDatabase.getReference("User").child(userId).child("Friends");
@@ -391,11 +387,6 @@ public class HomeActivity extends AppCompatActivity
 
                                                         }
                                                     });
-
-
-
-
-
                                                 }
                                                 @Override
                                                 public void onCancelled(DatabaseError databaseError) {
@@ -414,7 +405,6 @@ public class HomeActivity extends AppCompatActivity
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-
 
 
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
@@ -444,7 +434,7 @@ public class HomeActivity extends AppCompatActivity
                 ListView lv3 = rootView.findViewById(R.id.listView_wall);
                 final ArrayList<ItemModel> itemData = new ArrayList<>();
 
-                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
+                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, "freeItem", new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
 

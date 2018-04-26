@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,10 +58,10 @@ public class FriendItemsList extends AppCompatActivity {
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                friendItemsData.clear();
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
                     String friendId = userDataSnapshot.getKey();
@@ -69,7 +71,7 @@ public class FriendItemsList extends AppCompatActivity {
                     if (friendPseudo.equals(pseudoValue)) {
 
                         String profilPic = userDataSnapshot.child("Profil").child("profilPic").getValue(String.class);
-                        Glide.with(FriendItemsList.this).load(profilPic).apply(RequestOptions.circleCropTransform()).into(avatar);
+                        Glide.with(getApplicationContext()).load(profilPic).apply(RequestOptions.circleCropTransform()).into(avatar);
 
                         final DatabaseReference friendItemRef = database.getReference("User").child(friendId).child("Item");
                         friendItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,21 +81,24 @@ public class FriendItemsList extends AppCompatActivity {
                                 for (final DataSnapshot friendItemsDataSnapshot : dataSnapshot.getChildren()) {
 
                                     final String itemId = friendItemsDataSnapshot.getKey();
+                                    String itemDisponibility = friendItemsDataSnapshot.getValue(String.class);
 
-                                    itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (itemDisponibility.equals("0")) {
 
-                                            ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
-                                            friendItemsData.add(item);
-                                            mFriendItemsAdapter.notifyDataSetChanged();
-                                        }
+                                        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                                ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                friendItemsData.add(item);
+                                                mFriendItemsAdapter.notifyDataSetChanged();
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }
                                 }
                             }
 
@@ -111,8 +116,5 @@ public class FriendItemsList extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 }
