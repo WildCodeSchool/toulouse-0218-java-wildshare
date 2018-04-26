@@ -36,7 +36,6 @@ public class FriendItemsList extends AppCompatActivity {
         TextView pseudo = findViewById(R.id.tv_pseudo);
         final ListView lvFriendItems = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();
-        ImageButton bAdd = findViewById(R.id.b_add);
 
         mFriendItemsAdapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
 
@@ -59,9 +58,11 @@ public class FriendItemsList extends AppCompatActivity {
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                friendItemsData.clear();
 
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
@@ -72,7 +73,7 @@ public class FriendItemsList extends AppCompatActivity {
                     if (friendPseudo.equals(pseudoValue)) {
 
                         String profilPic = userDataSnapshot.child("Profil").child("profilPic").getValue(String.class);
-                        Glide.with(FriendItemsList.this).load(profilPic).apply(RequestOptions.circleCropTransform()).into(avatar);
+                        Glide.with(getApplicationContext()).load(profilPic).apply(RequestOptions.circleCropTransform()).into(avatar);
 
                         final DatabaseReference friendItemRef = database.getReference("User").child(friendId).child("Item");
                         friendItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -96,7 +97,7 @@ public class FriendItemsList extends AppCompatActivity {
                                             }
                                             @Override
                                             public void onCancelled(DatabaseError databaseError) {
-
+                                                friendItemsData.clear();
                                             }
                                         });
                                     }
@@ -105,7 +106,7 @@ public class FriendItemsList extends AppCompatActivity {
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-
+                                friendItemsData.clear();
                             }
                         });
                     }
@@ -114,7 +115,7 @@ public class FriendItemsList extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                friendItemsData.clear();
             }
         });
     }

@@ -53,14 +53,10 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         Glide.with(getContext()).load(friendItem.getImage()).apply(RequestOptions.circleCropTransform()).into(friendItemImage);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
         final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final String ownerId = friendItem.getOwnerId();
         final String itemName = friendItem.getName();
-
-
-
         final DatabaseReference ownerItemRef = database.getReference("User").child(ownerId).child("Item");
 
         bAdd.setOnClickListener(new View.OnClickListener() {
@@ -87,32 +83,6 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
                     }
                 });
-
-
-                /*ownerItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for (DataSnapshot ownerItemDataSnapshot : dataSnapshot.getChildren()) {
-
-                            String itemLoop = ownerItemDataSnapshot.getKey();
-
-                            if (itemLoop.equals(itemId)) {
-
-                                ownerItemRef.child(itemId).setValue(userId);
-
-
-                            }
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });*/
-
-
-
             }
         });
 
