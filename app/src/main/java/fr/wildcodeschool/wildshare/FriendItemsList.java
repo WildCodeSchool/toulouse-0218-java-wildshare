@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ public class FriendItemsList extends AppCompatActivity {
         TextView pseudo = findViewById(R.id.tv_pseudo);
         final ListView lvFriendItems = findViewById(R.id.lv_friend_items);
         final ArrayList<ItemModel> friendItemsData = new ArrayList<>();
+        ImageButton bAdd = findViewById(R.id.b_add);
 
         mFriendItemsAdapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
 
@@ -79,21 +82,24 @@ public class FriendItemsList extends AppCompatActivity {
                                 for (final DataSnapshot friendItemsDataSnapshot : dataSnapshot.getChildren()) {
 
                                     final String itemId = friendItemsDataSnapshot.getKey();
+                                    String itemDisponibility = friendItemsDataSnapshot.getValue(String.class);
 
-                                    itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (itemDisponibility.equals("0")) {
 
-                                            ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
-                                            friendItemsData.add(item);
-                                            mFriendItemsAdapter.notifyDataSetChanged();
-                                        }
+                                        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                                ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                friendItemsData.add(item);
+                                                mFriendItemsAdapter.notifyDataSetChanged();
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }
                                 }
                             }
 

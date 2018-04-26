@@ -8,11 +8,19 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -22,9 +30,10 @@ import java.util.ArrayList;
 
 public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
+    private String itemId;
 
-    FriendItemsAdapter(Context context, ArrayList<ItemModel> monsters) {
-        super(context, 0, monsters);
+    FriendItemsAdapter(Context context, ArrayList<ItemModel> itemFriend) {
+        super(context, 0, itemFriend);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -34,14 +43,78 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend_items_list, parent, false);
         }
 
-        TextView friendItemName = convertView.findViewById(R.id.tv_name);
+
+        final ImageButton bAdd = convertView.findViewById(R.id.b_add);
+        final TextView friendItemName = convertView.findViewById(R.id.tv_name);
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
+        final TextView test = convertView.findViewById(R.id.textView);
 
         friendItemName.setText(friendItem.getName());
         Glide.with(getContext()).load(friendItem.getImage()).apply(RequestOptions.circleCropTransform()).into(friendItemImage);
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference userRef = database.getReference("User");
+        final DatabaseReference itemRef = database.getReference("Item");
+        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String ownerId = friendItem.getOwnerId();
+        final String itemName = friendItem.getName();
+
+        itemRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+
+                    ItemModel itemModel = itemSnapshot.getValue(ItemModel.class);
+                    String itemNameCompare = itemModel.getName();
+
+                    if (itemNameCompare.equals(itemName) && itemModel.getOwnerId().equals(friendItem.getOwnerId())) {
+
+                        itemId = itemSnapshot.getKey();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference ownerItemRef = database.getReference("User").child(ownerId).child("Item");
+
+        bAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ownerItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot ownerItemDataSnapshot : dataSnapshot.getChildren()) {
+
+                            String itemLoop = ownerItemDataSnapshot.getKey();
+
+                            if (itemLoop.equals(itemId)) {
+
+                                ownerItemRef.child(itemId).setValue(userId);
+
+
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+            }
+        });
 
         return convertView;
+
     }
 
 }

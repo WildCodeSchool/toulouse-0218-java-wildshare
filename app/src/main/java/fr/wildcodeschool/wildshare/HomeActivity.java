@@ -290,9 +290,6 @@ public class HomeActivity extends AppCompatActivity
 
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference userRef = database.getReference("User");
-                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
-
                 final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
                 final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 final DatabaseReference friendRef = mDatabase.getReference("User").child(userId).child("Friends");
@@ -340,11 +337,6 @@ public class HomeActivity extends AppCompatActivity
 
                                                         }
                                                     });
-
-
-
-
-
                                                 }
                                                 @Override
                                                 public void onCancelled(DatabaseError databaseError) {
@@ -363,7 +355,6 @@ public class HomeActivity extends AppCompatActivity
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-
 
 
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
