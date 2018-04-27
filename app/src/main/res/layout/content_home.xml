@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="#66CDAA">
+        android:background="#B2EBF2">
 
         <android.support.design.widget.TabItem
             android:id="@+id/tabItem"

@@ -64,7 +64,7 @@ public class ProfilActivity extends AppCompatActivity {
         mImgProfilPic = findViewById(R.id.iv_profil_pic);
         mEditPseudo = findViewById(R.id.et_enter_pseudo);
         btnValidModif = findViewById(R.id.btn_valid_modif);
-        tvPseudo = findViewById(R.id.tv_pseudo);
+
 
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -86,7 +86,7 @@ public class ProfilActivity extends AppCompatActivity {
 
                 if ((dataSnapshot.child("Profil").child("pseudo").getValue() != null)) {
                     String pseudo = dataSnapshot.child("Profil").child("pseudo").getValue(String.class);
-                    tvPseudo.setText(pseudo);
+
                     mEditPseudo.setText(pseudo);
                 }
 

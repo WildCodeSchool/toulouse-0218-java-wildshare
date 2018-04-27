@@ -18,7 +18,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
-        app:backgroundTint="#FF8C00"
+        app:backgroundTint="#FFC107"
         app:rippleColor="@color/black"
         app:srcCompat="@android:drawable/ic_input_add"/>
 
@@ -39,5 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/search_view_four"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        android:divider="@null"
+        android:dividerHeight="0dp"/>
 </RelativeLayout>

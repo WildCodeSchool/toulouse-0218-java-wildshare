@@ -91,4 +91,6 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         }
         return filter;
     }
+
+
 }
