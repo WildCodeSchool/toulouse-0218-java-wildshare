@@ -31,9 +31,12 @@
         <activity
             android:name=".AddItem"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FriendItemsList" />
-        <activity android:name=".ItemInfo" />
-        <activity android:name=".ProfilActivity"></activity>
+        <activity android:name=".FriendItemsList"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ItemInfo"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ProfilActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

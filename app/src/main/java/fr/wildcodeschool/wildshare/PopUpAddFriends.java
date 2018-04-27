@@ -71,10 +71,6 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
                         });
 
 
-
-
-
-
                     }
                 });
         return builder.create();

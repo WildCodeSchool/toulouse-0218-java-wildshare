@@ -20,7 +20,7 @@
         android:layout_marginRight="12dp"
         app:backgroundTint="#FFC107"
         app:rippleColor="@color/black"
-        app:srcCompat="@android:drawable/ic_input_add"/>
+        android:src="@drawable/ic_person_add_white"/>
 
 
     <SearchView

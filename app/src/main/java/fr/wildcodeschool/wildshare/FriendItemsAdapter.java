@@ -44,9 +44,9 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
         }
 
 
-        final ImageButton bAdd = convertView.findViewById(R.id.b_add);
-        final TextView friendItemName = convertView.findViewById(R.id.tv_name);
-        ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
+        final ImageButton bAdd = convertView.findViewById(R.id.button_give_back);
+        final TextView friendItemName = convertView.findViewById(R.id.tv_item_name);
+        ImageView friendItemImage = convertView.findViewById(R.id.iv_item_image);
 
 
         friendItemName.setText(friendItem.getName());

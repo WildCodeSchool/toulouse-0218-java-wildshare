@@ -144,7 +144,7 @@ public class HomeActivity extends AppCompatActivity
 
                 if ((dataSnapshot.child("Profil").child("profilPic").getValue() != null)){
                     String url = dataSnapshot.child("Profil").child("profilPic").getValue(String.class);
-                    Glide.with(HomeActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
+                    Glide.with(getApplicationContext()).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
                 }
 
                 if ((dataSnapshot.child("Profil").child("pseudo").getValue() != null)){

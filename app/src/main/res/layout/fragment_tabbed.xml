@@ -21,7 +21,7 @@
         android:layout_marginRight="12dp"
         app:backgroundTint="#FFC107"
         app:rippleColor="@color/black"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:src="@drawable/ic_add_white" />
 
     <SearchView
         android:id="@+id/search_view_one"
