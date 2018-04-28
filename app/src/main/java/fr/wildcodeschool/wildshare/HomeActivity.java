@@ -2,7 +2,7 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -14,10 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,8 +21,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -38,24 +37,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static ListAdapter mUserItemsAdapter = null;
+    private static ListAdapter mBorrowedItemsAdapter = null;
+    private static ListAdapter mFriendsItemsAdapter = null;
+    private static FriendListAdapter mFriendAdapter = null;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private static ListAdapter mItemAdapter1;
-    private static ListAdapter mItemAdapter2;
-    private static ListAdapter mItemAdapter3;
-    private static FriendListAdapter mFriendAdapter;
     private FirebaseAuth mAuth;
-    private String mUid;
     private FirebaseDatabase mDatabase;
-    private ImageView mIvProfilNav;
-    private TextView mTvPseudoNav;
-    private ImageView mbuttonTake;
-    private ImageView mbuttonGiveBack;
+    private String mUserId;
 
+    // listes mise à jour par Firebase
+    private ArrayList<ItemModel> mItems = new ArrayList<>();
+    private ArrayList<ItemModel> mBorrowed = new ArrayList<>();
+    private ArrayList<FriendModel> mFriends = new ArrayList<>();
+    private ArrayList<ItemModel> mFriendsItems = new ArrayList<>();
 
 
     @Override
@@ -85,30 +84,30 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_rss);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_group_add_white);
 
-
         this.setTitle("My List");
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
                 switch (tab.getPosition()) {
-                    case 0 :
+                    case 0:
                         HomeActivity.this.setTitle("My List");
+                        loadItems();
 
                         break;
-                    case 1 :
+                    case 1:
                         HomeActivity.this.setTitle("Borrow");
                         loadBorrowed();
 
                         break;
-                    case 2 :
+                    case 2:
                         HomeActivity.this.setTitle("New Share");
-                        loadFreeItem();
+                        loadFriendsItems();
 
                         break;
-                    case 3 :
+                    case 3:
                         HomeActivity.this.setTitle("FriendList");
-
+                        loadFriends();
                         break;
                 }
             }
@@ -126,34 +125,40 @@ public class HomeActivity extends AppCompatActivity
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-
-        View headerLayout = navigationView.getHeaderView(0);
+        // chargement du profil dans le menu
+        final View headerLayout = navigationView.getHeaderView(0);
         mDatabase = FirebaseDatabase.getInstance();
-        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mIvProfilNav = (ImageView) headerLayout.findViewById(R.id.iv_profil_nav);
-        mTvPseudoNav = (TextView) headerLayout.findViewById(R.id.tv_pseudo_nav);
-
-        DatabaseReference pathID = mDatabase.getReference("User").child(mUid);
-
-        pathID.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if ((dataSnapshot.child("Profil").child("profilPic").getValue() != null)){
-                    String url = dataSnapshot.child("Profil").child("profilPic").getValue(String.class);
-                    Glide.with(HomeActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            mUserId = mAuth.getCurrentUser().getUid();
+            DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
+                    if (user != null) {
+                        TextView tvPseudoNav = headerLayout.findViewById(R.id.tv_pseudo_nav);
+                        tvPseudoNav.setText(user.getPseudo());
+                        ImageView ivProfilNav = headerLayout.findViewById(R.id.iv_profil_nav);
+                        Glide.with(HomeActivity.this).load(user.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(ivProfilNav);
+                    }
                 }
 
-                if ((dataSnapshot.child("Profil").child("pseudo").getValue() != null)){
-                    String pseudo = dataSnapshot.child("Profil").child("pseudo").getValue(String.class);
-                    mTvPseudoNav.setText(pseudo);
-                }
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+                }
+            });
+        }
+
+        // charge la liste juste après la création de la page
+        new Handler().postDelayed(
+                new Runnable(){
+                    @Override
+                    public void run() {
+                        loadItems();
+                    }
+                }, 100);
     }
 
     @Override
@@ -195,7 +200,6 @@ public class HomeActivity extends AppCompatActivity
             mAuth = FirebaseAuth.getInstance();
             mAuth.signOut();
             startActivity(new Intent(HomeActivity.this, MainActivity.class));
-
 
 
         } else if (id == R.id.nav_share) {
@@ -252,48 +256,6 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
 
-
-                final ListView lv1 = rootView.findViewById(R.id.lv_own_item_list);
-                final ArrayList<ItemModel> itemData = new ArrayList<>();
-
-
-                mItemAdapter1 = new ListAdapter(this.getActivity(), itemData, "myItem", new ListAdapter.ItemClickListerner() {
-                    @Override
-                    public void onClick(ItemModel itemModel) {
-
-                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        intent.putExtra("itemName", itemModel.getName());
-                        startActivity(intent);
-                    }
-                });
-
-                lv1.setAdapter(mItemAdapter1);
-
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference itemRef = database.getReference("Item");
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-                itemRef.orderByChild("ownerId").equalTo(uid).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        itemData.clear();
-                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                            ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage()));
-                        }
-                        Collections.reverse(itemData);
-                        mItemAdapter1.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-                lv1.setAdapter(mItemAdapter1);
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -304,11 +266,14 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mItemAdapter1.getFilter().filter(newText);
+                        if (mUserItemsAdapter != null) {
+                            mUserItemsAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
                 });
+
                 return rootView;
 
 
@@ -326,7 +291,9 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mItemAdapter2.getFilter().filter(newText);
+                        if (mBorrowedItemsAdapter != null) {
+                            mBorrowedItemsAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
@@ -349,7 +316,9 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mItemAdapter3.getFilter().filter(newText);
+                        if (mFriendsItemsAdapter != null) {
+                            mFriendsItemsAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
@@ -367,64 +336,11 @@ public class HomeActivity extends AppCompatActivity
                     public void onClick(View view) {
                         openDialog();
                     }
-                    public void openDialog(){
+
+                    public void openDialog() {
                         sListener.onDialog();
                     }
 
-                });
-
-                ListView lvFriends = rootView.findViewById(R.id.lv_friends);
-                final ArrayList<FriendModel> friendData = new ArrayList<>();
-
-
-                mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
-                    @Override
-                    public void onClick(FriendModel friend) {
-                        Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
-                        intent.putExtra("pseudo", friend.getPseudo());
-                        startActivity(intent);
-                    }
-                });
-
-                lvFriends.setAdapter(mFriendAdapter);
-
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = database.getReference("User");
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
-
-                userRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        friendData.clear();
-                        for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
-                            myFriendsRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
-                                        if (userDataSnapshot.getKey().toString().equals(friendDataSnapshot.getKey().toString())) {
-                                            FriendModel friendModel = userDataSnapshot.child("Profil").getValue(FriendModel.class);
-                                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
-
-                                        }
-
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
-                        }
-                        mFriendAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
                 });
 
                 SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
@@ -437,7 +353,9 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mFriendAdapter.getFilter().filter(newText);
+                        if (mFriendAdapter != null) {
+                            mFriendAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
@@ -472,6 +390,12 @@ public class HomeActivity extends AppCompatActivity
                 public void onDialog() {
                     PopUpAddFriends popupadd = new PopUpAddFriends();
                     popupadd.show(getSupportFragmentManager(), "PopUpAddFriends");
+                    popupadd.setListener(new PopUpAddFriends.AddFriendListener() {
+                        @Override
+                        public void onError(String pseudo) {
+                            Toast.makeText(HomeActivity.this, String.format(getString(R.string.pseudo_doesnt_exists), pseudo), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
@@ -483,165 +407,210 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-
-
     private void loadBorrowed() {
 
-        final ArrayList<ItemModel> itemData = new ArrayList<>();
+        mBorrowedItemsAdapter = new ListAdapter(this, mBorrowed, "myBorrowed",
+                new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
 
-        mItemAdapter2 = new ListAdapter(this, itemData, "myBorrowed", new ListAdapter.ItemClickListerner() {
-            @Override
-            public void onClick(ItemModel itemModel) {
+                        Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
+                        startActivity(intent);
+                    }
+                });
 
-                Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
-                intent.putExtra("itemName", itemModel.getName());
-                startActivity(intent);
-            }
-        });
+        ListView lv2 = findViewById(R.id.take_list);
+        lv2.setAdapter(mBorrowedItemsAdapter);
 
-        ListView lv2 = this.findViewById(R.id.take_list);
-
-        lv2.setAdapter(mItemAdapter2);
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference userRef = database.getReference("User");
-        final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference friendRef = mDatabase.getReference("User").child(userId).child("Friends");
-        final DatabaseReference itemRef = mDatabase.getReference("Item");
-
-
-
-        friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference userRef = mDatabase.getReference("User").child(mUserId).child("Borrowed");
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mBorrowed.clear();
+                for (DataSnapshot itemsDataSnapshot : dataSnapshot.getChildren()) {
 
-                for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
+                    final String itemId = itemsDataSnapshot.getKey();
+                    String friendId = itemsDataSnapshot.getValue(String.class);
 
-                    final String friendId = friendDataSnapshot.getKey();
-                    final DatabaseReference friendItemRef = mDatabase.getReference("User").child(friendId).child("Item");
-
-                    friendItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
+                    friendRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            itemData.clear();
-                            for (DataSnapshot friendItemDataSnapshot : dataSnapshot.getChildren()) {
+                            FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
 
-                                final String itemId = friendItemDataSnapshot.getKey();
-                                final String itemValue = friendItemDataSnapshot.getValue(String.class);
-
-                                if (itemValue.equals(userId)) {
-
-                                    itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            final ItemModel itemModel = dataSnapshot.child(itemId).getValue(ItemModel.class);
-                                            userRef.child(friendId).child("Profil").addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    UserModel userModel = dataSnapshot.getValue(UserModel.class);
-
-                                                    itemModel.setOwnerProfilPic(userModel.getProfilPic());
-                                                    itemData.add(itemModel);
-
-                                                    mItemAdapter2.notifyDataSetChanged();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                        }
-                                    });
-                                }
-                            }
+                            loadItem(itemId, friend.getProfilPic(), "borrowed");
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+
                         }
                     });
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadFriendsItems() {
+
+        mFriendsItemsAdapter = new ListAdapter(this, mFriendsItems, "freeItem",
+                new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+
+                        Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
+                        startActivity(intent);
+                    }
+                });
+
+        ListView lv3 = findViewById(R.id.listView_wall);
+        lv3.setAdapter(mFriendsItemsAdapter);
+
+        DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
+        userFriendsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFriendsItems.clear();
+                for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
+
+                    final String friendId = friendsSnapshot.getKey();
+                    DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
+                    friendRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
+
+                            for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
+
+                                String itemId = itemsDataSnapshot.getKey();
+                                loadItem(itemId, friend.getProfilPic(), "friends");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
 
 
-    private void loadFreeItem() {
+    private void loadItems() {
 
-        ListView lv3 = this.findViewById(R.id.listView_wall);
-        final ArrayList<ItemModel> itemData = new ArrayList<>();
+        mUserItemsAdapter = new ListAdapter(this, mItems, "myItem",
+                new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
 
-        mItemAdapter3 = new ListAdapter(this, itemData, "freeItem", new ListAdapter.ItemClickListerner() {
+                        Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
+                        startActivity(intent);
+                    }
+                });
+
+        final ListView lv1 = findViewById(R.id.lv_own_item_list);
+        lv1.setAdapter(mUserItemsAdapter);
+
+        DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(ItemModel itemModel) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mItems.clear();
+                UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
+                for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
 
-                Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
-                intent.putExtra("itemName", itemModel.getName());
+                    String itemId = itemsDataSnapshot.getKey();
+                    loadItem(itemId, user.getProfilPic(), "user");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadItem(String itemId, final String profilePic, final String type) {
+
+        DatabaseReference itemRef = mDatabase.getReference("Item").child(itemId);
+        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String itemId = dataSnapshot.getKey();
+                ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
+                if (itemModel != null) {
+                    itemModel.setItemId(itemId);
+                    itemModel.setOwnerProfilPic(profilePic);
+                    switch (type) {
+                        case "user":
+                            mItems.add(itemModel);
+                            mUserItemsAdapter.notifyDataSetChanged();
+                            break;
+                        case "friends":
+                            mFriendsItems.add(itemModel);
+                            mFriendsItemsAdapter.notifyDataSetChanged();
+                            break;
+                        case "borrowed":
+                            mBorrowed.add(itemModel);
+                            mBorrowedItemsAdapter.notifyDataSetChanged();
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadFriends() {
+
+        mFriendAdapter = new FriendListAdapter(this, mFriends, new FriendListAdapter.FriendClickListerner() {
+            @Override
+            public void onClick(FriendModel friend) {
+                Intent intent = new Intent(HomeActivity.this, FriendItemsList.class);
+                intent.putExtra("pseudo", friend.getPseudo());
                 startActivity(intent);
             }
         });
 
-        lv3.setAdapter(mItemAdapter3);
+        ListView lvFriends = findViewById(R.id.lv_friends);
+        lvFriends.setAdapter(mFriendAdapter);
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference itemRef = database.getReference("Item");
-        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference userRef = database.getReference("User");
-        final DatabaseReference myFriendsRef = database.getReference("User").child(uid).child("Friends");
-
-
-        myFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
+        userFriendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                itemData.clear();
+                mFriends.clear();
+                for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
 
-
-                for (DataSnapshot myFriendDataSnapshot : dataSnapshot.getChildren()) {
-                    final String friendId = myFriendDataSnapshot.getKey();
-
-                    userRef.child(friendId).child("Item").addListenerForSingleValueEvent(new ValueEventListener() {
+                    final String friendId = friendsSnapshot.getKey();
+                    DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");
+                    friendProfileRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot myFriendItemDataSnapshot : dataSnapshot.getChildren()) {
-                                if (myFriendItemDataSnapshot.getValue().toString().equals("0")) {
-                                    String itemId = myFriendItemDataSnapshot.getKey();
-                                    itemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            final ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
-
-                                            userRef.child(friendId).child("Profil").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    UserModel userModel = dataSnapshot.getValue(UserModel.class);
-                                                    itemModel.setOwnerProfilPic(userModel.getProfilPic());
-                                                    itemData.add(itemModel);
-
-                                                    mItemAdapter3.notifyDataSetChanged();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-
-                            }
+                            FriendModel friend = dataSnapshot.getValue(FriendModel.class);
+                            mFriends.add(friend);
+                            mFriendAdapter.notifyDataSetChanged();
                         }
 
                         @Override
