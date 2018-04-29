@@ -58,6 +58,7 @@ public class FriendItemsList extends AppCompatActivity {
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
 
+        // TODO simplifier tout ça
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,6 +91,7 @@ public class FriendItemsList extends AppCompatActivity {
                                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                                 ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                item.setItemId(itemId);
                                                 friendItemsData.add(item);
                                                 mFriendItemsAdapter.notifyDataSetChanged();
                                             }
