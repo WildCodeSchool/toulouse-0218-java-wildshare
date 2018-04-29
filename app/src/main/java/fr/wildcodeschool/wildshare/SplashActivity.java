@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
 
         videoView = (VideoView)findViewById(R.id.videoView);
 
-        Uri projectfinal = Uri.parse("android.resource://"+ getPackageName()+ "/" + R.raw.projet_final);
+        Uri projectfinal = Uri.parse("android.resource://"+ getPackageName()+ "/" + R.raw.splascreen_noir);
 
         videoView.setVideoURI(projectfinal);
 
