@@ -32,16 +32,20 @@ public class ItemModel {
         this.ownerId = ownerId;
     }
 
-    public ItemModel(String name, String image, String ownerProfilPic) {
+    public ItemModel(String name, String image, String ownerId) {
         this.name = name;
         this.image = image;
-        this.ownerProfilPic = ownerProfilPic;
+        this.ownerId = ownerId;
     }
 
     public ItemModel(String name, String image) {
         this.name = name;
         this.image = image;
     }
+
+
+
+
 
     public String getName() {
         return name;

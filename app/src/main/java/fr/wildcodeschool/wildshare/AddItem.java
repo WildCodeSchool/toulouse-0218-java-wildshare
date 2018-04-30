@@ -131,11 +131,15 @@ public class AddItem extends AppCompatActivity {
                 String image = mLink;
                 ItemModel itemModel = new ItemModel(name, image, description, ownerId);
                 mDatabaseReference.child(itemKey).setValue(itemModel);
+                mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+
             }
             else{
                 String image = mUrlSave;
                 ItemModel itemModel = new ItemModel(name, image, description, ownerId);
                 mDatabaseReference.child(itemKey).setValue(itemModel);
+                mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+
             }
 
         }

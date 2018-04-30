@@ -280,7 +280,7 @@ public class HomeActivity extends AppCompatActivity
                         itemData.clear();
                         for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
                             ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage()));
+                            itemData.add(new ItemModel(itemModel.getName(), itemModel.getImage(), itemModel.getOwnerId()));
                         }
                         Collections.reverse(itemData);
                         mItemAdapter1.notifyDataSetChanged();

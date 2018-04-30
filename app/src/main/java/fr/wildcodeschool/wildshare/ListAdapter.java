@@ -1,6 +1,7 @@
 package fr.wildcodeschool.wildshare;
 
 import android.content.Context;
+import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
         ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
         ImageView ownerImage = convertView.findViewById(R.id.iv_owner);
-        ImageButton actionButton = convertView.findViewById(R.id.button_give_back);
+        final ImageButton actionButton = convertView.findViewById(R.id.button_give_back);
 
         itemName.setText(item.getName());
         Glide.with(mContext).load(item.getImage()).apply(RequestOptions.circleCropTransform()).into(itemImage);
@@ -159,56 +160,45 @@ public class ListAdapter extends BaseAdapter implements Filterable{
             actionButton.setBackgroundResource(R.drawable.rendre_min);
 
 
-
+            final String itemNameM = item.getName();
+            final String ownerIdM = item.getOwnerId();
             final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             final DatabaseReference myItemRef = database.getReference("User").child(uid).child("Item");
-            //final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
+
+            myItemRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot myItemSnapshot : dataSnapshot.getChildren()) {
+
+                        if (myItemSnapshot.getValue().toString().equals("0")) {
+                            actionButton.setVisibility(View.GONE);
+
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    myItemRef.addValueEventListener (new ValueEventListener() {
+                    itemRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            final String itemNameM = item.getName();
-                            final String ownerIdM = item.getOwnerId();
+                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
 
-                            for (final DataSnapshot myItemSnapshot : dataSnapshot.getChildren()) {
+                                ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
 
-                                itemId = myItemSnapshot.getKey();
-                                //String itemIdString = itemId.toString();
-
-                                itemRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-
-                                            ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
-
-                                            if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
-                                                String key = itemSnapshot.getKey().toString();
-
-
-
-                                                if (key.equals(itemId.toString())) {
-                                                    myItemRef.child(itemId).setValue("0");
-                                                }
-                                            }
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
-
-
-                                //String keyS = key.toString();
-
-
-
-
-
-
+                                if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
+                                    itemId = itemSnapshot.getKey();
+                                    myItemRef.child(itemId).setValue("0");
+                                }
                             }
                         }
                         @Override
