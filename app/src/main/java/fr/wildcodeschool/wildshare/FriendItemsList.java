@@ -118,5 +118,16 @@ public class FriendItemsList extends AppCompatActivity {
 
             }
         });
+        ImageView returnhome = findViewById(R.id.iv_close_friend);
+        returnhome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Intent intenthome = new Intent(FriendItemsList.this, HomeActivity.class);
+                startActivity(intenthome);
+                finish();
+            }
+        });
     }
 }

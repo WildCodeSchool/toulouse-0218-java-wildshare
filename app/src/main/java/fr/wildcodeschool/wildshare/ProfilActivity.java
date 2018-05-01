@@ -154,6 +154,7 @@ public class ProfilActivity extends AppCompatActivity {
 
                     Intent intentHome = new Intent(ProfilActivity.this, HomeActivity.class);
                     startActivity(intentHome);
+                    finish();
                 }
             }
         });

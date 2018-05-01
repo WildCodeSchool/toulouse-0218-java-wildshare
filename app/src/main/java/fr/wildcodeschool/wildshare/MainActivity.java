@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mEditPassword = findViewById(R.id.edit_password);
         mImageLogin = findViewById(R.id.image_log);
         mImageSignUp = findViewById(R.id.image_signup);
-        mReturn = findViewById(R.id.iv_return);
+        mReturn = findViewById(R.id.iv_close_friend);
 
         mImageLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 if (firebaseAuth.getCurrentUser() != null){
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
+                    finish();
                 }
 
             }
