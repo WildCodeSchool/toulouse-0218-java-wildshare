@@ -83,8 +83,10 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
         final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
+        final String itemNameM = item.getName();
+        final String ownerIdM = item.getOwnerId();
+        final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
+        final DatabaseReference userBorrowedRef = database.getReference("User").child(userId).child("Borrowed");
 
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
         ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
@@ -97,15 +99,12 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
         if (from.equals("freeItem")) {
 
-            final String itemNameM = item.getName();
-            final String ownerIdM = item.getOwnerId();
-            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            final String mUserId = mAuth.getCurrentUser().getUid();
-            final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
-            final DatabaseReference ownerBorrowedRef = database.getReference("User").child(mUserId).child("Borrowed");
+
+
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     itemRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -116,7 +115,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
                                     ownerItemRef.child(itemId).setValue(userId);
-                                    ownerBorrowedRef.child(itemId).setValue(itemModelValue.getOwnerId());
+                                    userBorrowedRef.child(itemId).setValue(itemModelValue.getOwnerId());
                                 }
                             }
                         }
@@ -132,15 +131,17 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         else if (from.equals("myBorrowed")) {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
 
-            final String itemNameM = item.getName();
-            final String ownerIdM = item.getOwnerId();
-            final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
+
+
+
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemRef.addValueEventListener(new ValueEventListener() {
+
+                    itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
                             for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
 
                                 ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
@@ -148,6 +149,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
                                     ownerItemRef.child(itemId).setValue("0");
+                                    userBorrowedRef.child(itemId).removeValue();
                                 }
                             }
                         }
@@ -164,11 +166,8 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
 
 
-            final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            final DatabaseReference myItemRef = database.getReference("User").child(uid).child("Item");
-            final String itemNameM = item.getName();
-            final String ownerIdM = item.getOwnerId();
-            //final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
+            final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item");
+
 
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -186,6 +185,8 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
                                     myItemRef.child(itemId).setValue("0");
+                                    userBorrowedRef.child(itemId).removeValue();
+
                                 }
                             }
                         }

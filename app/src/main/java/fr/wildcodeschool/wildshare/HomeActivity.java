@@ -57,6 +57,10 @@ public class HomeActivity extends AppCompatActivity
     private ArrayList<FriendModel> mFriends = new ArrayList<>();
     private ArrayList<ItemModel> mFriendsItems = new ArrayList<>();
 
+    private boolean mIsItemsLoaded = false;
+    private boolean mIsBorrowedLoaded = false;
+    private boolean mIsFriendItemsLoaded = false;
+    private boolean mIsFriendsLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -411,6 +415,11 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadBorrowed() {
 
+        if (mIsBorrowedLoaded) {
+            return;
+        }
+        mIsBorrowedLoaded = true;
+
         mBorrowedItemsAdapter = new ListAdapter(this, mBorrowed, "myBorrowed",
                 new ListAdapter.ItemClickListerner() {
                     @Override
@@ -461,6 +470,10 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadFriendsItems() {
 
+        if (mIsFriendItemsLoaded) {
+            return;
+        }
+        mIsFriendItemsLoaded = true;
         mFriendsItemsAdapter = new ListAdapter(this, mFriendsItems, "freeItem",
                 new ListAdapter.ItemClickListerner() {
                     @Override
@@ -517,6 +530,11 @@ public class HomeActivity extends AppCompatActivity
 
 
     private void loadItems() {
+
+        if (mIsItemsLoaded) {
+            return;
+        }
+        mIsItemsLoaded = true;
 
         mUserItemsAdapter = new ListAdapter(this, mItems, "myItem",
                 new ListAdapter.ItemClickListerner() {
@@ -589,6 +607,11 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void loadFriends() {
+
+        if (mIsFriendsLoaded) {
+            return;
+        }
+        mIsFriendsLoaded = true;
 
         mFriendAdapter = new FriendListAdapter(this, mFriends, new FriendListAdapter.FriendClickListerner() {
             @Override
