@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView mImageSignUp;
     Button mBtnNewAccount;
     ProgressBar mProgressBar;
+    ImageView mReturn;
 
 
     private FirebaseAuth mAuth;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mEditPassword = findViewById(R.id.edit_password);
         mImageLogin = findViewById(R.id.image_log);
         mImageSignUp = findViewById(R.id.image_signup);
-
+        mReturn = findViewById(R.id.iv_close_friend);
 
         mImageLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,13 +85,14 @@ public class MainActivity extends AppCompatActivity {
                 mBtnNewAccount = findViewById(R.id.btn_new_account);
                 final ImageView buttonSignIn = findViewById(R.id.image_log);
 
-                ImageView logo = findViewById(R.id.image_logo_fond);
+                mReturn.setVisibility(View.VISIBLE);
                 mNewPassword.setVisibility(View.VISIBLE);
                 mNewEmail.setVisibility(View.VISIBLE);
                 mBtnNewAccount.setVisibility(View.VISIBLE);
                 mEditEmail.setVisibility(View.GONE);
                 mEditPassword.setVisibility(View.GONE);
                 buttonSignIn.setVisibility(View.GONE);
+                mImageSignUp.setVisibility(View.GONE);
 
                 mBtnNewAccount.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -115,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                mImageSignUp = findViewById(R.id.image_signup);
-                mImageSignUp.setOnClickListener(new View.OnClickListener() {
+
+                mReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         mNewPassword.setVisibility(View.GONE);
@@ -125,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
                         buttonSignIn.setVisibility(View.VISIBLE);
                         mEditEmail.setVisibility(View.VISIBLE);
                         mEditPassword.setVisibility(View.VISIBLE);
-
+                        mReturn.setVisibility(View.GONE);
+                        mImageSignUp.setVisibility(View.VISIBLE);
 
                     }
                 });
@@ -140,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 if (firebaseAuth.getCurrentUser() != null){
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
+                    finish();
                 }
 
             }

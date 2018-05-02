@@ -9,14 +9,16 @@
     <EditText
 
         android:id="@+id/edit_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="45dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/backtext"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textColorHint="@android:color/holo_orange_dark"
         android:visibility="visible"
@@ -26,11 +28,13 @@
 
     <EditText
         android:id="@+id/edit_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="45dp"
+        android:background="@drawable/backtext"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textColorHint="@android:color/holo_orange_dark"
         android:visibility="visible"
@@ -41,8 +45,8 @@
 
     <ImageView
         android:id="@+id/image_logo_fond"
-        android:layout_width="0dp"
-        android:layout_height="244dp"
+        android:layout_width="372dp"
+        android:layout_height="273dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -50,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logosite" />
+        app:srcCompat="@drawable/tache_finale_min" />
 
     <ImageView
         android:id="@+id/image_log"
@@ -58,12 +62,13 @@
         android:layout_height="185dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/edit_password"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.094"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_password"
-        app:srcCompat="@drawable/singin" />
+        app:srcCompat="@drawable/signin_min" />
 
     <ImageView
         android:id="@+id/image_signup"
@@ -71,13 +76,13 @@
         android:layout_height="129dp"
         android:layout_marginEnd="52dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="60dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.877"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="@+id/edit_password"
         app:layout_constraintTop_toBottomOf="@+id/new_password"
-        app:srcCompat="@drawable/signup" />
+        app:srcCompat="@drawable/signu_min" />
 
     <EditText
         android:id="@+id/new_mail"
@@ -111,15 +116,16 @@
 
     <Button
         android:id="@+id/btn_new_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="195dp"
+        android:layout_height="145dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/createaccount_min"
         android:ems="10"
-        android:text="@string/create_new_account"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_password" />
 
@@ -136,6 +142,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_close_friend"
+        android:layout_width="146dp"
+        android:layout_height="95dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="84dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.883"
+        app:layout_constraintStart_toStartOf="@+id/edit_password"
+        app:layout_constraintTop_toBottomOf="@+id/new_password"
+        app:srcCompat="@drawable/returnbutton_min" />
 
 
 </android.support.constraint.ConstraintLayout>

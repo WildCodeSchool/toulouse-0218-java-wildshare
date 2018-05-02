@@ -7,20 +7,20 @@
         <item
             android:id="@+id/nav_profil"
             android:icon="@drawable/ic_person_24dp"
-            android:title="Profil" />
+            android:title="@string/profil" />
 
         <item
             android:id="@+id/nav_deconnexion"
             android:icon="@drawable/ic_menu_send"
-            android:title="Déconnexion" />
+            android:title="@string/log_out" />
     </group>
 
-    <item android:title="Liens">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Partager ma liste" />
+                android:title="@string/share_my_list" />
 
         </menu>
     </item>

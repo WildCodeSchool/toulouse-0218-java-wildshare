@@ -2,6 +2,7 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -13,8 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,8 +21,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -35,23 +37,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static ListAdapter mUserItemsAdapter = null;
+    private static ListAdapter mBorrowedItemsAdapter = null;
+    private static ListAdapter mFriendsItemsAdapter = null;
+    private static FriendListAdapter mFriendAdapter = null;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private static ListAdapter mItemAdapter1;
-    private static ListAdapter mItemAdapter2;
-    private static ListAdapter mItemAdapter3;
-    private static FriendListAdapter mFriendAdapter;
     private FirebaseAuth mAuth;
-    private String mUid;
     private FirebaseDatabase mDatabase;
-    private ImageView mIvProfilNav;
-    private TextView mTvPseudoNav;
+    private String mUserId;
 
-
+    // listes mise à jour par Firebase
+    private ArrayList<ItemModel> mItems = new ArrayList<>();
+    private ArrayList<ItemModel> mBorrowed = new ArrayList<>();
+    private ArrayList<FriendModel> mFriends = new ArrayList<>();
+    private ArrayList<ItemModel> mFriendsItems = new ArrayList<>();
 
 
     @Override
@@ -60,7 +63,6 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -75,47 +77,88 @@ public class HomeActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_autoreniew);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_archive);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_face_white);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_priority_high_white);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_rss);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_supervisor);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_group_add_white);
+
+        this.setTitle("My List");
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                switch (tab.getPosition()) {
+                    case 0:
+                        HomeActivity.this.setTitle("My List");
+                        loadItems();
+
+                        break;
+                    case 1:
+                        HomeActivity.this.setTitle("Borrow");
+                        loadBorrowed();
+
+                        break;
+                    case 2:
+                        HomeActivity.this.setTitle("New Share");
+                        loadFriendsItems();
+
+                        break;
+                    case 3:
+                        HomeActivity.this.setTitle("FriendList");
+                        loadFriends();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-
-        View headerLayout = navigationView.getHeaderView(0);
+        // chargement du profil dans le menu
+        final View headerLayout = navigationView.getHeaderView(0);
         mDatabase = FirebaseDatabase.getInstance();
-        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mIvProfilNav = (ImageView) headerLayout.findViewById(R.id.iv_profil_nav);
-        mTvPseudoNav = (TextView) headerLayout.findViewById(R.id.tv_pseudo_nav);
-
-        DatabaseReference pathID = mDatabase.getReference("User").child(mUid);
-
-        pathID.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if ((dataSnapshot.child("profilPic").getValue() != null)){
-                    String url = dataSnapshot.child("profilPic").getValue(String.class);
-                    Glide.with(HomeActivity.this).load(url).apply(RequestOptions.circleCropTransform()).into(mIvProfilNav);
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            mUserId = mAuth.getCurrentUser().getUid();
+            DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
+                    if (user != null) {
+                        TextView tvPseudoNav = headerLayout.findViewById(R.id.tv_pseudo_nav);
+                        tvPseudoNav.setText(user.getPseudo());
+                        ImageView ivProfilNav = headerLayout.findViewById(R.id.iv_profil_nav);
+                        Glide.with(HomeActivity.this).load(user.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(ivProfilNav);
+                    }
                 }
 
-                if ((dataSnapshot.child("pseudo").getValue() != null)){
-                    String pseudo = dataSnapshot.child("pseudo").getValue(String.class);
-                    mTvPseudoNav.setText(pseudo);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
+            });
+        }
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-
-        });
-
+        // charge la liste juste après la création de la page
+        new Handler().postDelayed(
+                new Runnable(){
+                    @Override
+                    public void run() {
+                        loadItems();
+                    }
+                }, 100);
     }
 
     @Override
@@ -157,7 +200,6 @@ public class HomeActivity extends AppCompatActivity
             mAuth = FirebaseAuth.getInstance();
             mAuth.signOut();
             startActivity(new Intent(HomeActivity.this, MainActivity.class));
-
 
 
         } else if (id == R.id.nav_share) {
@@ -265,12 +307,14 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mItemAdapter1.getFilter().filter(newText);
-
+                        if (mUserItemsAdapter != null) {
+                            mUserItemsAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
                 });
+
                 return rootView;
 
 
@@ -278,21 +322,6 @@ public class HomeActivity extends AppCompatActivity
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 final View rootView = inflater.inflate(R.layout.fragment_two, container, false);
 
-                ListView lv2 = rootView.findViewById(R.id.take_list);
-                final ArrayList<ItemModel> itemData = new ArrayList<>();
-                itemData.add(new ItemModel("ObjetTest5", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest6", null, "ownerProfilPic"));
-                itemData.add(new ItemModel("ObjetTest7", null, "ownerProfilPic"));
-
-                mItemAdapter2 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
-                    @Override
-                    public void onClick(ItemModel itemModel) {
-                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-
-                        startActivity(intent);
-                    }
-                });
-                lv2.setAdapter(mItemAdapter2);
                 SearchView searchView2 = rootView.findViewById(R.id.search_view_two);
                 searchView2.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -303,8 +332,9 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mItemAdapter2.getFilter().filter(newText);
-
+                        if (mBorrowedItemsAdapter != null) {
+                            mBorrowedItemsAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
@@ -315,51 +345,7 @@ public class HomeActivity extends AppCompatActivity
 
                 // ONGLET 3
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-
                 final View rootView = inflater.inflate(R.layout.fragment_three, container, false);
-
-                ListView lv3 = rootView.findViewById(R.id.listView_wall);
-                final ArrayList<ItemModel> itemData = new ArrayList<>();
-
-                mItemAdapter3 = new ListAdapter(this.getActivity(), itemData, new ListAdapter.ItemClickListerner() {
-                    @Override
-                    public void onClick(ItemModel itemModel) {
-                        Intent intent = new Intent(rootView.getContext(), ItemInfo.class);
-                        startActivity(intent);
-                    }
-                });
-
-                lv3.setAdapter(mItemAdapter3);
-
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference itemRef = database.getReference("Item");
-                final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-
-                itemRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        itemData.clear();
-                        for (DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
-                            String objetUID = itemDataSnapshot.child("ownerId").getValue().toString();
-                            if (!objetUID.equals(uid)){
-                                ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-                                itemData.add(itemModel);
-                            }
-
-                        }
-                        Collections.reverse(itemData);
-                        mItemAdapter3.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
 
                 SearchView searchView3 = rootView.findViewById(R.id.search_view_three);
                 searchView3.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -371,8 +357,9 @@ public class HomeActivity extends AppCompatActivity
                     @Override
                     public boolean onQueryTextChange(String newText) {
 
-                        mItemAdapter3.getFilter().filter(newText);
-
+                        if (mFriendsItemsAdapter != null) {
+                            mFriendsItemsAdapter.getFilter().filter(newText);
+                        }
 
                         return false;
                     }
@@ -390,66 +377,30 @@ public class HomeActivity extends AppCompatActivity
                     public void onClick(View view) {
                         openDialog();
                     }
-                    public void openDialog(){
+
+                    public void openDialog() {
                         sListener.onDialog();
                     }
 
                 });
 
-                ListView lvFriends = rootView.findViewById(R.id.lv_friends);
-                final ArrayList<FriendModel> friendData = new ArrayList<>();
-
-                mFriendAdapter = new FriendListAdapter(this.getActivity(), friendData, new FriendListAdapter.FriendClickListerner() {
-                    @Override
-                    public void onClick(FriendModel friend) {
-                        Intent intent = new Intent(rootView.getContext(), FriendItemsList.class);
-                        startActivity(intent);
-                    }
-                });
-
-                lvFriends.setAdapter(mFriendAdapter);
-
-                final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference userRef = database.getReference("User");
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-                userRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        friendData.clear();
-                        for (DataSnapshot friendDataSnapshot : dataSnapshot.getChildren()) {
-                            FriendModel friendModel = friendDataSnapshot.getValue(FriendModel.class);
-                            friendData.add(new FriendModel(friendModel.getPseudo(), friendModel.getProfilPic()));
-                        }
-                        Collections.reverse(friendData);
-                        mFriendAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
                 SearchView searchView4 = rootView.findViewById(R.id.search_view_four);
                 searchView4.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return false;
-                        }
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
 
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
 
+                        if (mFriendAdapter != null) {
                             mFriendAdapter.getFilter().filter(newText);
-
-
-                            return false;
                         }
-                    });
 
+                        return false;
+                    }
+                });
 
                 return rootView;
             }
@@ -480,6 +431,12 @@ public class HomeActivity extends AppCompatActivity
                 public void onDialog() {
                     PopUpAddFriends popupadd = new PopUpAddFriends();
                     popupadd.show(getSupportFragmentManager(), "PopUpAddFriends");
+                    popupadd.setListener(new PopUpAddFriends.AddFriendListener() {
+                        @Override
+                        public void onError(String pseudo) {
+                            Toast.makeText(HomeActivity.this, String.format(getString(R.string.pseudo_doesnt_exists), pseudo), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
@@ -489,6 +446,227 @@ public class HomeActivity extends AppCompatActivity
             // Show 4 total pages.
             return 4;
         }
+    }
+
+    private void loadBorrowed() {
+
+        mBorrowedItemsAdapter = new ListAdapter(this, mBorrowed, "myBorrowed",
+                new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+
+                        Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
+                        startActivity(intent);
+                    }
+                });
+
+        ListView lv2 = findViewById(R.id.take_list);
+        lv2.setAdapter(mBorrowedItemsAdapter);
+
+        DatabaseReference userRef = mDatabase.getReference("User").child(mUserId).child("Borrowed");
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mBorrowed.clear();
+                for (DataSnapshot itemsDataSnapshot : dataSnapshot.getChildren()) {
+
+                    final String itemId = itemsDataSnapshot.getKey();
+                    String friendId = itemsDataSnapshot.getValue(String.class);
+
+                    DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
+                    friendRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
+
+                            loadItem(itemId, friend.getProfilPic(), "borrowed");
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadFriendsItems() {
+
+        mFriendsItemsAdapter = new ListAdapter(this, mFriendsItems, "freeItem",
+                new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+
+                        Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
+                        startActivity(intent);
+                    }
+                });
+
+        ListView lv3 = findViewById(R.id.listView_wall);
+        lv3.setAdapter(mFriendsItemsAdapter);
+
+        DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
+        userFriendsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFriendsItems.clear();
+                for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
+
+                    final String friendId = friendsSnapshot.getKey();
+                    DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
+                    friendRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
+
+                            for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
+
+                                String itemId = itemsDataSnapshot.getKey();
+                                loadItem(itemId, friend.getProfilPic(), "friends");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private void loadItems() {
+
+        mUserItemsAdapter = new ListAdapter(this, mItems, "myItem",
+                new ListAdapter.ItemClickListerner() {
+                    @Override
+                    public void onClick(ItemModel itemModel) {
+
+                        Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
+                        intent.putExtra("itemName", itemModel.getName());
+                        startActivity(intent);
+                    }
+                });
+
+        final ListView lv1 = findViewById(R.id.lv_own_item_list);
+        lv1.setAdapter(mUserItemsAdapter);
+
+        DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mItems.clear();
+                UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
+                for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
+
+                    String itemId = itemsDataSnapshot.getKey();
+                    loadItem(itemId, user.getProfilPic(), "user");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadItem(String itemId, final String profilePic, final String type) {
+
+        DatabaseReference itemRef = mDatabase.getReference("Item").child(itemId);
+        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String itemId = dataSnapshot.getKey();
+                ItemModel itemModel = dataSnapshot.getValue(ItemModel.class);
+                if (itemModel != null) {
+                    itemModel.setItemId(itemId);
+                    itemModel.setOwnerProfilPic(profilePic);
+                    switch (type) {
+                        case "user":
+                            mItems.add(itemModel);
+                            mUserItemsAdapter.notifyDataSetChanged();
+                            break;
+                        case "friends":
+                            mFriendsItems.add(itemModel);
+                            mFriendsItemsAdapter.notifyDataSetChanged();
+                            break;
+                        case "borrowed":
+                            mBorrowed.add(itemModel);
+                            mBorrowedItemsAdapter.notifyDataSetChanged();
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadFriends() {
+
+        mFriendAdapter = new FriendListAdapter(this, mFriends, new FriendListAdapter.FriendClickListerner() {
+            @Override
+            public void onClick(FriendModel friend) {
+                Intent intent = new Intent(HomeActivity.this, FriendItemsList.class);
+                intent.putExtra("pseudo", friend.getPseudo());
+                startActivity(intent);
+            }
+        });
+
+        ListView lvFriends = findViewById(R.id.lv_friends);
+        lvFriends.setAdapter(mFriendAdapter);
+
+        DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
+        userFriendsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mFriends.clear();
+                for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
+
+                    final String friendId = friendsSnapshot.getKey();
+                    DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");
+                    friendProfileRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FriendModel friend = dataSnapshot.getValue(FriendModel.class);
+                            mFriends.add(friend);
+                            mFriendAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 

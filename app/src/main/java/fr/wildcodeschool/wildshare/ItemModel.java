@@ -6,12 +6,14 @@ package fr.wildcodeschool.wildshare;
 
 public class ItemModel {
 
+    private String itemId;
     private String name;
     private String image;
     private String description;
     private String ownerPseudo;
     private String ownerProfilPic;
     private String ownerId;
+
 
     public ItemModel(){}
 
@@ -96,5 +98,11 @@ public class ItemModel {
         return this;
     }
 
+    public String getItemId() {
+        return itemId;
+    }
 
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
 }
