@@ -59,6 +59,16 @@ public class AddItem extends AppCompatActivity {
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
+        Button cancel = findViewById(R.id.b_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intenthome = new Intent(AddItem.this,HomeActivity.class);
+                startActivity(intenthome);
+                finish();
+            }
+        });
+
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,6 +166,8 @@ public class AddItem extends AppCompatActivity {
 
 
 
+
+
     }
 
     @Override
@@ -175,5 +187,7 @@ public class AddItem extends AppCompatActivity {
                 break;
         }
     }
+
+
 
 }

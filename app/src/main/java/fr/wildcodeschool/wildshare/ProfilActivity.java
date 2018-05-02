@@ -81,7 +81,7 @@ public class ProfilActivity extends AppCompatActivity {
 
                 if ((dataSnapshot.child("Profil").child("profilPic").getValue() != null)) {
                     mUrlSave = dataSnapshot.child("Profil").child("profilPic").getValue(String.class);
-                    Glide.with(ProfilActivity.this).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
+                    Glide.with(getApplicationContext()).load(mUrlSave).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
                 }
 
                 if ((dataSnapshot.child("Profil").child("pseudo").getValue() != null)) {

@@ -181,6 +181,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                 itemRef.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
+
                                         for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
 
                                             ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
