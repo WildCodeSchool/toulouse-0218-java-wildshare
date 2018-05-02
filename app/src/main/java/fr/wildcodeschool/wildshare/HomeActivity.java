@@ -56,7 +56,6 @@ public class HomeActivity extends AppCompatActivity
     private ArrayList<FriendModel> mFriends = new ArrayList<>();
     private ArrayList<ItemModel> mFriendsItems = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +91,7 @@ public class HomeActivity extends AppCompatActivity
                 switch (tab.getPosition()) {
                     case 0:
                         HomeActivity.this.setTitle("My List");
-                        loadItems();
+                        loadUserItems();
 
                         break;
                     case 1:
@@ -156,7 +155,7 @@ public class HomeActivity extends AppCompatActivity
                 new Runnable(){
                     @Override
                     public void run() {
-                        loadItems();
+                        loadUserItems();
                     }
                 }, 100);
     }
@@ -395,6 +394,11 @@ public class HomeActivity extends AppCompatActivity
                         public void onError(String pseudo) {
                             Toast.makeText(HomeActivity.this, String.format(getString(R.string.pseudo_doesnt_exists), pseudo), Toast.LENGTH_SHORT).show();
                         }
+
+                        @Override
+                        public void onSuccess() {
+                            loadFriends();
+                        }
                     });
                 }
             });
@@ -418,13 +422,18 @@ public class HomeActivity extends AppCompatActivity
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
                     }
+
+                    @Override
+                    public void onUpdate() {
+                        loadBorrowed();
+                    }
                 });
 
         ListView lv2 = findViewById(R.id.take_list);
         lv2.setAdapter(mBorrowedItemsAdapter);
 
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId).child("Borrowed");
-        userRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mBorrowed.clear();
@@ -434,12 +443,12 @@ public class HomeActivity extends AppCompatActivity
                     String friendId = itemsDataSnapshot.getValue(String.class);
 
                     DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
-                    friendRef.addValueEventListener(new ValueEventListener() {
+                    friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
 
-                            loadItem(itemId, friend.getProfilPic(), "borrowed");
+                            loadItemInfos(itemId, friend.getProfilPic(), "borrowed");
                         }
 
                         @Override
@@ -463,10 +472,14 @@ public class HomeActivity extends AppCompatActivity
                 new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-
                         Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
+                    }
+
+                    @Override
+                    public void onUpdate() {
+                        loadFriendsItems();
                     }
                 });
 
@@ -474,7 +487,7 @@ public class HomeActivity extends AppCompatActivity
         lv3.setAdapter(mFriendsItemsAdapter);
 
         DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
-        userFriendsRef.addValueEventListener(new ValueEventListener() {
+        userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFriendsItems.clear();
@@ -482,7 +495,7 @@ public class HomeActivity extends AppCompatActivity
 
                     final String friendId = friendsSnapshot.getKey();
                     DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
-                    friendRef.addValueEventListener(new ValueEventListener() {
+                    friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
@@ -490,7 +503,10 @@ public class HomeActivity extends AppCompatActivity
                             for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
 
                                 String itemId = itemsDataSnapshot.getKey();
-                                loadItem(itemId, friend.getProfilPic(), "friends");
+                                String value = itemsDataSnapshot.getValue(String.class);
+                                if (value.equals("0")) {
+                                    loadItemInfos(itemId, friend.getProfilPic(), "friends");
+                                }
                             }
                         }
 
@@ -510,16 +526,20 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    private void loadItems() {
+    private void loadUserItems() {
 
         mUserItemsAdapter = new ListAdapter(this, mItems, "myItem",
                 new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-
                         Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
+                    }
+
+                    @Override
+                    public void onUpdate() {
+                        loadUserItems();
                     }
                 });
 
@@ -527,7 +547,7 @@ public class HomeActivity extends AppCompatActivity
         lv1.setAdapter(mUserItemsAdapter);
 
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
-        userRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mItems.clear();
@@ -535,7 +555,7 @@ public class HomeActivity extends AppCompatActivity
                 for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
 
                     String itemId = itemsDataSnapshot.getKey();
-                    loadItem(itemId, user.getProfilPic(), "user");
+                    loadItemInfos(itemId, user.getProfilPic(), "user");
                 }
             }
 
@@ -546,7 +566,7 @@ public class HomeActivity extends AppCompatActivity
         });
     }
 
-    private void loadItem(String itemId, final String profilePic, final String type) {
+    private void loadItemInfos(String itemId, final String profilePic, final String type) {
 
         DatabaseReference itemRef = mDatabase.getReference("Item").child(itemId);
         itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -597,15 +617,14 @@ public class HomeActivity extends AppCompatActivity
         lvFriends.setAdapter(mFriendAdapter);
 
         DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
-        userFriendsRef.addValueEventListener(new ValueEventListener() {
+        userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFriends.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
-
                     final String friendId = friendsSnapshot.getKey();
                     DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");
-                    friendProfileRef.addValueEventListener(new ValueEventListener() {
+                    friendProfileRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             FriendModel friend = dataSnapshot.getValue(FriendModel.class);

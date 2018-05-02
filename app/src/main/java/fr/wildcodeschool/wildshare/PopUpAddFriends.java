@@ -65,6 +65,8 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
                                                 database.getReference("User").child(friendId)
                                                         .child("Friends").child(userId)
                                                         .setValue(true);
+
+                                                mListener.onSuccess();
                                             }
                                         } else if (mListener != null) {
                                             // affichage du message d'erreur
@@ -90,5 +92,6 @@ public class PopUpAddFriends extends AppCompatDialogFragment {
     public interface AddFriendListener {
 
         void onError(String pseudo);
+        void onSuccess();
     }
 }
