@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'wildshare'
+            keyPassword 'q@Xk-NzD6*mHNYLZ'
+            storeFile file('keystore.jks')
+            storePassword 'N%v$HyHXR3D=zQy!'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "fr.wildcodeschool.wildshare"
@@ -14,6 +22,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     buildToolsVersion '27.0.3'

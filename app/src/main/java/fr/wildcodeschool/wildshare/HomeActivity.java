@@ -546,6 +546,7 @@ public class HomeActivity extends AppCompatActivity
         final ListView lv1 = findViewById(R.id.lv_own_item_list);
         lv1.setAdapter(mUserItemsAdapter);
 
+        mUserId = mAuth.getCurrentUser().getUid();
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
