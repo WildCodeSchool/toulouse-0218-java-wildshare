@@ -37,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -261,7 +260,6 @@ public class HomeActivity extends AppCompatActivity
                     }
                 });
 
-
                 SearchView searchView = rootView.findViewById(R.id.search_view_one);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -478,7 +476,6 @@ public class HomeActivity extends AppCompatActivity
                 new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-
                         Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
@@ -509,7 +506,6 @@ public class HomeActivity extends AppCompatActivity
                                 if (value.equals("0")) {
                                     loadItem(itemId, friend.getProfilPic(), "friends");
                                 }
-
                             }
                         }
 
@@ -540,7 +536,6 @@ public class HomeActivity extends AppCompatActivity
                 new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-
                         Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
@@ -631,7 +626,6 @@ public class HomeActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFriends.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
-
                     final String friendId = friendsSnapshot.getKey();
                     DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");
                     friendProfileRef.addValueEventListener(new ValueEventListener() {
