@@ -26,13 +26,11 @@ import java.util.ArrayList;
  * Created by wilder on 26/03/18.
  */
 
-public class ListAdapter extends BaseAdapter implements Filterable{
-
-    private String itemId;
-
+public class ListAdapter extends BaseAdapter implements Filterable {
 
     private final Context mContext;
     public ArrayList<ItemModel> itemModels;
+    private String itemId;
     private String from;
 
     private CustomFilter filter;
@@ -44,6 +42,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         this.itemModels = itemModels;
         this.filterList = itemModels;
     }
+
     public ListAdapter(Context mContext, ArrayList<ItemModel> itemModels, String from, ItemClickListerner listener) {
         this.mContext = mContext;
         this.itemModels = itemModels;
@@ -52,11 +51,6 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         this.filterList = itemModels;
     }
 
-    public interface ItemClickListerner {
-        void onClick (ItemModel itemModel);
-    }
-    
-    
     @Override
     public int getCount() {
         return itemModels.size();
@@ -100,7 +94,6 @@ public class ListAdapter extends BaseAdapter implements Filterable{
         if (from.equals("freeItem")) {
 
 
-
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -118,7 +111,9 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                     userBorrowedRef.child(itemId).setValue(itemModelValue.getOwnerId());
                                 }
                             }
+                            listener.onUpdate();
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
@@ -126,12 +121,8 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                 }
             });
             //return convertView;
-        }
-
-        else if (from.equals("myBorrowed")) {
+        } else if (from.equals("myBorrowed")) {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
-
-
 
 
             actionButton.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +143,9 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                     userBorrowedRef.child(itemId).removeValue();
                                 }
                             }
+                            listener.onUpdate();
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
@@ -160,10 +153,8 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
                 }
             });
-        }
-        else {
+        } else {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
-
 
 
             final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item");
@@ -172,8 +163,6 @@ public class ListAdapter extends BaseAdapter implements Filterable{
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                // todo améliorer le requête pour cibler un seul objet
 
                     itemRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -189,70 +178,15 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
                                 }
                             }
+                            listener.onUpdate();
                         }
+
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
                 }
             });
-
-
-
-            /*actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myItemRef.addValueEventListener (new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            final String itemNameM = item.getName();
-                            final String ownerIdM = item.getOwnerId();
-
-                            for (final DataSnapshot myItemSnapshot : dataSnapshot.getChildren()) {
-
-                                itemId = myItemSnapshot.getKey();
-                                //String itemIdString = itemId.toString();
-
-                                itemRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-
-                                            ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
-
-                                            if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
-                                                String key = itemSnapshot.getKey().toString();
-
-
-
-                                                if (key.equals(itemId.toString())) {
-                                                    myItemRef.child(itemId).setValue("0");
-                                                }
-                                            }
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
-
-
-                                //String keyS = key.toString();
-
-
-
-
-
-
-                            }
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-                }
-            });*/
-
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -261,7 +195,6 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                 listener.onClick(item);
             }
         });
-
 
         return convertView;
     }
@@ -272,6 +205,11 @@ public class ListAdapter extends BaseAdapter implements Filterable{
             filter = new CustomFilter(filterList, this);
         }
         return filter;
+    }
+
+    public interface ItemClickListerner {
+        void onClick(ItemModel itemModel);
+        void onUpdate();
     }
 
 }
