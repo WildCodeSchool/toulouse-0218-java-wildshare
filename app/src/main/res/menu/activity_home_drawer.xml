@@ -15,7 +15,7 @@
             android:title="@string/log_out" />
     </group>
 
-    <item android:title="@string/link">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_share"

@@ -111,6 +111,7 @@ public class AddItem extends AppCompatActivity {
                     saveItemModel();
                     Intent intentHome = new Intent(AddItem.this, HomeActivity.class);
                     startActivity(intentHome);
+                    finish();
                 }
             }
         });

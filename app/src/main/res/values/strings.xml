@@ -43,4 +43,5 @@
     <string name="profil">Profil</string>
     <string name="log_out">Log Out</string>
     <string name="share_my_list">Share my list</string>
+    <string name="item_infos">Infos Item</string>
 </resources>

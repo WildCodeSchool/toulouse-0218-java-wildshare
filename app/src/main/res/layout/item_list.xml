@@ -15,16 +15,16 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="85dp"
+            android:background="#B2EBF2"
             android:elevation="16dp"
             android:padding="4dp"
-            app:cardCornerRadius="20dp"
-            android:background="#B2EBF2">
+            app:cardCornerRadius="20dp">
 
             <ImageView
                 android:id="@+id/iv_item_image"
-                android:layout_height="match_parent"
                 android:layout_width="80dp"
+                android:layout_height="match_parent"
 
                 />
 
@@ -33,13 +33,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="23dp"
-                android:layout_marginStart="23dp"
-                android:layout_toEndOf="@+id/iv_item_image"
-                android:layout_toRightOf="@+id/iv_item_image"
+                android:layout_marginLeft="19dp"
+                android:layout_marginStart="19dp"
+                android:layout_toEndOf="@+id/b_add"
+                android:layout_toRightOf="@+id/b_add"
                 android:paddingTop="5dp"
                 android:text="Item name"
-                android:textColor="@android:color/background_light"
+                android:textColor="#fff"
                 android:textSize="24sp"
                 android:textStyle="normal|bold"
                 app:layout_constraintStart_toEndOf="@+id/iv_item_image" />
@@ -56,7 +56,7 @@
                 app:srcCompat="@android:drawable/sym_def_app_icon" />
 
             <ImageButton
-                android:id="@+id/button_give_back"
+                android:id="@+id/b_add"
                 android:layout_width="36dp"
                 android:layout_height="38dp"
                 android:layout_alignParentBottom="true"

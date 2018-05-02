@@ -56,6 +56,10 @@ public class HomeActivity extends AppCompatActivity
     private ArrayList<FriendModel> mFriends = new ArrayList<>();
     private ArrayList<ItemModel> mFriendsItems = new ArrayList<>();
 
+    private boolean mIsItemsLoaded = false;
+    private boolean mIsBorrowedLoaded = false;
+    private boolean mIsFriendItemsLoaded = false;
+    private boolean mIsFriendsLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -409,6 +413,11 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadBorrowed() {
 
+        if (mIsBorrowedLoaded) {
+            return;
+        }
+        mIsBorrowedLoaded = true;
+
         mBorrowedItemsAdapter = new ListAdapter(this, mBorrowed, "myBorrowed",
                 new ListAdapter.ItemClickListerner() {
                     @Override
@@ -434,7 +443,7 @@ public class HomeActivity extends AppCompatActivity
                     String friendId = itemsDataSnapshot.getValue(String.class);
 
                     DatabaseReference friendRef = mDatabase.getReference("User").child(friendId);
-                    friendRef.addValueEventListener(new ValueEventListener() {
+                    friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             FriendModel friend = dataSnapshot.child("Profil").getValue(FriendModel.class);
@@ -459,11 +468,14 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadFriendsItems() {
 
+        if (mIsFriendItemsLoaded) {
+            return;
+        }
+        mIsFriendItemsLoaded = true;
         mFriendsItemsAdapter = new ListAdapter(this, mFriendsItems, "freeItem",
                 new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-
                         Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
@@ -494,8 +506,6 @@ public class HomeActivity extends AppCompatActivity
                                 if (value.equals("0")) {
                                     loadItem(itemId, friend.getProfilPic(), "friends");
                                 }
-
-
                             }
                         }
 
@@ -517,11 +527,15 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadItems() {
 
+        if (mIsItemsLoaded) {
+            return;
+        }
+        mIsItemsLoaded = true;
+
         mUserItemsAdapter = new ListAdapter(this, mItems, "myItem",
                 new ListAdapter.ItemClickListerner() {
                     @Override
                     public void onClick(ItemModel itemModel) {
-
                         Intent intent = new Intent(HomeActivity.this, ItemInfo.class);
                         intent.putExtra("itemName", itemModel.getName());
                         startActivity(intent);
@@ -589,6 +603,11 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadFriends() {
 
+        if (mIsFriendsLoaded) {
+            return;
+        }
+        mIsFriendsLoaded = true;
+
         mFriendAdapter = new FriendListAdapter(this, mFriends, new FriendListAdapter.FriendClickListerner() {
             @Override
             public void onClick(FriendModel friend) {
@@ -607,7 +626,6 @@ public class HomeActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mFriends.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
-
                     final String friendId = friendsSnapshot.getKey();
                     DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");
                     friendProfileRef.addValueEventListener(new ValueEventListener() {
