@@ -99,7 +99,10 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
             final String itemNameM = item.getName();
             final String ownerIdM = item.getOwnerId();
+            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            final String mUserId = mAuth.getCurrentUser().getUid();
             final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
+            final DatabaseReference ownerBorrowedRef = database.getReference("User").child(mUserId).child("Borrowed");
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -113,6 +116,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
                                     ownerItemRef.child(itemId).setValue(userId);
+                                    ownerBorrowedRef.child(itemId).setValue(itemModelValue.getOwnerId());
                                 }
                             }
                         }
@@ -162,9 +166,39 @@ public class ListAdapter extends BaseAdapter implements Filterable{
 
             final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             final DatabaseReference myItemRef = database.getReference("User").child(uid).child("Item");
+            final String itemNameM = item.getName();
+            final String ownerIdM = item.getOwnerId();
             //final DatabaseReference ownerItemRef = database.getReference("User").child(ownerIdM).child("Item");
 
             actionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                // todo améliorer le requête pour cibler un seul objet
+
+                    itemRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+
+                                ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
+
+                                if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
+                                    itemId = itemSnapshot.getKey();
+                                    myItemRef.child(itemId).setValue("0");
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+                }
+            });
+
+
+
+            /*actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     myItemRef.addValueEventListener (new ValueEventListener() {
@@ -216,7 +250,7 @@ public class ListAdapter extends BaseAdapter implements Filterable{
                         }
                     });
                 }
-            });
+            });*/
 
         }
 
