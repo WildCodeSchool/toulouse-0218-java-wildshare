@@ -490,7 +490,12 @@ public class HomeActivity extends AppCompatActivity
                             for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
 
                                 String itemId = itemsDataSnapshot.getKey();
-                                loadItem(itemId, friend.getProfilPic(), "friends");
+                                String value = itemsDataSnapshot.getValue(String.class);
+                                if (value.equals("0")) {
+                                    loadItem(itemId, friend.getProfilPic(), "friends");
+                                }
+
+
                             }
                         }
 
