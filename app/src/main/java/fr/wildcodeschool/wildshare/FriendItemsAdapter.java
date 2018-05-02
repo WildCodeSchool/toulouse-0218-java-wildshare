@@ -30,8 +30,6 @@ import java.util.ArrayList;
 
 public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
-    private String itemId;
-
     FriendItemsAdapter(Context context, ArrayList<ItemModel> itemFriend) {
         super(context, 0, itemFriend);
     }
@@ -43,46 +41,28 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend_items_list, parent, false);
         }
 
-
         final ImageButton bAdd = convertView.findViewById(R.id.b_add);
         final TextView friendItemName = convertView.findViewById(R.id.tv_name);
         ImageView friendItemImage = convertView.findViewById(R.id.iv_image);
 
-
         friendItemName.setText(friendItem.getName());
         Glide.with(getContext()).load(friendItem.getImage()).apply(RequestOptions.circleCropTransform()).into(friendItemImage);
 
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference itemRef = database.getReference("Item");
         final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final String ownerId = friendItem.getOwnerId();
-        final String itemName = friendItem.getName();
-        final DatabaseReference ownerItemRef = database.getReference("User").child(ownerId).child("Item");
 
         bAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                        for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                // on marque l'objet de l'ami comme prêté à l'utilisateur
+                database.getReference("User").child(ownerId).child("Item").child(friendItem.getItemId()).setValue(userId);
 
-                            ItemModel itemModel = itemSnapshot.getValue(ItemModel.class);
-                            String itemNameCompare = itemModel.getName();
+                // on ajoute l'objet de l'ami à sa liste d'emprunt
+                database.getReference("User").child(userId).child("Borrowed").child(friendItem.getItemId()).setValue(ownerId);
 
-                            if (itemNameCompare.equals(itemName) && itemModel.getOwnerId().equals(friendItem.getOwnerId())) {
-
-                                itemId = itemSnapshot.getKey();
-                                ownerItemRef.child(itemId).setValue(userId);
-                            }
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                // TODO marquer l'objet comme emprunté dans Item, ajouter un booléen available dans le model
             }
         });
 
