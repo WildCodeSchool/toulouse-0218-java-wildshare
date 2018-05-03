@@ -13,11 +13,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -30,6 +34,8 @@ public class AddItem extends AppCompatActivity {
     private Uri mUri = null;
     String mLink;
     String mUrlSave;
+
+    String mItemMofiKey;
 
 
     private DatabaseReference mDatabaseReference;
@@ -58,6 +64,41 @@ public class AddItem extends AppCompatActivity {
         mDatabaseReferenceU = FirebaseDatabase.getInstance().getReference();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
+        final String itemNameValue = getIntent().getStringExtra("itemName");
+        mItemName.setText(itemNameValue);
+
+        final DatabaseReference itemRef = mDatabase.getReference("Item");
+        itemRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+
+                    final String itemName = itemDataSnapshot.child("name").getValue(String.class);
+
+                    if (itemName.equals(itemNameValue)) {
+
+                        final ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+
+                        mItemDesc.setText(itemModel.getDescription());
+
+                        Glide.with(AddItem.this).load(itemModel.getImage()).apply(RequestOptions.circleCropTransform()).into(mImgChoose);
+                        mUrlSave = itemModel.getImage();
+                        mItemMofiKey = itemDataSnapshot.getKey();
+                    }
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,33 +167,69 @@ public class AddItem extends AppCompatActivity {
         mDatabaseReferenceU = mDatabase.getReference("User");
         final String itemKey = mDatabaseReference.push().getKey();
 
-        if (mUri == null){
+        if (mItemMofiKey == null) {
+            if (mUri == null){
 
-            if (mLink != null){
-                String image = mLink;
-                ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                mDatabaseReference.child(itemKey).setValue(itemModel);
-            }
-            else{
-                String image = mUrlSave;
-                ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                mDatabaseReference.child(itemKey).setValue(itemModel);
-            }
-
-        }
-        else {
-            StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
-            filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    String image = downloadUrl.toString();
+                if (mLink != null){
+                    String image = mLink;
                     ItemModel itemModel = new ItemModel(name, image, description, ownerId);
                     mDatabaseReference.child(itemKey).setValue(itemModel);
                     mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
                 }
-            });
+                else{
+                    String image = mUrlSave;
+                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                    mDatabaseReference.child(itemKey).setValue(itemModel);
+                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+                }
+
+            }
+            else {
+                StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
+                filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        String image = downloadUrl.toString();
+                        ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                        mDatabaseReference.child(itemKey).setValue(itemModel);
+                        mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+                    }
+                });
+            }
+        }else {
+            if (mUri == null){
+
+                if (mLink != null){
+                    String image = mLink;
+                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                    mDatabaseReference.child(mItemMofiKey).setValue(itemModel);
+                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemMofiKey).setValue("0");
+                }
+                else{
+                    String image = mUrlSave;
+                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                    mDatabaseReference.child(mItemMofiKey).setValue(itemModel);
+                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemMofiKey).setValue("0");
+                }
+
+            }
+            else {
+                StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
+                filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        String image = downloadUrl.toString();
+                        ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                        mDatabaseReference.child(mItemMofiKey).setValue(itemModel);
+                        mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemMofiKey).setValue("0");
+                    }
+                });
+            }
         }
+
+
 
 
 
