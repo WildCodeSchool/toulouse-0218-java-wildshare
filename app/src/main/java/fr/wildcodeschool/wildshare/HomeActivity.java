@@ -432,11 +432,12 @@ public class HomeActivity extends AppCompatActivity
         ListView lv2 = findViewById(R.id.take_list);
         lv2.setAdapter(mBorrowedItemsAdapter);
 
+        mBorrowed.clear();
+        mBorrowedItemsAdapter.notifyDataSetChanged();
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId).child("Borrowed");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mBorrowed.clear();
                 for (DataSnapshot itemsDataSnapshot : dataSnapshot.getChildren()) {
 
                     final String itemId = itemsDataSnapshot.getKey();
@@ -486,11 +487,12 @@ public class HomeActivity extends AppCompatActivity
         ListView lv3 = findViewById(R.id.listView_wall);
         lv3.setAdapter(mFriendsItemsAdapter);
 
+        mFriendsItems.clear();
+        mFriendsItemsAdapter.notifyDataSetChanged();
         DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
         userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mFriendsItems.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
 
                     final String friendId = friendsSnapshot.getKey();
@@ -546,11 +548,12 @@ public class HomeActivity extends AppCompatActivity
         final ListView lv1 = findViewById(R.id.lv_own_item_list);
         lv1.setAdapter(mUserItemsAdapter);
 
+        mItems.clear();
+        mUserItemsAdapter.notifyDataSetChanged();
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mItems.clear();
                 UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
                 for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
 
@@ -616,11 +619,12 @@ public class HomeActivity extends AppCompatActivity
         ListView lvFriends = findViewById(R.id.lv_friends);
         lvFriends.setAdapter(mFriendAdapter);
 
+        mFriends.clear();
+        mFriendAdapter.notifyDataSetChanged();
         DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
         userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mFriends.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
                     final String friendId = friendsSnapshot.getKey();
                     DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");
