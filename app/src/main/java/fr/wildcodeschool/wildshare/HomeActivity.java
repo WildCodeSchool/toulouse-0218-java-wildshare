@@ -83,29 +83,29 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_rss);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_group_add_white);
 
-        this.setTitle("My List");
+        this.setTitle(getString(R.string.my_list));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        HomeActivity.this.setTitle("My List");
+                        HomeActivity.this.setTitle(getString(R.string.my_list));
                         loadUserItems();
 
                         break;
                     case 1:
-                        HomeActivity.this.setTitle("Borrow");
+                        HomeActivity.this.setTitle(getString(R.string.borrowing));
                         loadBorrowed();
 
                         break;
                     case 2:
-                        HomeActivity.this.setTitle("New Share");
+                        HomeActivity.this.setTitle(getString(R.string.free_items));
                         loadFriendsItems();
 
                         break;
                     case 3:
-                        HomeActivity.this.setTitle("FriendList");
+                        HomeActivity.this.setTitle(getString(R.string.my_friends_list));
                         loadFriends();
                         break;
                 }
@@ -131,7 +131,7 @@ public class HomeActivity extends AppCompatActivity
         if (mAuth.getCurrentUser() != null) {
             mUserId = mAuth.getCurrentUser().getUid();
             DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
-            userRef.addValueEventListener(new ValueEventListener() {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
@@ -139,7 +139,7 @@ public class HomeActivity extends AppCompatActivity
                         TextView tvPseudoNav = headerLayout.findViewById(R.id.tv_pseudo_nav);
                         tvPseudoNav.setText(user.getPseudo());
                         ImageView ivProfilNav = headerLayout.findViewById(R.id.iv_profil_nav);
-                        Glide.with(HomeActivity.this).load(user.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(ivProfilNav);
+                        Glide.with(getApplicationContext()).load(user.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(ivProfilNav);
                     }
                 }
 
@@ -432,11 +432,12 @@ public class HomeActivity extends AppCompatActivity
         ListView lv2 = findViewById(R.id.take_list);
         lv2.setAdapter(mBorrowedItemsAdapter);
 
+        mBorrowed.clear();
+        mBorrowedItemsAdapter.notifyDataSetChanged();
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId).child("Borrowed");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mBorrowed.clear();
                 for (DataSnapshot itemsDataSnapshot : dataSnapshot.getChildren()) {
 
                     final String itemId = itemsDataSnapshot.getKey();
@@ -486,11 +487,12 @@ public class HomeActivity extends AppCompatActivity
         ListView lv3 = findViewById(R.id.listView_wall);
         lv3.setAdapter(mFriendsItemsAdapter);
 
+        mFriendsItems.clear();
+        mFriendsItemsAdapter.notifyDataSetChanged();
         DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
         userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mFriendsItems.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
 
                     final String friendId = friendsSnapshot.getKey();
@@ -546,12 +548,13 @@ public class HomeActivity extends AppCompatActivity
         final ListView lv1 = findViewById(R.id.lv_own_item_list);
         lv1.setAdapter(mUserItemsAdapter);
 
+        mItems.clear();
+        mUserItemsAdapter.notifyDataSetChanged();
         mUserId = mAuth.getCurrentUser().getUid();
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mItems.clear();
                 UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);
                 for (DataSnapshot itemsDataSnapshot : dataSnapshot.child("Item").getChildren()) {
 
@@ -617,11 +620,12 @@ public class HomeActivity extends AppCompatActivity
         ListView lvFriends = findViewById(R.id.lv_friends);
         lvFriends.setAdapter(mFriendAdapter);
 
+        mFriends.clear();
+        mFriendAdapter.notifyDataSetChanged();
         DatabaseReference userFriendsRef = mDatabase.getReference("User").child(mUserId).child("Friends");
         userFriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mFriends.clear();
                 for (DataSnapshot friendsSnapshot : dataSnapshot.getChildren()) {
                     final String friendId = friendsSnapshot.getKey();
                     DatabaseReference friendProfileRef = mDatabase.getReference("User").child(friendId).child("Profil");

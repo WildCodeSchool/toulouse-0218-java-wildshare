@@ -2,10 +2,10 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,11 +13,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -27,11 +31,10 @@ public class AddItem extends AppCompatActivity {
     ImageView mImgChoose;
     EditText mItemName;
     EditText mItemDesc;
-    private Uri mUri = null;
     String mLink;
     String mUrlSave;
-
-
+    String mItemModifKey;
+    private Uri mUri = null;
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mDatabaseReferenceU;
     private FirebaseDatabase mDatabase;
@@ -58,6 +61,48 @@ public class AddItem extends AppCompatActivity {
         mDatabaseReferenceU = FirebaseDatabase.getInstance().getReference();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+
+        final String itemNameValue = getIntent().getStringExtra("itemName");
+        mItemName.setText(itemNameValue);
+
+        final DatabaseReference itemRef = mDatabase.getReference("Item");
+        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
+
+                    final String itemName = itemDataSnapshot.child("name").getValue(String.class);
+
+                    if (itemName.equals(itemNameValue)) {
+
+                        final ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
+
+                        mItemDesc.setText(itemModel.getDescription());
+
+                        Glide.with(AddItem.this).load(itemModel.getImage()).apply(RequestOptions.circleCropTransform()).into(mImgChoose);
+                        mUrlSave = itemModel.getImage();
+                        mItemModifKey = itemDataSnapshot.getKey();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        Button cancel = findViewById(R.id.b_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intenthome = new Intent(AddItem.this, HomeActivity.class);
+                startActivity(intenthome);
+                finish();
+            }
+        });
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +138,7 @@ public class AddItem extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLink = edLink.getText().toString();
-                Glide.with(AddItem.this).load(mLink) .into(mImgChoose);
+                Glide.with(AddItem.this).load(mLink).into(mImgChoose);
                 edLink.setVisibility(View.GONE);
                 btnOK.setVisibility(View.GONE);
             }
@@ -106,12 +151,8 @@ public class AddItem extends AppCompatActivity {
                 String itemDesc = mItemDesc.getText().toString();
                 if (itemName.isEmpty() || (itemDesc.isEmpty())) {
                     Toast.makeText(AddItem.this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     saveItemModel();
-                    Intent intentHome = new Intent(AddItem.this, HomeActivity.class);
-                    startActivity(intentHome);
-                    finish();
                 }
             }
         });
@@ -126,21 +167,23 @@ public class AddItem extends AppCompatActivity {
         mDatabaseReferenceU = mDatabase.getReference("User");
         final String itemKey = mDatabaseReference.push().getKey();
 
-        if (mUri == null){
-
-            if (mLink != null){
-                String image = mLink;
-                ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                mDatabaseReference.child(itemKey).setValue(itemModel);
-            }
-            else{
-                String image = mUrlSave;
-                ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                mDatabaseReference.child(itemKey).setValue(itemModel);
-            }
-
+        if (mItemModifKey == null) {
+            mItemModifKey = itemKey;
         }
-        else {
+        if (mUri == null) {
+            String image;
+            if (mLink != null) {
+                image = mLink;
+            } else {
+                image = mUrlSave;
+            }
+            ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+            mDatabaseReference.child(mItemModifKey).setValue(itemModel);
+            mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemModifKey).setValue("0");
+
+            Intent intent = new Intent(AddItem.this, HomeActivity.class);
+            startActivity(intent);
+        } else {
             StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
             filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -148,27 +191,27 @@ public class AddItem extends AppCompatActivity {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     String image = downloadUrl.toString();
                     ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                    mDatabaseReference.child(itemKey).setValue(itemModel);
-                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
+                    mDatabaseReference.child(mItemModifKey).setValue(itemModel);
+                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemModifKey).setValue("0");
+
+                    Intent intent = new Intent(AddItem.this, HomeActivity.class);
+                    startActivity(intent);
                 }
             });
         }
-
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
+        switch (requestCode) {
             case 0:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     mImgChoose.setImageURI(mUri);
                 }
                 break;
             case 1:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     mUri = imageReturnedIntent.getData();
                     mImgChoose.setImageURI(mUri);
                 }

@@ -56,7 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_link"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+        app:srcCompat="@drawable/addpicture" />
 
     <Button
         android:id="@+id/button_camera"
@@ -64,7 +64,7 @@
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/picture_button"
+        android:background="@drawable/finalpicture_min"
         app:layout_constraintEnd_toStartOf="@+id/button_gallery"
         app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
 
@@ -75,7 +75,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/gallery_button"
+        android:background="@drawable/finalgallery_min"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />
@@ -86,7 +86,7 @@
         android:layout_height="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/button_url"
+        android:background="@drawable/finalurl_min"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/button_gallery"
         app:layout_constraintTop_toBottomOf="@+id/iv_img_choose" />

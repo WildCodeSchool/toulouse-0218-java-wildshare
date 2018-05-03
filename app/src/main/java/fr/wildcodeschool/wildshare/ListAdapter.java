@@ -85,7 +85,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
         ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
         ImageView ownerImage = convertView.findViewById(R.id.iv_owner);
-        ImageButton actionButton = convertView.findViewById(R.id.b_add);
+        final ImageButton actionButton = convertView.findViewById(R.id.b_add);
 
         itemName.setText(item.getName());
         Glide.with(mContext).load(item.getImage()).apply(RequestOptions.circleCropTransform()).into(itemImage);
@@ -98,7 +98,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
                 @Override
                 public void onClick(View v) {
 
-                    itemRef.addValueEventListener(new ValueEventListener() {
+                    itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
@@ -123,7 +123,6 @@ public class ListAdapter extends BaseAdapter implements Filterable {
             //return convertView;
         } else if (from.equals("myBorrowed")) {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
-
 
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,39 +153,39 @@ public class ListAdapter extends BaseAdapter implements Filterable {
                 }
             });
         } else {
+
             actionButton.setBackgroundResource(R.drawable.rendre_min);
+            ownerImage.setVisibility(View.GONE);
+            actionButton.setVisibility(View.GONE);
 
-
-            final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item");
-
-
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    itemRef.addValueEventListener(new ValueEventListener() {
+            final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item").child(item.getItemId());
+            myItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                            if (!dataSnapshot.getValue(String.class).equals("0")) {
+                                actionButton.setVisibility(View.VISIBLE);
+                                final String itemId = dataSnapshot.getKey();
+                                final String friendId = dataSnapshot.getValue(String.class);
 
-                                ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
+                                actionButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
 
-                                if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
-                                    itemId = itemSnapshot.getKey();
-                                    myItemRef.child(itemId).setValue("0");
-                                    userBorrowedRef.child(itemId).removeValue();
-
-                                }
+                                        userRef.child(friendId).child("Borrowed").child(itemId).removeValue();
+                                        myItemRef.setValue("0");
+                                        listener.onUpdate();
+                                    }
+                                });
                             }
-                            listener.onUpdate();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+
                         }
                     });
-                }
-            });
+
+
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -209,6 +208,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
 
     public interface ItemClickListerner {
         void onClick(ItemModel itemModel);
+
         void onUpdate();
     }
 
