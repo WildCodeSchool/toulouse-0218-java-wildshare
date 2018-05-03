@@ -613,6 +613,7 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(FriendModel friend) {
                 Intent intent = new Intent(HomeActivity.this, FriendItemsList.class);
                 intent.putExtra("pseudo", friend.getPseudo());
+                intent.putExtra("ownerPic", friend.getProfilPic());
                 startActivity(intent);
             }
         });
