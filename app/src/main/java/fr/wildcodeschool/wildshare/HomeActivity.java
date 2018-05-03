@@ -139,7 +139,7 @@ public class HomeActivity extends AppCompatActivity
                         TextView tvPseudoNav = headerLayout.findViewById(R.id.tv_pseudo_nav);
                         tvPseudoNav.setText(user.getPseudo());
                         ImageView ivProfilNav = headerLayout.findViewById(R.id.iv_profil_nav);
-                        Glide.with(HomeActivity.this).load(user.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(ivProfilNav);
+                        Glide.with(getApplicationContext()).load(user.getProfilPic()).apply(RequestOptions.circleCropTransform()).into(ivProfilNav);
                     }
                 }
 
