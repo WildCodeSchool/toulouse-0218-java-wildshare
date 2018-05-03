@@ -171,6 +171,21 @@ public class ListAdapter extends BaseAdapter implements Filterable {
 
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
+
+                                    myItemRef.child(itemId).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String friendkey = dataSnapshot.getValue().toString();
+                                            userRef.child(friendkey).child("Borrowed").child(itemId).removeValue();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
                                     myItemRef.child(itemId).setValue("0");
                                     userBorrowedRef.child(itemId).removeValue();
 
