@@ -45,18 +45,36 @@ public class ItemInfo extends AppCompatActivity {
                 for (final DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
 
                     final String itemName = itemDataSnapshot.child("name").getValue(String.class);
+                    final String itemId = itemDataSnapshot.getKey();
 
                     if (itemName.equals(itemNameValue)) {
 
                         final ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
                         itemDescription.setText(itemModel.getDescription());
-                        Glide.with(ItemInfo.this).load(itemModel.getImage()).apply(RequestOptions.circleCropTransform()).into(itemImage);
+                        Glide.with(ItemInfo.this)
+                                .load(itemModel.getImage())
+                                .apply(RequestOptions.circleCropTransform()).into(itemImage);
 
-                        String userItemId = itemModel.getOwnerId();
-                        if (userId.equals(userItemId)) {
-                            itemModif.setVisibility(View.VISIBLE);
-                            itemeDelete.setVisibility(View.VISIBLE);
-                        }
+                        myRef.child("Item").child(itemId)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String userItemId = itemModel.getOwnerId();
+                                if (userId.equals(userItemId) && dataSnapshot
+                                        .getValue(String.class)
+                                        .equals("0")) {
+                                    itemModif.setVisibility(View.VISIBLE);
+                                    itemeDelete.setVisibility(View.VISIBLE);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
 
                         itemeDelete.setOnClickListener(new View.OnClickListener() {
                             @Override
