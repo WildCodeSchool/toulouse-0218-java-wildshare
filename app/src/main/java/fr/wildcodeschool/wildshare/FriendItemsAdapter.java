@@ -62,6 +62,8 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
                 // on ajoute l'objet de l'ami à sa liste d'emprunt
                 database.getReference("User").child(userId).child("Borrowed").child(friendItem.getItemId()).setValue(ownerId);
 
+                FriendItemsList.loadFriendItemList();
+
                 // TODO marquer l'objet comme emprunté dans Item, ajouter un booléen available dans le model
             }
         });

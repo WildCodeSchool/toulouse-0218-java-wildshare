@@ -25,17 +25,63 @@ import java.util.ArrayList;
 public class FriendItemsList extends AppCompatActivity {
 
     private static FriendItemsAdapter mFriendItemsAdapter;
-
+    private static ArrayList<ItemModel> friendItemsData;
+    private static String pseudoValue;
+    private static String ownerPic;
+    private static ImageView avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_items_list);
 
-        final ImageView avatar = findViewById(R.id.iv_avatar);
         TextView pseudo = findViewById(R.id.tv_pseudo);
+        pseudoValue = getIntent().getStringExtra("pseudo");
+        ownerPic = getIntent().getStringExtra("ownerPic");
+        pseudo.setText(pseudoValue);
+        avatar = findViewById(R.id.iv_avatar);
+
+        Glide.with(getApplicationContext()).load(ownerPic).apply(RequestOptions.circleCropTransform()).into(avatar);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference userRef = database.getReference("User");
+        final DatabaseReference itemRef = database.getReference("Item");
+        friendItemsData = new ArrayList<>();
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
+
+                    String friendId = userDataSnapshot.getKey();
+                    String friendPseudo = userDataSnapshot.child("Profil").child("pseudo").getValue(String.class);
+
+                    if (friendPseudo.equals(pseudoValue)) {
+
+                        final DatabaseReference friendItemRef = database.getReference("User").child(friendId).child("Item");
+                        friendItemRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                loadFriendItemList();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         final ListView lvFriendItems = findViewById(R.id.lv_friend_items);
-        final ArrayList<ItemModel> friendItemsData = new ArrayList<>();
 
         mFriendItemsAdapter = new FriendItemsAdapter(FriendItemsList.this, friendItemsData);
 
@@ -51,31 +97,43 @@ public class FriendItemsList extends AppCompatActivity {
             }
         });
 
-        final String pseudoValue = getIntent().getStringExtra("pseudo");
-        pseudo.setText(pseudoValue);
+
+        // TODO simplifier tout ça
+
+        ImageView returnhome = findViewById(R.id.iv_close_friend);
+        returnhome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intenthome = new Intent(FriendItemsList.this, HomeActivity.class);
+                startActivity(intenthome);
+                finish();
+            }
+        });
+
+
+    }
+
+
+    public static void loadFriendItemList() {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
-
-        // TODO simplifier tout ça
+        friendItemsData.clear();
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                friendItemsData.clear();
+
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
                     String friendId = userDataSnapshot.getKey();
                     String friendPseudo = userDataSnapshot.child("Profil").child("pseudo").getValue(String.class);
 
-
                     if (friendPseudo.equals(pseudoValue)) {
 
-                        String profilPic = userDataSnapshot.child("Profil").child("profilPic").getValue(String.class);
-                        Glide.with(getApplicationContext()).load(profilPic).apply(RequestOptions.circleCropTransform()).into(avatar);
-
                         final DatabaseReference friendItemRef = database.getReference("User").child(friendId).child("Item");
-                        friendItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        friendItemRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -95,6 +153,7 @@ public class FriendItemsList extends AppCompatActivity {
                                                 friendItemsData.add(item);
                                                 mFriendItemsAdapter.notifyDataSetChanged();
                                             }
+
                                             @Override
                                             public void onCancelled(DatabaseError databaseError) {
 
@@ -118,16 +177,6 @@ public class FriendItemsList extends AppCompatActivity {
 
             }
         });
-        ImageView returnhome = findViewById(R.id.iv_close_friend);
-        returnhome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-
-                Intent intenthome = new Intent(FriendItemsList.this, HomeActivity.class);
-                startActivity(intenthome);
-                finish();
-            }
-        });
     }
 }
