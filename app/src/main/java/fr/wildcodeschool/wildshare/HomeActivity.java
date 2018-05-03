@@ -83,29 +83,29 @@ public class HomeActivity extends AppCompatActivity
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_rss);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_group_add_white);
 
-        this.setTitle("My List");
+        this.setTitle(getString(R.string.my_list));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        HomeActivity.this.setTitle("My List");
+                        HomeActivity.this.setTitle(getString(R.string.my_list));
                         loadUserItems();
 
                         break;
                     case 1:
-                        HomeActivity.this.setTitle("Borrow");
+                        HomeActivity.this.setTitle(getString(R.string.borrowing));
                         loadBorrowed();
 
                         break;
                     case 2:
-                        HomeActivity.this.setTitle("New Share");
+                        HomeActivity.this.setTitle(getString(R.string.free_items));
                         loadFriendsItems();
 
                         break;
                     case 3:
-                        HomeActivity.this.setTitle("FriendList");
+                        HomeActivity.this.setTitle(getString(R.string.my_friends_list));
                         loadFriends();
                         break;
                 }
