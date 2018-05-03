@@ -156,9 +156,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
         } else {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
 
-
             final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item");
-
 
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
