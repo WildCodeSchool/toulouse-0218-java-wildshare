@@ -75,7 +75,7 @@ public class ProfilActivity extends AppCompatActivity {
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference pathID = mDatabase.getReference("User").child(uid);
 
-        pathID.addValueEventListener(new ValueEventListener() {
+        pathID.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

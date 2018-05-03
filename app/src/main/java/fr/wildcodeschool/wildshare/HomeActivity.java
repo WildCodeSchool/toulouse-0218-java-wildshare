@@ -131,7 +131,7 @@ public class HomeActivity extends AppCompatActivity
         if (mAuth.getCurrentUser() != null) {
             mUserId = mAuth.getCurrentUser().getUid();
             DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
-            userRef.addValueEventListener(new ValueEventListener() {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     UserModel user = dataSnapshot.child("Profil").getValue(UserModel.class);

@@ -98,7 +98,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
                 @Override
                 public void onClick(View v) {
 
-                    itemRef.addValueEventListener(new ValueEventListener() {
+                    itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
@@ -153,67 +153,38 @@ public class ListAdapter extends BaseAdapter implements Filterable {
                 }
             });
         } else {
+
             actionButton.setBackgroundResource(R.drawable.rendre_min);
             actionButton.setVisibility(View.GONE);
 
-            final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item");
-
-            myItemRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.getValue().equals("0")) {
-                        actionButton.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    itemRef.addValueEventListener(new ValueEventListener() {
+            final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item").child(item.getItemId());
+            myItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                            if (!dataSnapshot.getValue(String.class).equals("0")) {
+                                actionButton.setVisibility(View.VISIBLE);
+                                final String itemId = dataSnapshot.getKey();
+                                final String friendId = dataSnapshot.getValue(String.class);
 
-                                ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
+                                actionButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
 
-                                if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
-                                    itemId = itemSnapshot.getKey();
-
-                                    myItemRef.child(itemId).addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            String friendkey = dataSnapshot.getValue().toString();
-                                            userRef.child(friendkey).child("Borrowed").child(itemId).removeValue();
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-
-                                    myItemRef.child(itemId).setValue("0");
-                                    userBorrowedRef.child(itemId).removeValue();
-
-                                }
+                                        userRef.child(friendId).child("Borrowed").child(itemId).removeValue();
+                                        myItemRef.setValue("0");
+                                        listener.onUpdate();
+                                    }
+                                });
                             }
-                            listener.onUpdate();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+
                         }
                     });
-                }
-            });
+
+
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -236,6 +207,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
 
     public interface ItemClickListerner {
         void onClick(ItemModel itemModel);
+
         void onUpdate();
     }
 

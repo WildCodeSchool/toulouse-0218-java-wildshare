@@ -69,7 +69,7 @@ public class AddItem extends AppCompatActivity {
         mItemName.setText(itemNameValue);
 
         final DatabaseReference itemRef = mDatabase.getReference("Item");
-        itemRef.addValueEventListener(new ValueEventListener() {
+        itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (final DataSnapshot itemDataSnapshot : dataSnapshot.getChildren()) {
