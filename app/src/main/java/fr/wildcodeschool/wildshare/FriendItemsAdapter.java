@@ -5,22 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -30,8 +22,11 @@ import java.util.ArrayList;
 
 public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
-    FriendItemsAdapter(Context context, ArrayList<ItemModel> itemFriend) {
+    private BorrowFriendItemListener mListener = null;
+
+    FriendItemsAdapter(Context context, ArrayList<ItemModel> itemFriend, BorrowFriendItemListener listener) {
         super(context, 0, itemFriend);
+        mListener = listener;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -62,7 +57,7 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
                 // on ajoute l'objet de l'ami à sa liste d'emprunt
                 database.getReference("User").child(userId).child("Borrowed").child(friendItem.getItemId()).setValue(ownerId);
 
-                // TODO marquer l'objet comme emprunté dans Item, ajouter un booléen available dans le model
+                mListener.onBorrowed();
             }
         });
 
@@ -70,5 +65,9 @@ public class FriendItemsAdapter extends ArrayAdapter<ItemModel> {
 
     }
 
+    public interface BorrowFriendItemListener {
+
+        void onBorrowed();
+    }
 }
 
