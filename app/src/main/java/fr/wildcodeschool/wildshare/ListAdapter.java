@@ -155,6 +155,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
         } else {
 
             actionButton.setBackgroundResource(R.drawable.rendre_min);
+            ownerImage.setVisibility(View.GONE);
             actionButton.setVisibility(View.GONE);
 
             final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item").child(item.getItemId());
