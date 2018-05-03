@@ -84,7 +84,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
 
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
         ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
-        ImageView ownerImage = convertView.findViewById(R.id.iv_owner);
+        final ImageView ownerImage = convertView.findViewById(R.id.iv_owner);
         final ImageButton actionButton = convertView.findViewById(R.id.b_add);
 
         itemName.setText(item.getName());
@@ -158,15 +158,36 @@ public class ListAdapter extends BaseAdapter implements Filterable {
             ownerImage.setVisibility(View.GONE);
             actionButton.setVisibility(View.GONE);
 
-            final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item").child(item.getItemId());
+            final DatabaseReference myItemRef = database.getReference("User")
+                    .child(userId).child("Item").child(item.getItemId());
             myItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (!dataSnapshot.getValue(String.class).equals("0")) {
-                                actionButton.setVisibility(View.VISIBLE);
                                 final String itemId = dataSnapshot.getKey();
                                 final String friendId = dataSnapshot.getValue(String.class);
 
+                                userRef.child(friendId).child("Profil").child("profilPic")
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                String friendPhoto = dataSnapshot.getValue().toString();
+                                                Glide.with(mContext).load(friendPhoto)
+                                                        .apply(RequestOptions.circleCropTransform()).into(ownerImage);
+                                                ownerImage.setVisibility(View.VISIBLE);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+
+
+
+                                actionButton.setVisibility(View.VISIBLE);
                                 actionButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
