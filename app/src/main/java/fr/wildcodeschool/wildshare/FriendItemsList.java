@@ -50,7 +50,7 @@ public class FriendItemsList extends AppCompatActivity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                friendItemsData.clear();
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
                     String friendId = userDataSnapshot.getKey();
@@ -120,11 +120,11 @@ public class FriendItemsList extends AppCompatActivity {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference userRef = database.getReference("User");
         final DatabaseReference itemRef = database.getReference("Item");
-        friendItemsData.clear();
+
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                friendItemsData.clear();
                 for (final DataSnapshot userDataSnapshot : dataSnapshot.getChildren()) {
 
                     String friendId = userDataSnapshot.getKey();
