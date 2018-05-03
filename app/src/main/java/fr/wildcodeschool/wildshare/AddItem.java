@@ -2,10 +2,10 @@ package fr.wildcodeschool.wildshare;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,13 +31,10 @@ public class AddItem extends AppCompatActivity {
     ImageView mImgChoose;
     EditText mItemName;
     EditText mItemDesc;
-    private Uri mUri = null;
     String mLink;
     String mUrlSave;
-
-    String mItemMofiKey;
-
-
+    String mItemModifKey;
+    private Uri mUri = null;
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mDatabaseReferenceU;
     private FirebaseDatabase mDatabase;
@@ -84,10 +81,8 @@ public class AddItem extends AppCompatActivity {
 
                         Glide.with(AddItem.this).load(itemModel.getImage()).apply(RequestOptions.circleCropTransform()).into(mImgChoose);
                         mUrlSave = itemModel.getImage();
-                        mItemMofiKey = itemDataSnapshot.getKey();
+                        mItemModifKey = itemDataSnapshot.getKey();
                     }
-
-
                 }
 
             }
@@ -99,12 +94,11 @@ public class AddItem extends AppCompatActivity {
         });
 
 
-
         Button cancel = findViewById(R.id.b_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intenthome = new Intent(AddItem.this,HomeActivity.class);
+                Intent intenthome = new Intent(AddItem.this, HomeActivity.class);
                 startActivity(intenthome);
                 finish();
             }
@@ -144,7 +138,7 @@ public class AddItem extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLink = edLink.getText().toString();
-                Glide.with(AddItem.this).load(mLink) .into(mImgChoose);
+                Glide.with(AddItem.this).load(mLink).into(mImgChoose);
                 edLink.setVisibility(View.GONE);
                 btnOK.setVisibility(View.GONE);
             }
@@ -157,12 +151,8 @@ public class AddItem extends AppCompatActivity {
                 String itemDesc = mItemDesc.getText().toString();
                 if (itemName.isEmpty() || (itemDesc.isEmpty())) {
                     Toast.makeText(AddItem.this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     saveItemModel();
-                    Intent intentHome = new Intent(AddItem.this, HomeActivity.class);
-                    startActivity(intentHome);
-                    finish();
                 }
             }
         });
@@ -177,87 +167,51 @@ public class AddItem extends AppCompatActivity {
         mDatabaseReferenceU = mDatabase.getReference("User");
         final String itemKey = mDatabaseReference.push().getKey();
 
-        if (mItemMofiKey == null) {
-            if (mUri == null){
-
-                if (mLink != null){
-                    String image = mLink;
-                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                    mDatabaseReference.child(itemKey).setValue(itemModel);
-                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
-                }
-                else{
-                    String image = mUrlSave;
-                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                    mDatabaseReference.child(itemKey).setValue(itemModel);
-                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
-                }
-
-            }
-            else {
-                StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
-                filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        String image = downloadUrl.toString();
-                        ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                        mDatabaseReference.child(itemKey).setValue(itemModel);
-                        mDatabaseReferenceU.child(user.getUid()).child("Item").child(itemKey).setValue("0");
-                    }
-                });
-            }
-        }else {
-            if (mUri == null){
-
-                if (mLink != null){
-                    String image = mLink;
-                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                    mDatabaseReference.child(mItemMofiKey).setValue(itemModel);
-                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemMofiKey).setValue("0");
-                }
-                else{
-                    String image = mUrlSave;
-                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                    mDatabaseReference.child(mItemMofiKey).setValue(itemModel);
-                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemMofiKey).setValue("0");
-                }
-
-            }
-            else {
-                StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
-                filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        String image = downloadUrl.toString();
-                        ItemModel itemModel = new ItemModel(name, image, description, ownerId);
-                        mDatabaseReference.child(mItemMofiKey).setValue(itemModel);
-                        mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemMofiKey).setValue("0");
-                    }
-                });
-            }
+        if (mItemModifKey == null) {
+            mItemModifKey = itemKey;
         }
+        if (mUri == null) {
+            String image;
+            if (mLink != null) {
+                image = mLink;
+            } else {
+                image = mUrlSave;
+            }
+            ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+            mDatabaseReference.child(mItemModifKey).setValue(itemModel);
+            mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemModifKey).setValue("0");
 
+            Intent intent = new Intent(AddItem.this, HomeActivity.class);
+            startActivity(intent);
+        } else {
+            StorageReference filePath = mStorageReference.child("itemPicture").child(mUri.getLastPathSegment());
+            filePath.putFile(mUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    String image = downloadUrl.toString();
+                    ItemModel itemModel = new ItemModel(name, image, description, ownerId);
+                    mDatabaseReference.child(mItemModifKey).setValue(itemModel);
+                    mDatabaseReferenceU.child(user.getUid()).child("Item").child(mItemModifKey).setValue("0");
 
-
-
-
-
-
+                    Intent intent = new Intent(AddItem.this, HomeActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
+        switch (requestCode) {
             case 0:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     mImgChoose.setImageURI(mUri);
                 }
                 break;
             case 1:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     mUri = imageReturnedIntent.getData();
                     mImgChoose.setImageURI(mUri);
                 }
