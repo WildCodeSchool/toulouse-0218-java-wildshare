@@ -37,6 +37,8 @@ public class ItemInfo extends AppCompatActivity {
         final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final DatabaseReference myRef = database.getReference("User").child(userId);
 
+
+
         itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -47,10 +49,14 @@ public class ItemInfo extends AppCompatActivity {
                     if (itemName.equals(itemNameValue)) {
 
                         final ItemModel itemModel = itemDataSnapshot.getValue(ItemModel.class);
-
                         itemDescription.setText(itemModel.getDescription());
-
                         Glide.with(ItemInfo.this).load(itemModel.getImage()).apply(RequestOptions.circleCropTransform()).into(itemImage);
+
+                        String userItemId = itemModel.getOwnerId();
+                        if (userId.equals(userItemId)) {
+                            itemModif.setVisibility(View.VISIBLE);
+                            itemeDelete.setVisibility(View.VISIBLE);
+                        }
 
                         itemeDelete.setOnClickListener(new View.OnClickListener() {
                             @Override
