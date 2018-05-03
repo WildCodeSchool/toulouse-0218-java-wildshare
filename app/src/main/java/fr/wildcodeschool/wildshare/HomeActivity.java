@@ -550,6 +550,7 @@ public class HomeActivity extends AppCompatActivity
 
         mItems.clear();
         mUserItemsAdapter.notifyDataSetChanged();
+        mUserId = mAuth.getCurrentUser().getUid();
         DatabaseReference userRef = mDatabase.getReference("User").child(mUserId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
