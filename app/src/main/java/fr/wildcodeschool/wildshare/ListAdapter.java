@@ -85,7 +85,7 @@ public class ListAdapter extends BaseAdapter implements Filterable {
         TextView itemName = convertView.findViewById(R.id.tv_item_name);
         ImageView itemImage = convertView.findViewById(R.id.iv_item_image);
         ImageView ownerImage = convertView.findViewById(R.id.iv_owner);
-        ImageButton actionButton = convertView.findViewById(R.id.b_add);
+        final ImageButton actionButton = convertView.findViewById(R.id.b_add);
 
         itemName.setText(item.getName());
         Glide.with(mContext).load(item.getImage()).apply(RequestOptions.circleCropTransform()).into(itemImage);
@@ -124,7 +124,6 @@ public class ListAdapter extends BaseAdapter implements Filterable {
         } else if (from.equals("myBorrowed")) {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
 
-
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -155,8 +154,23 @@ public class ListAdapter extends BaseAdapter implements Filterable {
             });
         } else {
             actionButton.setBackgroundResource(R.drawable.rendre_min);
+            actionButton.setVisibility(View.GONE);
 
             final DatabaseReference myItemRef = database.getReference("User").child(userId).child("Item");
+
+            myItemRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.getValue().equals("0")) {
+                        actionButton.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,6 +185,21 @@ public class ListAdapter extends BaseAdapter implements Filterable {
 
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
+
+                                    myItemRef.child(itemId).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String friendkey = dataSnapshot.getValue().toString();
+                                            userRef.child(friendkey).child("Borrowed").child(itemId).removeValue();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
                                     myItemRef.child(itemId).setValue("0");
                                     userBorrowedRef.child(itemId).removeValue();
 
