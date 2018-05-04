@@ -32,7 +32,7 @@
     <string name="pseudo_missed">Enter a pseudo</string>
     <string name="enter_your_pseudo">Enter your pseudo</string>
     <string name="valid_modifications">Valid modifications</string>
-    <string name="enter_all_fields">Please enter all required fields</string>
+    <string name="fill_all_fields">Please fill all fields</string>
     <string name="friend">Friend</string>
     <string name="add_friends">Add Friends</string>
     <string name="cancel">Cancel</string>
@@ -40,12 +40,12 @@
     <string name="item_s_name">Item\'s name</string>
     <string name="item_s_description">Item\'s description</string>
     <string name="pseudo_doesnt_exists">%s doesn\'t exists</string>
-    <string name="profil">Profil</string>
+    <string name="profile">Profile</string>
     <string name="log_out">Log Out</string>
     <string name="share_my_list">Share my list</string>
     <string name="item_infos">Infos Item</string>
     <string name="my_list">My List</string>
-    <string name="borrowing">Borrowing</string>
-    <string name="free_items">Free Items</string>
-    <string name="my_friends_list">My Friends List</string>
+    <string name="items_borrowed">Items borrowed</string>
+    <string name="friend_items">Friend Items</string>
+    <string name="my_friends">My Friends</string>
 </resources>

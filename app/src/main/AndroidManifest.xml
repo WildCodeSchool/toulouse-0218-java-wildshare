@@ -17,14 +17,12 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +32,7 @@
         <activity
             android:name=".HomeActivity"
             android:label="WildShare"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
 
 
@@ -41,12 +40,19 @@
 
         <activity
             android:name=".AddItem"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FriendItemsList"
+        <activity
+            android:name=".FriendItemsList"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ItemInfo"
+        <activity
+            android:name=".ItemInfo"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".ProfilActivity"
+        <activity
+            android:name=".ProfilActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
