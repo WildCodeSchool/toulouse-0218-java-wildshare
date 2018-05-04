@@ -95,17 +95,17 @@ public class HomeActivity extends AppCompatActivity
 
                         break;
                     case 1:
-                        HomeActivity.this.setTitle(getString(R.string.borrowing));
+                        HomeActivity.this.setTitle(getString(R.string.items_borrowed));
                         loadBorrowed();
 
                         break;
                     case 2:
-                        HomeActivity.this.setTitle(getString(R.string.free_items));
+                        HomeActivity.this.setTitle(getString(R.string.friend_items));
                         loadFriendsItems();
 
                         break;
                     case 3:
-                        HomeActivity.this.setTitle(getString(R.string.my_friends_list));
+                        HomeActivity.this.setTitle(getString(R.string.my_friends));
                         loadFriends();
                         break;
                 }
@@ -199,10 +199,7 @@ public class HomeActivity extends AppCompatActivity
             mAuth = FirebaseAuth.getInstance();
             mAuth.signOut();
             startActivity(new Intent(HomeActivity.this, MainActivity.class));
-
-
-        } else if (id == R.id.nav_share) {
-
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

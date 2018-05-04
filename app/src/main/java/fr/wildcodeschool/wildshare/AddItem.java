@@ -150,7 +150,7 @@ public class AddItem extends AppCompatActivity {
                 String itemName = mItemName.getText().toString();
                 String itemDesc = mItemDesc.getText().toString();
                 if (itemName.isEmpty() || (itemDesc.isEmpty())) {
-                    Toast.makeText(AddItem.this, R.string.enter_all_fields, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddItem.this, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                 } else {
                     saveItemModel();
                 }
