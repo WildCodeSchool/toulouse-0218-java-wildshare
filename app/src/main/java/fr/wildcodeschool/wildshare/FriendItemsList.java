@@ -65,11 +65,17 @@ public class FriendItemsList extends AppCompatActivity {
         returnhome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 Intent intenthome = new Intent(FriendItemsList.this, HomeActivity.class);
                 startActivity(intenthome);
                 finish();
+            }
+        });
+
+        ImageView deleteFriend = findViewById(R.id.iv_delete_friend);
+        deleteFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -94,7 +100,8 @@ public class FriendItemsList extends AppCompatActivity {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                                    ItemModel item = dataSnapshot.child(itemId).getValue(ItemModel.class);
+                                                    ItemModel item = dataSnapshot.child(itemId)
+                                                            .getValue(ItemModel.class);
                                                     item.setItemId(itemId);
                                                     mFriendItemsData.add(item);
                                                     mFriendItemsAdapter.notifyDataSetChanged();
@@ -116,3 +123,4 @@ public class FriendItemsList extends AppCompatActivity {
                 });
     }
 }
+
