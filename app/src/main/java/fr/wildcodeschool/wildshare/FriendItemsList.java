@@ -1,6 +1,8 @@
 package fr.wildcodeschool.wildshare;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -75,7 +79,7 @@ public class FriendItemsList extends AppCompatActivity {
         deleteFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                deleteFriend();
             }
         });
     }
@@ -121,6 +125,57 @@ public class FriendItemsList extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void deleteFriend() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(FriendItemsList.this);
+        builder.setMessage("Be careful, do you really want to delete this friend ?")
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        final String userId = user.getUid();
+
+                        // recherche un utilisateur avec ce pseudo
+                        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        database.getReference("User")
+                                .orderByChild("Profil/pseudo").equalTo(mPseudo)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            for (DataSnapshot friendDS : dataSnapshot.getChildren()) {
+                                                String friendId = friendDS.getKey();
+
+                                                database.getReference("User").child(userId)
+                                                        .child("Friends").child(friendId)
+                                                        .removeValue();
+
+                                                // ajout mutuel
+                                                database.getReference("User").child(friendId)
+                                                        .child("Friends").child(userId)
+                                                        .removeValue();
+
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                    }
+                })
+                .show();
     }
 }
 
