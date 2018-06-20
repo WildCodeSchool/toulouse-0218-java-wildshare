@@ -34,6 +34,8 @@ public class ProfilActivity extends AppCompatActivity {
     ImageView mImgProfilPic;
     String mLink;
     String mUrlSave;
+    String mPseudo;
+    String mProfilPic = "https://firebasestorage.googleapis.com/v0/b/wildshare-319b7.appspot.com/o/profilPicture%2FProfile_avatar_placeholder_large.png?alt=media&token=495e4f83-1aec-49fe-a88f-98fb70a4ec63";
 
     private DatabaseReference mDatabaseReference;
     private FirebaseDatabase mDatabase;
@@ -99,8 +101,6 @@ public class ProfilActivity extends AppCompatActivity {
         });
 
 
-
-
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +148,9 @@ public class ProfilActivity extends AppCompatActivity {
                 String firstName = mEditPseudo.getText().toString();
                 if (firstName.isEmpty()) {
                     Toast.makeText(ProfilActivity.this, R.string.pseudo_missed, Toast.LENGTH_SHORT).show();
+                    
                 }
+
                 else {
                     saveUserModel();
 
@@ -162,26 +164,25 @@ public class ProfilActivity extends AppCompatActivity {
 
     //methode qui envois les données sur firebase
     private void saveUserModel() {
-        final String pseudo = mEditPseudo.getText().toString();
+        mPseudo = mEditPseudo.getText().toString();
 
         if (mUri == null){
 
             if (mLink != null){
-                String profilPic = mLink;
-                UserModel userModel = new UserModel(pseudo, profilPic);
-                FirebaseUser user = mAuth.getCurrentUser();
-                mDatabaseReference = mDatabase.getReference("User");
-                mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
+                mProfilPic = mLink;
+                saveUserModelFirebase();
             }
             else{
-                String profilPic = mUrlSave;
-                UserModel userModel = new UserModel(pseudo, profilPic);
-                FirebaseUser user = mAuth.getCurrentUser();
-                mDatabaseReference = mDatabase.getReference("User");
-                mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
+                if (mUrlSave != null) {
+                    mProfilPic = mUrlSave;
+                    saveUserModelFirebase();
+                }
+                else
+                {
+                    saveUserModelFirebase();
+                }
+
             }
-
-
         }
         else {
             StorageReference filePath = mStorageReference.child("profilPicture").child(mUri.getLastPathSegment());
@@ -189,17 +190,18 @@ public class ProfilActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    String profilPic = downloadUrl.toString();
-                    UserModel userModel = new UserModel(pseudo, profilPic);
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    mDatabaseReference = mDatabase.getReference("User");
-                    mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
+                    mProfilPic = downloadUrl.toString();
+                    saveUserModelFirebase();
                 }
             });
         }
+    }
 
-
-
+    private void saveUserModelFirebase() {
+        UserModel userModel = new UserModel(mPseudo, mProfilPic);
+        FirebaseUser user = mAuth.getCurrentUser();
+        mDatabaseReference = mDatabase.getReference("User");
+        mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
     }
 
     //Methode qui convertis les photo de l'appareil et de la gallerie en Uri
@@ -210,17 +212,14 @@ public class ProfilActivity extends AppCompatActivity {
             case 0:
                 if(resultCode == RESULT_OK) {
                     Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
-
                 }
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
                     mUri = imageReturnedIntent.getData();
                     Glide.with(ProfilActivity.this).load(mUri).apply(RequestOptions.circleCropTransform()).into(mImgProfilPic);
-
                 }
                 break;
         }
     }
-
 }

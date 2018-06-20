@@ -48,4 +48,5 @@
     <string name="items_borrowed">Items borrowed</string>
     <string name="friend_items">Friend Items</string>
     <string name="my_friends">My Friends</string>
+    <string name="password_length">Your password must contain at least six characters</string>
 </resources>

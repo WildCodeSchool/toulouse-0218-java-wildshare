@@ -7,8 +7,9 @@
     android:background="#000000"
     android:gravity="center"
     tools:context="fr.wildcodeschool.wildshare.SplashActivity">
+
     <VideoView
-        android:id="@+id/videoView"
+        android:id="@+id/video_view"
         android:layout_width="504dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

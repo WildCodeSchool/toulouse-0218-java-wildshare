@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.VideoView;
 
@@ -20,7 +21,7 @@ public class SplashActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        videoView = (VideoView)findViewById(R.id.videoView);
+        videoView = (VideoView)findViewById(R.id.video_view);
 
         Uri projectfinal = Uri.parse("android.resource://"+ getPackageName()+ "/" + R.raw.splascreen_noir);
 
@@ -37,5 +38,15 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
         videoView.start();
+
+
+        videoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

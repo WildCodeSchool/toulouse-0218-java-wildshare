@@ -165,6 +165,9 @@ public class FriendItemsList extends AppCompatActivity {
 
                                             }
                                         }
+                                        Intent intenthome = new Intent(FriendItemsList.this, HomeActivity.class);
+                                        startActivity(intenthome);
+                                        finish();
                                     }
 
                                     @Override

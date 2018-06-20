@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
                         if (TextUtils.isEmpty(emailN) || (TextUtils.isEmpty(passwordN))){
                             Toast.makeText(MainActivity.this, R.string.enter_both_values, Toast.LENGTH_SHORT).show();
                         }
+                        if (passwordN.length() < 6) {
+                            Toast.makeText(MainActivity.this, R.string.password_length, Toast.LENGTH_SHORT).show();
+                        }
                         else {
                             mAuth.createUserWithEmailAndPassword(emailN, passwordN).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
