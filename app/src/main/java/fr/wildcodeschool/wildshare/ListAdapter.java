@@ -10,6 +10,7 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -101,14 +102,32 @@ public class ListAdapter extends BaseAdapter implements Filterable {
                     itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                            for (final DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
 
-                                ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
+                                final ItemModel itemModelValue = itemSnapshot.getValue(ItemModel.class);
 
                                 if (itemModelValue.getName().equals(itemNameM) && itemModelValue.getOwnerId().equals(ownerIdM)) {
                                     itemId = itemSnapshot.getKey();
-                                    ownerItemRef.child(itemId).setValue(userId);
-                                    userBorrowedRef.child(itemId).setValue(itemModelValue.getOwnerId());
+                                    ownerItemRef.child(itemId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String itemValue = dataSnapshot.getValue().toString();
+                                            if (itemValue.equals("0")) {
+                                                ownerItemRef.child(itemId).setValue(userId);
+                                                userBorrowedRef.child(itemId).setValue(itemModelValue.getOwnerId());
+                                            }
+                                            else {
+                                                Toast.makeText(mContext, R.string.item_already_borrowed, Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    
                                 }
                             }
                             listener.onUpdate();

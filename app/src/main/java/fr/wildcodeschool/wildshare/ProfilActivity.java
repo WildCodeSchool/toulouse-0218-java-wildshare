@@ -152,19 +152,60 @@ public class ProfilActivity extends AppCompatActivity {
                 }
 
                 else {
-                    saveUserModel();
+                    mPseudo = mEditPseudo.getText().toString();
+                    FirebaseDatabase.getInstance().getReference("User")
+                            .orderByChild("Profil/pseudo").equalTo(mPseudo)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists())  {
+                                Toast.makeText(ProfilActivity.this, "This pseudo is already used", Toast.LENGTH_SHORT).show();
 
-                    Intent intentHome = new Intent(ProfilActivity.this, HomeActivity.class);
-                    startActivity(intentHome);
-                    finish();
+                            }else {
+                                saveUserModel();
+                                Intent intentHome = new Intent(ProfilActivity.this, HomeActivity.class);
+                                startActivity(intentHome);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
             }
         });
+
+        /*private void saveUserModelFirebase() {
+        FirebaseDatabase.getInstance().getReference("User").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    if (!mPseudo.equals(userSnapshot.child("Profil").child("pseudo").getValue().toString())) {
+                        UserModel userModel = new UserModel(mPseudo, mProfilPic);
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        mDatabaseReference = mDatabase.getReference("User");
+                        mDatabaseReference.child(user.getUid()).child("Profil").setValue(userModel);
+                    }else {
+                        Toast.makeText(ProfilActivity.this, "This pseudo is already used", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    } */
     }
 
     //methode qui envois les données sur firebase
     private void saveUserModel() {
-        mPseudo = mEditPseudo.getText().toString();
 
         if (mUri == null){
 
